@@ -1,4 +1,4 @@
-package com.epam.jwd.KinoRating;
+package com.epam.jwd.application;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
