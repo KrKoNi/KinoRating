@@ -1,13 +1,9 @@
 package com.epam.jwd.dao;
 
-
-import java.util.ArrayList;
+import java.util.List;
 
 public interface DataAccessObject<T> {
-    static void connect() {
-
-    }
-    ArrayList<T> readAll();
+    List<T> readAll();
     void insert(T t);
     void update(T t);
 }
