@@ -1,5 +1,6 @@
 package com.epam.jwd.connect.impl;
 
+import com.epam.jwd.config.ApplicationProperties;
 import com.epam.jwd.connect.ConnectionPool;
 
 import java.sql.Connection;
@@ -16,16 +17,27 @@ public class BasicConnectionPool implements ConnectionPool {
     private Queue<Connection> usedConnections = new LinkedList<>();
     private static int INITIAL_POOL_SIZE = 10;
 
-    public static BasicConnectionPool create(String url, String user, String password)
-            throws SQLException {
+
+    private static final BasicConnectionPool INSTANCE = create(
+            ApplicationProperties.getUrl(),
+            ApplicationProperties.getUser(),
+            ApplicationProperties.getPassword()
+    );
+
+    public static BasicConnectionPool getInstance() {
+        return INSTANCE;
+    }
+
+    private static BasicConnectionPool create(String url, String user, String password) {
         Queue<Connection> pool = new LinkedList<>();
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
             pool.add(createConnection(url, user, password));
         }
+
         return new BasicConnectionPool(url, user, password, pool);
     }
 
-    public BasicConnectionPool(String url, String user, String password, Queue<Connection> connectionPool) {
+    private BasicConnectionPool(String url, String user, String password, Queue<Connection> connectionPool) {
         this.url = url;
         this.user = user;
         this.password = password;
@@ -45,9 +57,15 @@ public class BasicConnectionPool implements ConnectionPool {
         return usedConnections.remove(connection);
     }
 
-    private static Connection createConnection(String url, String user, String password)
-            throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+    private static Connection createConnection(String url, String user, String password) {
+        Connection connection = null;
+        System.out.println(DriverManager.getDrivers());
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return connection;
     }
 
     public int getSize() {
