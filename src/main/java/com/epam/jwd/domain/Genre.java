@@ -1,12 +1,23 @@
 package com.epam.jwd.domain;
 
-public enum Genre {
-    UNKNOWN(0, "unknown");
-    private final int id;
-    private final String name;
+public class Genre {
+    private int id;
+    private String name;
 
-    Genre(int id, String name) {
+    public Genre(int id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Genre() {
+
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -18,12 +29,11 @@ public enum Genre {
         return id;
     }
 
-    public static Genre getById(Long id) {
-        for(Genre genre : values()) {
-            if(genre.id == id) return genre;
-        }
-        return UNKNOWN;
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
-
-
 }

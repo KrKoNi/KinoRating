@@ -4,12 +4,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TVSeries extends AbstractKino {
+public class TVSeries extends Show {
 
     private final List<Season> seasons = new ArrayList<>();
 
-    public TVSeries(int id, String title, LocalDate releaseDate, String imageLink, String description) {
-        super(id, title, releaseDate, imageLink, description);
+    public TVSeries(int id, String title, LocalDate releaseDate, String imageLink, String shortDescription, String description) {
+        super(id, title, releaseDate, imageLink, shortDescription, description);
     }
 
     class Season {
