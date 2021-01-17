@@ -3,6 +3,8 @@ package com.epam.jwd.domain;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Serializable {
 
@@ -15,7 +17,7 @@ public class User implements Serializable {
     private final String password;
     private final LocalDate registrationDate;
     private final Role role;
-    private final LocalDateTime lastLogin = LocalDateTime.now();
+    private final Map<Integer, Byte> rates = new HashMap<>();
 
     public User(int id, String login, String password, String firstName, String lastName, LocalDate birthDate, String email, LocalDate registrationDate, Role role) {
         this.id = id;
@@ -39,6 +41,7 @@ public class User implements Serializable {
     public LocalDate getBirthDate() {
         return birthDate;
     }
+
     public String getLogin() {
         return login;
     }
@@ -55,15 +58,15 @@ public class User implements Serializable {
         return registrationDate;
     }
 
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
-    }
-
     public String getFirstName() {
         return firstName;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public Map<Integer, Byte> getRates() {
+        return rates;
     }
 }

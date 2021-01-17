@@ -2,7 +2,9 @@ package com.epam.jwd.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Show {
 
@@ -12,7 +14,7 @@ public abstract class Show {
     private final String imageLink;
     private final String shortDescription;
     private final String description;
-    private final List<Integer> rates = new ArrayList<>();
+    private final Map<Integer, Byte> rates = new HashMap<>();
     private final List<Genre> genres = new ArrayList<>();
 
     public Show(int id, String title, LocalDate releaseDate, String imageLink, String shortDescription, String description) {
@@ -56,11 +58,11 @@ public abstract class Show {
         return genres;
     }
 
-    public List<Integer> getRates() {
-        return rates;
-    }
-
     public String getShortDescription() {
         return shortDescription;
+    }
+
+    public Map<Integer, Byte> getRates() {
+        return rates;
     }
 }
