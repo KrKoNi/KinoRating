@@ -3,6 +3,7 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.impl.BasicConnectionPool;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.domain.User;
 
 
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MovieDAO implements DataAccessObject<Movie> {
 
@@ -50,7 +52,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
                 setParams(resultSet);
 
                 movie = new Movie(id, title, releaseDate, imageLink, shortDescription, description, directedBy, duration);
-
+                ShowDAO.getInstance().initShowRates(movie);
                 movies.add(movie);
             }
         } catch (SQLException throwables) {
@@ -61,17 +63,25 @@ public class MovieDAO implements DataAccessObject<Movie> {
         return movies;
     }
 
-    public List<Movie> readSome(int num) {
+    @Override
+    public List<Movie> readWithOffset(int offset, int num) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         List<Movie> movies = new ArrayList<>();
+
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies limit ?"
+                "SELECT * " +
+                        "FROM kinorating.abstract_kino natural join kinorating.movies " +
+                        "order by id " +
+                        "limit ?, ?"
         )) {
-            statement.setInt(1, num);
+            statement.setInt(1, offset);
+            statement.setInt(2, num);
+
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 setParams(resultSet);
                 movie = new Movie(id, title, releaseDate, imageLink, shortDescription, description, directedBy, duration);
+                ShowDAO.getInstance().initShowRates(movie);
                 movies.add(movie);
             }
         } catch (SQLException throwables) {
@@ -109,6 +119,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
 
             movie = new Movie(movie_id, title, releaseDate, imageLink, shortDescription, description, directedBy, duration);
+            ShowDAO.getInstance().initShowRates(movie);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
@@ -158,7 +169,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
                 "UPDATE kinorating.abstract_kino SET " +
                         "title = ?, " +
                         "release_date = ?, " +
-                        "image_link = ?" +
+                        "image_link = ? " +
                         "where id = ?");
              PreparedStatement statement1 = connection.prepareStatement(
                 "UPDATE kinorating.movies SET " +
@@ -183,9 +194,10 @@ public class MovieDAO implements DataAccessObject<Movie> {
             connection.rollback();
             throwables.printStackTrace();
         } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
             connection.setAutoCommit(true);
+            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
 
     }
+
 }
