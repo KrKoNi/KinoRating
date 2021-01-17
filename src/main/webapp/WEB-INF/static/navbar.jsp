@@ -1,8 +1,11 @@
 <%@ page import="com.epam.jwd.dto.impl.UserDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 
 <% UserDTO user = (UserDTO) session.getAttribute("user"); %>
+
+<c:set var="user" value="${pageContext.session.getAttribute('user')}"/>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -18,19 +21,23 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}?command=tv">TV-Series</a>
                 </li>
-                <% if (user == null) {%>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}?command=login">Log in</a>
-                    </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}?command=signup">Sign up</a>
-                </li>
-                <% } else {%>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}?command=logout">Log out</a>
-                    </li>
-                <% } %>
+                <c:choose>
+                    <c:when test="${user == null}">
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}?command=login">Log in</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}?command=signup">Sign up</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}?command=logout">Log out</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
+
         </div>
     </div>
 </nav>

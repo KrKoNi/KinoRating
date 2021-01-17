@@ -9,11 +9,18 @@
     <jsp:directive.include file="../static/navbar.jsp" />
     <h1>Main</h1>
 
+    <c:set var="user" value="${pageContext.session.getAttribute('user')}"/>
     <%
         UserDTO userDTO = (UserDTO) session.getAttribute("user");
     %>
 
-    <h1><%= userDTO != null ? userDTO.getId() + " " + userDTO.getRole().toString() : ""%></h1>
+    <h1>
+        <c:if test="${user != null}">
+            <c:out value="${user.id}"/>
+            <c:out value="${user.role}"/>
+        </c:if>
+    </h1>
+
 </body>
 
 <jsp:directive.include file="../static/footer.jsp" />
