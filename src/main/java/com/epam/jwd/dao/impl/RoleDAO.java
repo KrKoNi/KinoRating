@@ -21,6 +21,11 @@ public class RoleDAO implements DataAccessObject<Role> {
     }
 
     @Override
+    public List<Role> readWithOffset(int offset, int num) {
+        return null;
+    }
+
+    @Override
     public Role findById(int id) {
         return null;
     }

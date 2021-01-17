@@ -5,6 +5,7 @@ import java.util.List;
 
 public interface DataAccessObject<T> {
     List<T> readAll();
+    List<T> readWithOffset(int offset, int num);
     T findById(int id);
     void insert(T t) throws SQLException;
     void update(T t) throws SQLException;

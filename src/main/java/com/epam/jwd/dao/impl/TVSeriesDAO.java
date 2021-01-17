@@ -59,6 +59,11 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     }
 
     @Override
+    public List<TVSeries> readWithOffset(int offset, int num) {
+        return null;
+    }
+
+    @Override
     public TVSeries findById(int id) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         TVSeries tvSeries = null;

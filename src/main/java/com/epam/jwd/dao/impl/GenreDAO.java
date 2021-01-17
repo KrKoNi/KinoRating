@@ -44,6 +44,11 @@ public class GenreDAO implements DataAccessObject<Genre> {
     }
 
     @Override
+    public List<Genre> readWithOffset(int offset, int num) {
+        return null;
+    }
+
+    @Override
     public Genre findById(int id) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         Genre genre = null;
