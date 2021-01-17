@@ -13,7 +13,13 @@ public class MoviesPageAction implements Action {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserDTO userDTO = (UserDTO) request.getSession().getAttribute("user");
-        List<Movie> movies = MovieDAO.getInstance().readSome(10);
+        int page;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+            page = 1;
+        }
+        List<Movie> movies = MovieDAO.getInstance().readWithOffset((page-1) * 20, 20);
 
         request.setAttribute("movies", movies);
         return "movies";
