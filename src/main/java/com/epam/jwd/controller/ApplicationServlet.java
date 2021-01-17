@@ -1,10 +1,5 @@
 package com.epam.jwd.controller;
 
-import com.epam.jwd.converter.impl.UserConverter;
-import com.epam.jwd.dao.impl.UserDAO;
-import com.epam.jwd.domain.User;
-import com.epam.jwd.strategy.Action;
-import com.epam.jwd.strategy.factory.ActionFactoryMethod;
 import com.epam.jwd.strategy.impl.*;
 
 import javax.servlet.ServletException;
@@ -54,6 +49,15 @@ public class ApplicationServlet extends HttpServlet {
                     break;
                 case "movie_edit":
                     view = new MovieEditAction().execute(request, response);
+                    break;
+                case "movie-edit-submit":
+                    view = new MovieEditSubmit().execute(request, response);
+                    break;
+                case "movie-rate":
+                    view = new MovieRateSubmitAction().execute(request, response);
+                    break;
+                case "movie":
+                    view = new MoviePageAction().execute(request, response);
                     break;
                 default:
                     view = "index";
