@@ -38,6 +38,56 @@
                 </c:choose>
             </ul>
 
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+
+
         </div>
     </div>
 </nav>
+
+<div hidden id="search_result" style="position: absolute; z-index: 100; width: 40%; margin: auto; border-radius: 4px; height: 300px; overflow-y: auto;">
+
+</div>
+
+<script>
+    function searchShow(strParam) {
+        if(strParam.length < 3) {
+            document.getElementById("search_result").innerHTML = "";
+            document.getElementById("search_result").hidden = true;
+            return;
+        }
+        let url = "http://localhost:8080/ajax?command=search&str=" + strParam;
+
+        let req = new XMLHttpRequest();
+
+        try {
+            let str = "<table class='table table-dark table-hover'><tbody>";
+            fetch(url)
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(jsonResponse) {
+                    const arr = Object.values(jsonResponse);
+                    arr.forEach(show => {str = str +
+                        "<tr>" +
+                            "<th scope='row'><img height='150px' src=" + show.imageLink + " class='card-img-top' alt=" + show.title + "></th>"+
+                            "<td>" +
+                                "<h2>" + show.title + "</h2>" +
+                                "<br/>" +
+                                "<p>" + show.shortDescription + "</p>" +
+                            "</td>" +
+                        "</tr>"
+                    });
+                    str = str + "</tbody></table>"
+                    document.getElementById("search_result").innerHTML = str;
+                    document.getElementById("search_result").hidden = false;
+                });
+
+
+        } catch(e) { alert("Unable to connect to server"); }
+    }
+
+</script>
