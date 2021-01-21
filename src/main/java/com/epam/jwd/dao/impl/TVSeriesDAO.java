@@ -25,6 +25,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     private String imageLink;
     private String shortDescription;
     private String description;
+    private TVSeries tvSeries;
 
     private void setParams(ResultSet resultSet) throws SQLException {
         id = resultSet.getInt("id");
@@ -45,7 +46,8 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 setParams(resultSet);
-                TVSeries tvSeries = new TVSeries(id, title, releaseDate, imageLink, shortDescription, description);
+
+                initTvSeries();
 
                 tvSeriesList.add(tvSeries);
             }
@@ -60,7 +62,25 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
 
     @Override
     public List<TVSeries> readWithOffset(int offset, int num) {
-        return null;
+        Connection connection = BasicConnectionPool.getInstance().getConnection();
+        List<TVSeries> tvSeriesList = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?"
+        )) {
+            statement.setInt(1, offset);
+            statement.setInt(2, num);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                setParams(resultSet);
+                initTvSeries();
+                tvSeriesList.add(tvSeries);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            BasicConnectionPool.getInstance().releaseConnection(connection);
+        }
+        return tvSeriesList;
     }
 
     @Override
@@ -75,7 +95,8 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
 
             setParams(resultSet);
 
-            tvSeries = new TVSeries(id, title, releaseDate, imageLink, shortDescription, description);
+            initTvSeries();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
@@ -111,5 +132,13 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     @Override
     public void update(TVSeries tvSeries) {
 
+    }
+
+    private void initTvSeries() {
+        tvSeries = new TVSeries(id, title);
+        tvSeries.setDescription(description);
+        tvSeries.setShortDescription(shortDescription);
+        tvSeries.setReleaseDate(releaseDate);
+        tvSeries.setImageLink(imageLink);
     }
 }

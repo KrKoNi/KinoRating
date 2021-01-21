@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,8 @@ public class ShowDAO implements DataAccessObject<Show> {
     public List<Show> readAll() {
         return null;
     }
+
+
 
     @Override
     public List<Show> readWithOffset(int offset, int num) {
@@ -47,11 +51,11 @@ public class ShowDAO implements DataAccessObject<Show> {
 
     }
 
-    public void initShowRates(Show show) {
-        Map<Integer, Byte> rates = show.getRates();
+    public Map<Integer, Byte> getShowRates(Show show) {
+        Map<Integer, Byte> rates = new HashMap<>();
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (
-                PreparedStatement statement = connection.prepareStatement(
+        try (PreparedStatement statement = connection
+                .prepareStatement(
                         "SELECT * FROM kinorating.kino_ratings where kino_id = ?;"
                 )
         ) {
@@ -61,6 +65,7 @@ public class ShowDAO implements DataAccessObject<Show> {
             while (resultSet.next()) {
                 int userId = resultSet.getInt("user_id");
                 byte rate = (byte) resultSet.getInt("kino_rating");
+
                 rates.put(userId, rate);
             }
 
@@ -69,6 +74,7 @@ public class ShowDAO implements DataAccessObject<Show> {
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
         }
+        return rates;
     }
 
     public void addRate(Show show, User user, int rate) throws SQLException {

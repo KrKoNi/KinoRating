@@ -1,27 +1,22 @@
 package com.epam.jwd.domain;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Movie extends Show implements Serializable {
 
-    private final String directedBy;
-    private final LocalTime duration;
 
-    public Movie(int id, String title, LocalDate releaseDate, String imageLink, String shortDescription, String description, String directedBy, LocalTime duration) {
-        super(id, title, releaseDate, imageLink, shortDescription, description);
-        this.directedBy = directedBy;
-        this.duration = duration;
-    }
+    private LocalTime duration;
 
-    public String getDirectedBy() {
-        return directedBy;
+    public Movie(int id, String title) {
+        super(id, title);
     }
 
     public LocalTime getDuration() {
         return duration;
+    }
+
+    public void setDuration(LocalTime duration) {
+        this.duration = duration;
     }
 }

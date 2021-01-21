@@ -11,8 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class UserDAO implements DataAccessObject<User> {
     private String email;
     private LocalDate registrationDate;
     private int roleId;
+    private User user;
 
     @Override
     public List<User> readAll() {
@@ -45,17 +47,10 @@ public class UserDAO implements DataAccessObject<User> {
         )) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String login = resultSet.getString("login");
-                String password = resultSet.getString("password");
-                String email = resultSet.getString("email");
-                String firstName = resultSet.getString("first_name");
-                String lastName = resultSet.getString("last_name");
-                LocalDate birthDate = resultSet.getDate("birth_date").toLocalDate();
-                LocalDate registrationDate = resultSet.getDate("registration_date").toLocalDate();
-                int roleId = resultSet.getInt("role_id");
+                setParams(resultSet);
 
-                User user = new User(id, login, password, firstName, lastName, birthDate, email, registrationDate, Role.getById(roleId));
+                initUser();
+
                 users.add(user);
             }
         } catch (SQLException throwables) {
@@ -75,7 +70,6 @@ public class UserDAO implements DataAccessObject<User> {
     @Override
     public User findById(int id) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        User user = null;
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.users where id = ? limit 1"
         )) {
@@ -85,10 +79,10 @@ public class UserDAO implements DataAccessObject<User> {
 
             if(resultSet.next()) {
                 setParams(resultSet);
+                initUser();
+            } else {
+                throw new RuntimeException("User not found");
             }
-
-            user = new User(id, login, password, firstName, lastName, birthDate, email, registrationDate, Role.getById(roleId));
-            initUserRates(user);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -131,7 +125,6 @@ public class UserDAO implements DataAccessObject<User> {
 
     public User findByLoginAndPassword(String login, String password) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        User user = null;
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.users where login = ? and password = ?"
         )) {
@@ -142,8 +135,7 @@ public class UserDAO implements DataAccessObject<User> {
 
             while (resultSet.next()) {
                 setParams(resultSet);
-                user = new User(id, login, password, firstName, lastName, birthDate, email, registrationDate, Role.getById(roleId));
-                initUserRates(user);
+                initUser();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -154,8 +146,8 @@ public class UserDAO implements DataAccessObject<User> {
         return user;
     }
 
-    public void initUserRates(User user) {
-        Map<Integer, Byte> rates = user.getRates();
+    public Map<Integer, Byte> getUserRates(User user) {
+        Map<Integer, Byte> rates = new HashMap<>();
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.kino_ratings where user_id = ?;"
@@ -174,6 +166,8 @@ public class UserDAO implements DataAccessObject<User> {
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
         }
+
+        return rates;
     }
 
     private void setParams(ResultSet resultSet) throws SQLException {
@@ -186,6 +180,18 @@ public class UserDAO implements DataAccessObject<User> {
         email = resultSet.getString("email");
         registrationDate = resultSet.getDate("registration_date").toLocalDate();
         roleId = resultSet.getInt("role_id");
+    }
+
+    private void initUser() {
+        user = new User(id, login);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setRegistrationDate(registrationDate);
+        user.setFirstName(firstName);
+        user.setFirstName(lastName);
+        user.setBirthDate(birthDate);
+        user.setRole(Role.getById(roleId));
+        user.addRates(getUserRates(user));
     }
 
 }
