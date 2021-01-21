@@ -6,6 +6,10 @@ import java.util.Properties;
 
 public class DatabaseProperties {
 
+    private DatabaseProperties() {
+
+    }
+
     private static String url;
     private static String user;
     private static String password;
@@ -31,7 +35,7 @@ public class DatabaseProperties {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            System.out.println("Error while reading properties");
+
         }
     }
 
