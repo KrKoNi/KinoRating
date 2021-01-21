@@ -17,7 +17,13 @@ public class MovieEditSubmit implements Action {
         String shortDescription = request.getParameter("short_description");
         String description = request.getParameter("description");
 
-        Movie movie = new Movie(movieId, title, LocalDate.now(), "", shortDescription, description, "mmmm", LocalTime.MIDNIGHT);
+        Movie movie = new Movie(movieId, title);
+        movie.setShortDescription(shortDescription);
+        movie.setDescription(description);
+        movie.setDuration(LocalTime.MIN);
+        movie.setReleaseDate(LocalDate.now());
+        movie.setDirectedBy("Somebody");
+        movie.setImageLink("");
 
         MovieDAO.getInstance().update(movie);
 

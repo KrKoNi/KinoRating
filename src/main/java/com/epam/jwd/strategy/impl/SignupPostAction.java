@@ -30,7 +30,15 @@ public class SignupPostAction implements Action {
         }
 
         else {
-            user = new User(0, login, password, firstName, lastName, LocalDate.parse(birthDate), email, registrationDate, Role.USER);
+            user = new User(0, login);
+            user.setEmail(email);
+            user.setRole(Role.USER);
+            user.setBirthDate(LocalDate.parse(birthDate));
+            user.setRegistrationDate(registrationDate);
+            user.setPassword(password);
+            user.setLastName(lastName);
+            user.setFirstName(firstName);
+
             UserDAO.getInstance().insert(user);
 
             request.setAttribute("message", "User was successfully created");
