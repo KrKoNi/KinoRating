@@ -3,8 +3,8 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.impl.BasicConnectionPool;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Movie;
-import com.epam.jwd.domain.User;
-
+import com.epam.jwd.domain.Show;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MovieDAO implements DataAccessObject<Movie> {
 
@@ -29,6 +28,9 @@ public class MovieDAO implements DataAccessObject<Movie> {
     private String directedBy;
     private LocalTime duration;
     private Movie movie;
+
+
+    private static final Logger logger = Logger.getLogger(MovieDAO.class);
 
     private static final MovieDAO INSTANCE = new MovieDAO();
 
@@ -50,13 +52,11 @@ public class MovieDAO implements DataAccessObject<Movie> {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 setParams(resultSet);
-
-                movie = new Movie(id, title, releaseDate, imageLink, shortDescription, description, directedBy, duration);
-                ShowDAO.getInstance().initShowRates(movie);
+                initMovie();
                 movies.add(movie);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            logger.error("Error reading movies", exception);
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -67,7 +67,6 @@ public class MovieDAO implements DataAccessObject<Movie> {
     public List<Movie> readWithOffset(int offset, int num) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         List<Movie> movies = new ArrayList<>();
-
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * " +
                         "FROM kinorating.abstract_kino natural join kinorating.movies " +
@@ -80,48 +79,35 @@ public class MovieDAO implements DataAccessObject<Movie> {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 setParams(resultSet);
-                movie = new Movie(id, title, releaseDate, imageLink, shortDescription, description, directedBy, duration);
-                ShowDAO.getInstance().initShowRates(movie);
+                initMovie();
                 movies.add(movie);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            logger.error("Error reading movies with offset", exception);
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
         }
         return movies;
     }
 
-    private void setParams(ResultSet resultSet) throws SQLException {
-        id = resultSet.getInt("id");
-        title = resultSet.getString("title");
-        releaseDate = resultSet.getDate("release_date").toLocalDate();
-        imageLink = resultSet.getString("image_link");
-        shortDescription = resultSet.getString("short_description");
-        description = resultSet.getString("description");
-        directedBy = resultSet.getString("directed_by");
-        duration = resultSet.getTime("duration").toLocalTime();
-    }
-
     @Override
-    public Movie findById(int movie_id) {
+    public Movie findById(int movieId) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        Movie movie = null;
+
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where id = ?"
         )) {
-            statement.setInt(1, movie_id);
-
+            statement.setInt(1, movieId);
             ResultSet resultSet = statement.executeQuery();
 
             if(resultSet.next()) {
                 setParams(resultSet);
             }
 
-            movie = new Movie(movie_id, title, releaseDate, imageLink, shortDescription, description, directedBy, duration);
-            ShowDAO.getInstance().initShowRates(movie);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            initMovie();
+
+        } catch (SQLException exception) {
+            logger.error("Error trying to find a movie by id", exception);
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -138,7 +124,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
                         );
                 PreparedStatement statement1 = connection.
                         prepareStatement(
-                                "INSERT INTO kinorating.movies(id, directed_by) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino), ?)"
+                                "INSERT INTO kinorating.movies(id, directed_by) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?)"
                         )
         ) {
             connection.setAutoCommit(false);
@@ -147,15 +133,16 @@ public class MovieDAO implements DataAccessObject<Movie> {
             statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
             statement.setString(3, movie.getImageLink());
 
-            statement1.setString(1, movie.getDirectedBy());
+            statement1.setString(1, /*movie.getDirectedBy()*/ "mmm");
 
             statement.execute();
             statement1.execute();
 
             connection.commit();
-        } catch (SQLException throwables) {
+        } catch (SQLException exception) {
             connection.rollback();
-            throwables.printStackTrace();
+            System.out.println("error");
+            logger.error("Error trying to insert a movie into database", exception);
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
             connection.setAutoCommit(true);
@@ -190,14 +177,59 @@ public class MovieDAO implements DataAccessObject<Movie> {
             statement1.execute();
 
             connection.commit();
-        } catch (SQLException throwables) {
+        } catch (SQLException exception) {
+            logger.error("Error updating movie", exception);
             connection.rollback();
-            throwables.printStackTrace();
         } finally {
             connection.setAutoCommit(true);
             BasicConnectionPool.getInstance().releaseConnection(connection);
         }
-
     }
 
+    public List<Movie> findLike(String str) {
+        List<Movie> movieList = new ArrayList<>();
+        Connection connection = BasicConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(
+                        "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?"
+                )
+        ) {
+            statement.setString(1, "%" + str + "%");
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                setParams(resultSet);
+                initMovie();
+                movieList.add(movie);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            BasicConnectionPool.getInstance().releaseConnection(connection);
+        }
+        return movieList;
+    }
+
+    private void initMovie() {
+        movie = new Movie(id, title);
+        movie.setShortDescription(shortDescription);
+        movie.setDescription(description);
+        movie.setImageLink(imageLink);
+        movie.setDirectedBy(directedBy);
+        movie.setReleaseDate(releaseDate);
+        movie.setDuration(duration);
+        movie.addRates(ShowDAO.getInstance().getShowRates(movie));
+    }
+
+    private void setParams(ResultSet resultSet) throws SQLException {
+        id = resultSet.getInt("id");
+        title = resultSet.getString("title");
+        releaseDate = resultSet.getDate("release_date").toLocalDate();
+        imageLink = resultSet.getString("image_link");
+        shortDescription = resultSet.getString("short_description");
+        description = resultSet.getString("description");
+        directedBy = resultSet.getString("directed_by");
+        duration = resultSet.getTime("duration").toLocalTime();
+    }
 }
