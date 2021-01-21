@@ -8,8 +8,8 @@ public class TVSeries extends Show {
 
     private final List<Season> seasons = new ArrayList<>();
 
-    public TVSeries(int id, String title, LocalDate releaseDate, String imageLink, String shortDescription, String description) {
-        super(id, title, releaseDate, imageLink, shortDescription, description);
+    public TVSeries(int id, String title) {
+        super(id, title);
     }
 
     class Season {

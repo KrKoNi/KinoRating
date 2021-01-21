@@ -1,29 +1,27 @@
 package com.epam.jwd.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Show {
+public abstract class Show implements Serializable {
 
     private final int id;
     private final String title;
-    private final LocalDate releaseDate;
-    private final String imageLink;
-    private final String shortDescription;
-    private final String description;
+    private LocalDate releaseDate;
+    private String imageLink;
+    private String shortDescription;
+    private String description;
+    private String directedBy;
     private final Map<Integer, Byte> rates = new HashMap<>();
     private final List<Genre> genres = new ArrayList<>();
 
-    public Show(int id, String title, LocalDate releaseDate, String imageLink, String shortDescription, String description) {
+    public Show(int id, String title) {
         this.id = id;
         this.title = title;
-        this.releaseDate = releaseDate;
-        this.imageLink = imageLink;
-        this.shortDescription = shortDescription;
-        this.description = description;
     }
 
     public void addGenre(Genre genre) {
@@ -32,6 +30,14 @@ public abstract class Show {
 
     public void addGenres(List<Genre> genres) {
         this.genres.addAll(genres);
+    }
+
+    public void addRate(User user, Byte rate) {
+        rates.put(user.getId(), rate);
+    }
+
+    public void addRates(Map<Integer, Byte> rates) {
+        this.rates.putAll(rates);
     }
 
     public int getId() {
@@ -64,5 +70,29 @@ public abstract class Show {
 
     public Map<Integer, Byte> getRates() {
         return rates;
+    }
+
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDirectedBy() {
+        return directedBy;
+    }
+
+    public void setDirectedBy(String directedBy) {
+        this.directedBy = directedBy;
     }
 }

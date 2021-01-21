@@ -9,27 +9,21 @@ import java.util.Map;
 public class User implements Serializable {
 
     private final int id;
-    private final String firstName;
-    private final String lastName;
-    private final LocalDate birthDate;
     private final String login;
-    private final String email;
-    private final String password;
-    private final LocalDate registrationDate;
-    private final Role role;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String email;
+    private String password;
+    private LocalDate registrationDate;
+    private Role role;
     private final Map<Integer, Byte> rates = new HashMap<>();
 
-    public User(int id, String login, String password, String firstName, String lastName, LocalDate birthDate, String email, LocalDate registrationDate, Role role) {
+    public User(int id, String login) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
         this.login = login;
-        this.password = password;
-        this.email = email;
-        this.registrationDate = registrationDate;
-        this.role = role;
     }
+
     public int getId() {
         return id;
     }
@@ -68,5 +62,41 @@ public class User implements Serializable {
 
     public Map<Integer, Byte> getRates() {
         return rates;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRegistrationDate(LocalDate registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void addRate(Movie movie, Byte rate) {
+        this.rates.put(movie.getId(), rate);
+    }
+
+    public void addRates(Map<Integer, Byte> rates) {
+        this.rates.putAll(rates);
     }
 }
