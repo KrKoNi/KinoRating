@@ -1,14 +1,13 @@
-package com.epam.jwd.strategy.impl;
+package com.epam.jwd.controller.strategy.impl.signup;
 
-import com.epam.jwd.strategy.Action;
+import com.epam.jwd.controller.strategy.ControllerAction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class LogoutAction implements Action {
+public class SignupPageControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request.getSession().invalidate();
-        return "index";
+        return "signup";
     }
 }
