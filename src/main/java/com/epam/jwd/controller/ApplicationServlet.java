@@ -1,6 +1,7 @@
 package com.epam.jwd.controller;
 
-import com.epam.jwd.strategy.impl.*;
+import com.epam.jwd.controller.strategy.factory.ActionFactoryMethod;
+import com.epam.jwd.controller.strategy.ControllerAction;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,59 +10,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ApplicationServlet", urlPatterns = "/app")
+@WebServlet(name = "ApplicationServlet", urlPatterns = {"/app/*", "/app"})
 public class ApplicationServlet extends HttpServlet {
-
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        service(request, response);
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        service(request, response);
     }
 
+    @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String action = request.getParameter("command");
-            String view;
-            if (action == null) {
-                action = "index";
-            }
-
-            switch (action) {
-                case "login":
-                    view = "login";
-                    break;
-                case "login-post":
-                    view = new LoginAction().execute(request, response);
-                    break;
-                case "movies":
-                    view = new MoviesPageAction().execute(request, response);
-                    break;
-                case "logout":
-                    view = new LogoutAction().execute(request, response);
-                    break;
-                case "signup":
-                    view = "signup";
-                    break;
-                case "signup-post":
-                    view = new SignupPostAction().execute(request, response);
-                    break;
-                case "movie_edit":
-                    view = new MovieEditAction().execute(request, response);
-                    break;
-                case "movie-edit-submit":
-                    view = new MovieEditSubmit().execute(request, response);
-                    break;
-                case "movie-rate":
-                    view = new MovieRateSubmitAction().execute(request, response);
-                    break;
-                case "movie":
-                    view = new MoviePageAction().execute(request, response);
-                    break;
-                default:
-                    view = "index";
-            }
+            response.setContentType("text/html");
+            response.setCharacterEncoding("utf-8");
+            ControllerAction action = ActionFactoryMethod.getAction(request);
+            String view = action.execute(request, response);
 
             request.getRequestDispatcher("/WEB-INF/jsp/" + view + ".jsp").forward(request, response);
 
