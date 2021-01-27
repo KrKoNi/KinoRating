@@ -183,14 +183,9 @@ public class UserDAO implements DataAccessObject<User> {
     }
 
     private void initUser() {
-        user = new User(id, login);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setRegistrationDate(registrationDate);
-        user.setFirstName(firstName);
-        user.setFirstName(lastName);
-        user.setBirthDate(birthDate);
-        user.setRole(Role.getById(roleId));
+        user = User.builder().setId(id).setLogin(login).setEmail(email).setPassword(password)
+                .setFirstName(firstName).setLastName(lastName).setBirthDate(birthDate)
+                .setRegistrationDate(registrationDate).setRole(Role.getById(roleId)).build();
         user.addRates(getUserRates(user));
     }
 
