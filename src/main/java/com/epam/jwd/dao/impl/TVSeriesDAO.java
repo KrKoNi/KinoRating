@@ -2,6 +2,7 @@ package com.epam.jwd.dao.impl;
 
 import com.epam.jwd.connect.impl.BasicConnectionPool;
 import com.epam.jwd.dao.DataAccessObject;
+import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
 
 import java.sql.*;
@@ -19,18 +20,23 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         return INSTANCE;
     }
 
+    private static final String SELECT_ALL_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series";
+    private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series where title like ?";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series WHERE id = ?";
+    private static final String INSERT_SQL = "INSERT INTO kinorating.tv_series(id) VALUES ((SELECT LAST_INSERT_ID() from kinorating.abstract_kino LIMIT 1))";
+    private static final String SELECT_WITH_OFFSET = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?";
+
     private int id;
     private String title;
-    private LocalDate releaseDate;
     private String imageLink;
     private String shortDescription;
     private String description;
+
     private TVSeries tvSeries;
 
     private void setParams(ResultSet resultSet) throws SQLException {
         id = resultSet.getInt("id");
         title = resultSet.getString("title");
-        releaseDate = resultSet.getDate("release_date").toLocalDate();
         imageLink = resultSet.getString("image_link");
         shortDescription = resultSet.getString("short_description");
         description = resultSet.getString("description");
@@ -40,15 +46,11 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     public List<TVSeries> readAll() {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         List<TVSeries> tvSeriesList = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_SQL)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 setParams(resultSet);
-
                 initTvSeries();
-
                 tvSeriesList.add(tvSeries);
             }
         } catch (SQLException throwables) {
@@ -60,13 +62,32 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         return tvSeriesList;
     }
 
+    public List<TVSeries> findLike(String str) {
+        List<TVSeries> tvSeriesList = new ArrayList<>();
+        Connection connection = BasicConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
+            statement.setString(1, "%" + str + "%");
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                setParams(resultSet);
+                initTvSeries();
+                tvSeriesList.add(tvSeries);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            BasicConnectionPool.getInstance().releaseConnection(connection);
+        }
+        return tvSeriesList;
+    }
+
     @Override
     public List<TVSeries> readWithOffset(int offset, int num) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
         List<TVSeries> tvSeriesList = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET)) {
             statement.setInt(1, offset);
             statement.setInt(2, num);
             ResultSet resultSet = statement.executeQuery();
@@ -86,17 +107,14 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     @Override
     public TVSeries findById(int id) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        TVSeries tvSeries = null;
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series WHERE kinorating.tv_series.id = (?)"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, id);
+
             ResultSet resultSet = statement.executeQuery();
-
-            setParams(resultSet);
-
-            initTvSeries();
-
+            if(resultSet.next()) {
+                setParams(resultSet);
+                initTvSeries();
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
@@ -109,18 +127,12 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     @Override
     public void insert(TVSeries tvSeries) {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (
-                PreparedStatement statement = connection
-                        .prepareStatement("INSERT INTO kinorating.abstract_kino (title, release_date, image_link) VALUES (?, ?, ?)");
-                PreparedStatement statement2 = connection
-                        .prepareStatement("INSERT INTO kinorating.tv_series(id) VALUES ((SELECT LAST_INSERT_ID() from kinorating.abstract_kino LIMIT 1))")
-        ) {
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
             statement.setString(1, tvSeries.getTitle());
-            statement.setDate(2, Date.valueOf(tvSeries.getReleaseDate()));
-            statement.setString(3, tvSeries.getImageLink());
+            statement.setString(2, tvSeries.getImageLink());
 
             statement.execute();
-            statement2.execute();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -138,7 +150,6 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         tvSeries = new TVSeries(id, title);
         tvSeries.setDescription(description);
         tvSeries.setShortDescription(shortDescription);
-        tvSeries.setReleaseDate(releaseDate);
         tvSeries.setImageLink(imageLink);
     }
 }

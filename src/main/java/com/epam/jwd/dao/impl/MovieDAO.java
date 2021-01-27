@@ -3,7 +3,6 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.impl.BasicConnectionPool;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Movie;
-import com.epam.jwd.domain.Show;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -78,9 +77,11 @@ public class MovieDAO implements DataAccessObject<Movie> {
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
+
                 setParams(resultSet);
                 initMovie();
                 movies.add(movie);
+
             }
         } catch (SQLException exception) {
             logger.error("Error reading movies with offset", exception);
@@ -117,35 +118,19 @@ public class MovieDAO implements DataAccessObject<Movie> {
     @Override
     public void insert(Movie movie) throws SQLException {
         Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (
-                PreparedStatement statement = connection.
-                        prepareStatement(
-                                "INSERT INTO kinorating.abstract_kino (title, release_date, image_link) VALUES (?, ?, ?)"
-                        );
-                PreparedStatement statement1 = connection.
-                        prepareStatement(
-                                "INSERT INTO kinorating.movies(id, directed_by) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?)"
-                        )
-        ) {
-            connection.setAutoCommit(false);
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO kinorating.movies(id, directed_by, release_date) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?, ?)"
+        )) {
 
-            statement.setString(1, movie.getTitle());
+            statement.setString(1, /*movie.getDirectedBy()*/ "mmm");
             statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
-            statement.setString(3, movie.getImageLink());
-
-            statement1.setString(1, /*movie.getDirectedBy()*/ "mmm");
 
             statement.execute();
-            statement1.execute();
 
-            connection.commit();
         } catch (SQLException exception) {
-            connection.rollback();
-            System.out.println("error");
             logger.error("Error trying to insert a movie into database", exception);
         } finally {
             BasicConnectionPool.getInstance().releaseConnection(connection);
-            connection.setAutoCommit(true);
         }
     }
 
@@ -219,7 +204,6 @@ public class MovieDAO implements DataAccessObject<Movie> {
         movie.setDirectedBy(directedBy);
         movie.setReleaseDate(releaseDate);
         movie.setDuration(duration);
-        movie.addRates(ShowDAO.getInstance().getShowRates(movie));
     }
 
     private void setParams(ResultSet resultSet) throws SQLException {
