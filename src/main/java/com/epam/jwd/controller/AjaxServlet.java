@@ -6,6 +6,8 @@ import com.epam.jwd.dao.impl.TVSeriesDAO;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
+import com.epam.jwd.service.MovieService;
+import com.epam.jwd.service.ShowService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -37,7 +39,8 @@ public class AjaxServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         switch (command) {
             case "movies":
-                List<Movie> movieList = MovieDAO.getInstance().readWithOffset(0, 20);
+                List<Movie> movieList = MovieService.getInstance().readWithOffset(0, 20);
+                //List<Movie> movieList = MovieDAO.getInstance().readWithOffset(0, 20);
                 out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(movieList));
                 out.flush();
                 break;
@@ -48,8 +51,8 @@ public class AjaxServlet extends HttpServlet {
                 break;
             case "search":
                 String str = request.getParameter("str");
-                List<Movie> movies = MovieDAO.getInstance().findLike(str);
-                out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(movies));
+                List<Show> showList = ShowService.getInstance().findLike(str);
+                out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(showList));
                 out.flush();
                 break;
             default:
