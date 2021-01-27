@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 public class UserDTO implements DataTransferObject<User>, Serializable {
 
+    private static final long serialVersionUID = -184268314450344569L;
     private int id;
     private Role role;
 

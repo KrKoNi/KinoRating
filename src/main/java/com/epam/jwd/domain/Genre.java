@@ -1,8 +1,13 @@
 package com.epam.jwd.domain;
 
-public class Genre {
+import java.io.Serializable;
+
+public class Genre implements Serializable {
+
     private int id;
     private String name;
+    private static final long serialVersionUID = -1793583206871984521L;
+
 
     public Genre(int id, String name) {
         this.id = id;

@@ -9,15 +9,16 @@ import java.util.Map;
 
 public abstract class Show implements Serializable {
 
+    private static final long serialVersionUID = 3657598425869928229L;
     private final int id;
     private final String title;
-    private LocalDate releaseDate;
     private String imageLink;
     private String shortDescription;
     private String description;
     private String directedBy;
     private final Map<Integer, Byte> rates = new HashMap<>();
     private final List<Genre> genres = new ArrayList<>();
+
 
     public Show(int id, String title) {
         this.id = id;
@@ -48,10 +49,6 @@ public abstract class Show implements Serializable {
         return title;
     }
 
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
     public String getImageLink() {
         return imageLink;
     }
@@ -70,10 +67,6 @@ public abstract class Show implements Serializable {
 
     public Map<Integer, Byte> getRates() {
         return rates;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
     }
 
     public void setImageLink(String imageLink) {

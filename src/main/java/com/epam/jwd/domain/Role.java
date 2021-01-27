@@ -8,6 +8,8 @@ public enum Role implements Serializable {
     ADMIN(2),
     BANNED(3);
 
+    private static final long serialVersionUID = -1668202005475973442L;
+
     private final int id;
 
     Role(int id) {
