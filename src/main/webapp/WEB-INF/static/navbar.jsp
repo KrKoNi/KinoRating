@@ -2,49 +2,42 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<% UserDTO user = (UserDTO) session.getAttribute("user"); %>
+<c:set var="language" value="${'ru'}" scope="session" />
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" scope="session"/>
 
 <c:set var="user" value="${pageContext.session.getAttribute('user')}"/>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}?command=home">KinoRating</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}?command=movies">Movies</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}?command=tv">TV-Series</a>
-                </li>
-                <c:choose>
-                    <c:when test="${user == null}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}?command=login">Log in</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}?command=signup">Sign up</a>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}?command=logout">Log out</a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-            </ul>
+    <a class="navbar-brand" href="${pageContext.request.contextPath}/app/">KinoRating</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/app/movies"><fmt:message key="msg.movies"/></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/app/tv-series"><fmt:message key="msg.tv-series"/></a>
+            </li>
+        </ul>
 
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-
-
-        </div>
+        <form class="d-flex">
+            <input class="form-control me-2 btn-dark" type="search" placeholder="Search" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
+            <button class="btn btn-outline-success btn-dark" type="submit">Search</button>
+        </form>
+        <c:choose>
+            <c:when test="${user == null}">
+                <a class="nav-link d-flex" role="button" href="${pageContext.request.contextPath}/app/login">Log in</a>
+                <a class="nav-link btn btn-dark action-button" role="button" href="${pageContext.request.contextPath}/app/signup">Sign up</a>
+            </c:when>
+            <c:otherwise>
+                <a class="btn btn-dark action-button" role="button" href="${pageContext.request.contextPath}/app/logout">Log out</a>
+            </c:otherwise>
+        </c:choose>
     </div>
 </nav>
 
