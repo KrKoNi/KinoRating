@@ -3,33 +3,33 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
-
-<jsp:directive.include file="../static/header.jsp"/>
 <head>
+    <jsp:directive.include file="../static/header.jsp"/>
     <style type="text/css">
         <%@ include file="../assets/css/stars.css" %>
     </style>
 </head>
 <body>
 <jsp:directive.include file="../static/navbar.jsp"/>
-<h1>Movies</h1>
 <c:set var="user" value="${pageContext.session.getAttribute('user')}"/>
-<c:set var="movie" value="${ pageContext.request.getAttribute('movie')}"/>
+<c:set var="movie" value="${pageContext.request.getAttribute('movie')}"/>
 
-<div class="card bg-dark">
-    <img src="https://thumbs.filmix.co/posters/orig/klinika-scrubs-serial-2010_88952_0.jpg" class="card-img-top"
-         alt="...">
-    <div class="card-body">
-        <h5 class="card-title"><c:out value="${movie.title}"/></h5>
-        <p class="card-text"><c:out value="${movie.shortDescription}"/></p>
-        <c:set var="user_rating" value="${movie.rates.get(user.id)}"/>
-        <c:if test="${user != null}">
-            <c:if test="${user_rating != null}">
-                <p>Your rating: <c:out value="${user_rating}"/></p>
-            </c:if>
-            <div class="container">
+<div class="card mb-3 bg-dark">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img height="300px" src="${movie.imageLink}" alt="${movie.title}">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title"><c:out value="${movie.title}"/></h5>
+                <br/>
+                <p class="card-text"><c:out value="${movie.shortDescription}"/></p>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="container mb-3" style="width: 200px; min-width: 100px">
                 <div class="star-widget">
-                    <form method="post" action="?command=movie-rate">
+                    <form method="post" action="${pageContext.request.contextPath}/app/rate">
                         <input hidden name="movie_id" value="${movie.id}"/>
                         <label class="fas fa-star">
                             <input type="submit" name="rate" value="5">
@@ -49,16 +49,12 @@
                     </form>
                 </div>
             </div>
-            <c:if test="${user.role == Role.ADMIN}">
-                <div class="card-footer">
-                    <form method="post" action="?command=movie_edit">
-                        <input hidden name="movie_id" value="${movie.id}"/>
-                        <button type="submit" class="btn btn-secondary btn-sm">Edit</button>
-                    </form>
-                </div>
-            </c:if>
-        </c:if>
+        </div>
     </div>
+</div>
+
+<div>
+    <p><c:out value="${movie.description}"/></p>
 </div>
 
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>

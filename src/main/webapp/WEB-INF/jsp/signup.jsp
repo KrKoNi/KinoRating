@@ -9,7 +9,7 @@
 <body>
 <jsp:directive.include file="../static/navbar.jsp" />
 <div class="login-dark">
-    <form method="post" action="${pageContext.request.contextPath}?command=signup-post">
+    <form method="post" action="${pageContext.request.contextPath}/app/signup">
         <h2 class="sr-only">Registration Form</h2>
 
         <div class="form-group">

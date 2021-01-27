@@ -14,7 +14,7 @@
 
 <c:set var="movie" value="${pageContext.request.getAttribute('movie')}"/>
 
-<form method="post" action="?command=movie-edit-submit">
+<form method="post" action="${pageContext.request.contextPath}/app/movie">
 
     <div class="mb-3" hidden>
         <label for="title_input" class="form-label" hidden>Title</label>
