@@ -13,7 +13,7 @@
 
 <script>
     function sendInfo(commandParam) {
-        let url = "http://localhost:8080/ajax?command=" + commandParam;
+        let url = "http://localhost:8080/ajax/" + commandParam;
         try {
             let str = "<table class='table table-dark table-hover'><tbody>";
             fetch(url)

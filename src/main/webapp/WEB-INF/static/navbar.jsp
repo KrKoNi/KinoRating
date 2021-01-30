@@ -11,48 +11,50 @@
 <c:set var="userDTO" value="${pageContext.session.getAttribute('userDTO')}"/>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="${pageContext.request.contextPath}/app/">KinoRating</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/app/movies">
-                    <fmt:message key="msg.movies"/>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/app/tv-series">
-                    <fmt:message key="msg.tv-series"/>
-                </a>
-            </li>
-        </ul>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/app/">KinoRating</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/app/movies">
+                        <fmt:message key="msg.movies"/>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/app/tv-series">
+                        <fmt:message key="msg.tv-series"/>
+                    </a>
+                </li>
+            </ul>
 
-        <form class="d-flex">
-            <input class="form-control me-2 btn-dark" type="search" placeholder="<fmt:message key="msg.search"/>" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
-            <button class="btn btn-outline-success btn-dark" type="submit"><fmt:message key="msg.search"/></button>
-        </form>
 
-        <c:choose>
-            <c:when test="${empty userDTO}">
-                <a class="nav-link d-flex" role="button" href="${pageContext.request.contextPath}/app/login">
-                    <fmt:message key="msg.login"/>
-                </a>
-                <a class="nav-link btn btn-dark action-button" role="button" href="${pageContext.request.contextPath}/app/signup">
-                    <fmt:message key="msg.signup"/>
-                </a>
-            </c:when>
-            <c:otherwise>
-                <form method="post" action="${pageContext.request.contextPath}/app/logout">
-                    <button class="btn btn-dark action-button" type="submit">
-                        <fmt:message key="msg.logout"/>
-                    </button>
-                </form>
-            </c:otherwise>
-        </c:choose>
-        <span class="btn btn-dark" onclick="changeLang('en')" type="button">EN</span>
-        <span class="btn btn-dark" onclick="changeLang('ru')" type="button">RU</span>
+            <form class="d-flex justify-content-end">
+                <input class="form-control ms-2" type="search" placeholder="<fmt:message key="msg.search"/>" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
+                <button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button>
+            </form>
+            <c:choose>
+                <c:when test="${empty userDTO}">
+                    <a class="nav-link btn btn-dark" role="button" href="${pageContext.request.contextPath}/app/login">
+                        <fmt:message key="msg.login"/>
+                    </a>
+                    <a class="nav-link btn btn-dark" role="button" href="${pageContext.request.contextPath}/app/signup">
+                        <fmt:message key="msg.signup"/>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <form method="post" action="${pageContext.request.contextPath}/app/logout">
+                        <button class="btn btn-dark action-button" type="submit">
+                            <fmt:message key="msg.logout"/>
+                        </button>
+                    </form>
+                </c:otherwise>
+            </c:choose>
+            <span class="btn btn-dark" onclick="changeLang('en')" type="button">EN</span>
+            <span class="btn btn-dark" onclick="changeLang('ru')" type="button">RU</span>
+        </div>
     </div>
 </nav>
 

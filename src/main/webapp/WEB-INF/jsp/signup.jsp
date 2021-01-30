@@ -13,32 +13,21 @@
         <h2 class="sr-only">Registration Form</h2>
 
         <div class="form-group">
+            <label for="login">Login</label>
             <input
-                    class="form-control" type="text" name="login"
+                    id="login" class="form-control" type="text" name="login"
                     placeholder="Login" required minlength="4">
         </div>
         <div class="form-group">
+            <label for="email">E-mail</label>
             <input
-                    class="form-control" type="email" name="email"
+                    id="email" class="form-control" type="email" name="email"
                     placeholder="E-mail" required minlength="4">
         </div>
         <div class="form-group">
-            <input class="form-control" type="password" name="password"
+            <label for="password">Password</label>
+            <input id="password" class="form-control" type="password" name="password"
                    placeholder="Password" required minlength="8">
-        </div>
-        <div class="form-group">
-            <input
-                    class="form-control" type="text" name="first_name"
-                    placeholder="First name">
-        </div>
-        <div class="form-group">
-            <input
-                    class="form-control" type="text" name="last_name"
-                    placeholder="Last name">
-        </div>
-        <div class="form-group">
-            <input
-                    class="form-control" type="date" name="birth_date">
         </div>
 
         <div class="form-group">
