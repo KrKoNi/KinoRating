@@ -25,7 +25,7 @@ public class ActionFactoryMethod {
     static {
         actions.put("GET/login", new LoginPageControllerAction());
         actions.put("POST/login", new LoginControllerAction());
-        actions.put("GET/logout", new LogoutControllerAction());
+        actions.put("POST/logout", new LogoutControllerAction());
         actions.put("GET/signup", new SignupPageControllerAction());
         actions.put("POST/signup", new SignupSubmitControllerAction());
 
