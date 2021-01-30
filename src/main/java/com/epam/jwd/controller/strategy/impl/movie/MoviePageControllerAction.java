@@ -11,12 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 public class MoviePageControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Movie movie = (Movie) request.getAttribute("movie");
-        if (movie == null) {
-            int movieId = Integer.parseInt(request.getParameter("id"));
-            movie = MovieService.findById(movieId);
-            request.setAttribute("movie", movie);
-        }
+        int movieId = Integer.parseInt(request.getParameter("id"));
+        Movie movie = MovieService.findById(movieId);
+        request.setAttribute("movie", movie);
 
         return "movie";
     }
