@@ -24,7 +24,7 @@ public class SignupSubmitControllerAction implements ControllerAction {
         User user = UserService.findByLoginAndPassword(login, password);
 
         if (user != null) {
-            return "signup";
+            return "login";
         }
 
         else {
@@ -34,6 +34,7 @@ public class SignupSubmitControllerAction implements ControllerAction {
             user.setLastName(lastName);
             user.setBirthDate(LocalDate.parse(birthDate));
             user.setRole(Role.USER);
+            user.setRegistrationDate(LocalDate.now());
 
             UserService.insert(user);
 
