@@ -28,6 +28,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
     private static final String ADD_GENRES_SQL = "INSERT INTO kinorating.kino_genres (kino_id, genre_id) VALUES (?, ?) on duplicate key update genre_id=genre_id";
     private static final String DELETE_GENRES_SQL = "DELETE FROM kinorating.kino_genres where kino_id = ?";
     private static final String UPDATE_SQL = "UPDATE kinorating.abstract_kino SET title = ?, short_description = ?, description = ?, image_link = ? where id = ?";
+    private static final String DELETE_SQL = "DELETE FROM kinorating.abstract_kino where id = ?";
 
     private static final ShowDAO INSTANCE = new ShowDAO();
 
@@ -79,6 +80,19 @@ public final class ShowDAO implements DataAccessObject<Show> {
             statement.setString(4, show.getImageLink());
             statement.setInt(5, show.getId());
 
+            statement.execute();
+        } catch (SQLException exception) {
+            LOGGER.error("Error updating movie", exception);
+        }
+    }
+
+    public void delete(Connection connection, Show show) {
+        delete(connection, show.getId());
+    }
+
+    public void delete(Connection connection, int showId) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
+            statement.setInt(1, showId);
             statement.execute();
         } catch (SQLException exception) {
             LOGGER.error("Error updating movie", exception);

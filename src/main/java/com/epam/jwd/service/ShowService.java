@@ -73,5 +73,13 @@ public class ShowService {
         }
     }
 
+    public static void removeShow(int showId) {
+        Connection connection = BasicConnectionPool.getInstance().getConnection();
+        try {
+            ShowDAO.getInstance().delete(connection, showId);
+        } finally {
+            BasicConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
 
 }

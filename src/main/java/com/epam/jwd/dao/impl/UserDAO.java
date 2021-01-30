@@ -30,6 +30,7 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM kinorating.users where id = ? limit 1";
     private static final String SELECT_BY_LOGIN_AND_PASSWORD_SQL = "SELECT * FROM kinorating.users where login = ? and password = ? limit 1";
     private static final String INSERT_SQL = "INSERT INTO kinorating.users (first_name, last_name, birth_date, email, login, password, registration_date, role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_SQL = "DELETE FROM kinorating.users where id = ?";
     private static final String SELECT_USER_RATES_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ?";
 
     @Override
@@ -103,6 +104,19 @@ public class UserDAO implements DataAccessObject<User> {
             throwables.printStackTrace();
         }
     }
+
+    public void delete(Connection connection, int userId) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
+
+            statement.setInt(1, userId);
+
+            statement.execute();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
 
     @Override
     public void update(Connection connection, User user) {
