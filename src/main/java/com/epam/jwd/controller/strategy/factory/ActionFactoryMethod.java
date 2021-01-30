@@ -12,6 +12,7 @@ import com.epam.jwd.controller.strategy.impl.signup.SignupPageControllerAction;
 import com.epam.jwd.controller.strategy.impl.signup.SignupSubmitControllerAction;
 import com.epam.jwd.controller.strategy.impl.tv.TVPageControllerAction;
 import com.epam.jwd.controller.strategy.impl.tv.TVSeriesPageControllerAction;
+import com.epam.jwd.controller.strategy.impl.user.UserPageControllerAction;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -38,8 +39,7 @@ public class ActionFactoryMethod {
         actions.put("GET/movie", new MoviePageControllerAction());
         actions.put("GET/tv", new TVPageControllerAction());
 
-        //actions.put("POST/movie", new MovieEditControllerAction());
-        //actions.put("POST/tv", new MovieEditControllerAction()); //todo tv_edit
+        actions.put("GET/user", new UserPageControllerAction());
 
         actions.put("POST/rate", new MovieRateSubmitControllerAction());
     }

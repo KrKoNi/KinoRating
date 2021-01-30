@@ -1,8 +1,12 @@
 package com.epam.jwd.controller.strategy.factory.admin;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.controller.strategy.impl.admin.AdminMainPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.admin.AdminMoviesPageControllerAction;
+import com.epam.jwd.controller.strategy.impl.admin.*;
+import com.epam.jwd.controller.strategy.impl.home.HomeControllerAction;
+import com.epam.jwd.controller.strategy.impl.movie.MoviePageControllerAction;
+import com.epam.jwd.controller.strategy.impl.movie.MoviesPageControllerAction;
+import com.epam.jwd.controller.strategy.impl.tv.TVPageControllerAction;
+import com.epam.jwd.controller.strategy.impl.tv.TVSeriesPageControllerAction;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -12,25 +16,26 @@ public class AdminControllerActionFactoryMethod {
     static Map<String, ControllerAction> actions = new HashMap<>();
 
     static {
-        actions.put("GET/index", new AdminMainPageControllerAction());
-        actions.put("GET/", new AdminMainPageControllerAction());
-        actions.put("GETnull", new AdminMainPageControllerAction());
+        actions.put("GET/index", new HomeControllerAction());
+        actions.put("GET/", new HomeControllerAction());
+        actions.put("GETnull", new HomeControllerAction());
 
-        actions.put("GET/movies", new AdminMoviesPageControllerAction());
-        //actions.put("GET/tv-series", new TVSeriesPageControllerAction());
+        actions.put("GET/users", new UsersPageControllerAction());
+        actions.put("GET/movies", new MoviesPageControllerAction());
+        actions.put("GET/tv-series", new TVSeriesPageControllerAction());
 
-        //actions.put("GET/movie", new MoviePageControllerAction());
-        //actions.put("GET/tv", new TVPageControllerAction());
+        actions.put("GET/movie", new MoviePageControllerAction());
+        actions.put("GET/tv", new TVPageControllerAction());
 
-        //actions.put("POST/movie", new MovieEditControllerAction());
-        //actions.put("POST/tv", new MovieEditControllerAction()); //todo tv_edit
+        actions.put("POST/update_movie", new UpdateMovieControllerAction());
+        actions.put("POST/update_tv", new UpdateTVControllerAction());
 
-        //actions.put("POST/rate", new MovieRateSubmitControllerAction());
+        actions.put("POST/delete_show", new RemoveShowControllerAction());
+        //actions.put("POST/delete_tv", );
 
-        //actions.put("POST/lang", new LanguageChangeControllerAction());
-
-
-
+        //actions.put("POST/make_user", );
+        //actions.put("POST/make_admin", );
+        actions.put("POST/delete_user", new RemoveUserControllerAction());
     }
 
     public static ControllerAction getAction(HttpServletRequest request) {
