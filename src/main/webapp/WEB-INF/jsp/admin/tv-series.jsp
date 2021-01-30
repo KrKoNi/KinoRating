@@ -6,7 +6,7 @@
 </head>
 <body>
 <jsp:directive.include file="navbar.jsp"/>
-<c:set var="movies" value="${pageContext.request.getAttribute('movies')}"/>
+<c:set var="tv_series" value="${pageContext.request.getAttribute('tv_series')}"/>
 <table class="table table-dark table-striped table-hover">
     <thead>
     <tr>
@@ -15,36 +15,35 @@
         <th scope="col">Short description</th>
         <th scope="col">Description</th>
         <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${movies}" var="movie">
+    <c:forEach items="${tv_series}" var="tv">
         <tr>
-            <th scope="row"><c:out value="${movie.id}"/></th>
+            <th scope="row"><c:out value="${tv.id}"/></th>
             <td>
                 <p style="max-width: 20rem; white-space:nowrap; overflow: hidden; text-overflow: ellipsis">
-                    <c:out value="${movie.title}"/>
+                    <c:out value="${tv.title}"/>
                 </p>
             </td>
             <td>
                 <p style="max-width: 20rem; white-space:nowrap; overflow: hidden; text-overflow: ellipsis">
-                    <c:out value="${movie.shortDescription}"/>
+                    <c:out value="${tv.shortDescription}"/>
                 </p>
             </td>
             <td>
                 <p style="max-width: 20rem; white-space:nowrap; overflow: hidden; text-overflow: ellipsis">
-                    <c:out value="${movie.description}"/>
+                    <c:out value="${tv.description}"/>
                 </p>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/admin/movie?id=${movie.id}">
+                <a href="${pageContext.request.contextPath}/admin/tv?id=${tv.id}">
                     <i class="fa fa-edit"></i>
                 </a>
             </td>
             <td>
                 <form method="post" action="${pageContext.request.contextPath}/admin/delete_show">
-                    <input hidden name="id" value="${movie.id}">
+                    <input hidden name="id" value="${tv.id}">
                     <button class="btn-dark btn" type="submit"><i class="fa fa-trash"></i></button>
                 </form>
             </td>
