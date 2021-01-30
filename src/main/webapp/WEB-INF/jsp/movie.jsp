@@ -5,9 +5,6 @@
 <html>
 <head>
     <jsp:directive.include file="../static/header.jsp"/>
-    <style type="text/css">
-        <%@ include file="../assets/css/stars.css" %>
-    </style>
 </head>
 <body>
 <jsp:directive.include file="../static/navbar.jsp"/>
