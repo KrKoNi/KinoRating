@@ -23,7 +23,7 @@ public class AdminFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        UserDTO userDTO = (UserDTO) httpServletRequest.getSession(false).getAttribute("user");
+        UserDTO userDTO = (UserDTO) httpServletRequest.getSession(false).getAttribute("userDTO");
 
         if (userDTO == null || userDTO.getRole() != Role.ADMIN) {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/app/index");
