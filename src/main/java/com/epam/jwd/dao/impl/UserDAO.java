@@ -1,6 +1,5 @@
 package com.epam.jwd.dao.impl;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
@@ -10,7 +9,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,78 +25,68 @@ public class UserDAO implements DataAccessObject<User> {
         return INSTANCE;
     }
 
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String login;
-    private String password;
-    private LocalDate birthDate;
-    private String email;
-    private LocalDate registrationDate;
-    private int roleId;
-    private User user;
+    private static final String SELECT_SQL = "SELECT * FROM kinorating.users natural join kinorating.user_role";
+    private static final String SELECT_WITH_OFFSET_SQL = "SELECT * FROM kinorating.users natural join kinorating.user_role LIMIT ?, ?";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM kinorating.users where id = ? limit 1";
+    private static final String SELECT_BY_LOGIN_AND_PASSWORD_SQL = "SELECT * FROM kinorating.users where login = ? and password = ? limit 1";
+    private static final String INSERT_SQL = "INSERT INTO kinorating.users (first_name, last_name, birth_date, email, login, password, registration_date, role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_USER_RATES_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ?";
 
     @Override
-    public List<User> readAll() {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+    public List<User> readAll(Connection connection) {
         List<User> users = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.users natural join kinorating.user_role"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                setParams(resultSet);
-
-                initUser();
-
+                User user = setFieldsFromResultSet(resultSet);
                 users.add(user);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
-        }
         return users;
     }
 
     @Override
-    public List<User> readWithOffset(int offset, int num) {
-        return null;
+    public List<User> readWithOffset(Connection connection, int offset, int num) {
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET_SQL)) {
+            statement.setInt(1, offset);
+            statement.setInt(2, num);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User user = setFieldsFromResultSet(resultSet);
+                users.add(user);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return users;
     }
 
     @Override
-    public User findById(int id) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.users where id = ? limit 1"
-        )) {
+    public User findById(Connection connection, int id) {
+        User user = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, id);
-
             ResultSet resultSet = statement.executeQuery();
-
-            if(resultSet.next()) {
-                setParams(resultSet);
-                initUser();
+            if (resultSet.next()) {
+                user = setFieldsFromResultSet(resultSet);
             } else {
                 throw new RuntimeException("User not found");
             }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
         return user;
     }
 
     @Override
-    public void insert(User user) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO kinorating.users (first_name, last_name, birth_date, email, " +
-                        "login, password, registration_date, role_id) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    public void insert(Connection connection, User user) {
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)
         ) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
@@ -113,45 +101,36 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
     @Override
-    public void update(User user) {
+    public void update(Connection connection, User user) {
 
     }
 
-    public User findByLoginAndPassword(String login, String password) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.users where login = ? and password = ?"
-        )) {
+    public User findByLoginAndPassword(Connection connection, String login, String password) {
+        User user = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_LOGIN_AND_PASSWORD_SQL)) {
+
             statement.setString(1, login);
             statement.setString(2, password);
 
             ResultSet resultSet = statement.executeQuery();
 
-            while (resultSet.next()) {
-                setParams(resultSet);
-                initUser();
+            if (resultSet.next()) {
+                user = setFieldsFromResultSet(resultSet);
             }
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
         return user;
     }
 
-    public Map<Integer, Byte> getUserRates(User user) {
+    public Map<Integer, Byte> getUserRates(Connection connection, User user) {
         Map<Integer, Byte> rates = new HashMap<>();
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.kino_ratings where user_id = ?;"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_RATES_SQL)) {
             statement.setInt(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
 
@@ -163,30 +142,24 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
-
         return rates;
     }
 
-    private void setParams(ResultSet resultSet) throws SQLException {
-        id = resultSet.getInt("id");
-        firstName = resultSet.getString("first_name");
-        lastName = resultSet.getString("last_name");
-        login = resultSet.getString("login");
-        password = resultSet.getString("password");
-        birthDate = resultSet.getDate("birth_date").toLocalDate();
-        email = resultSet.getString("email");
-        registrationDate = resultSet.getDate("registration_date").toLocalDate();
-        roleId = resultSet.getInt("role_id");
+    private User setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getInt("id"));
+        user.setLogin(resultSet.getString("login"));
+        user.setPassword(resultSet.getString("password"));
+        user.setEmail(resultSet.getString("email"));
+        user.setFirstName(resultSet.getString("first_name"));
+        user.setLastName(resultSet.getString("last_name"));
+        user.setBirthDate(resultSet.getDate("birth_date").toLocalDate());
+        user.setRegistrationDate(resultSet.getDate("registration_date").toLocalDate());
+        user.setRole(Role.getById(resultSet.getInt("role_id")));
+
+        return user;
     }
 
-    private void initUser() {
-        user = User.builder().setId(id).setLogin(login).setEmail(email).setPassword(password)
-                .setFirstName(firstName).setLastName(lastName).setBirthDate(birthDate)
-                .setRegistrationDate(registrationDate).setRole(Role.getById(roleId)).build();
-        user.addRates(getUserRates(user));
-    }
 
 }
