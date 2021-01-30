@@ -2,7 +2,6 @@ package com.epam.jwd.controller.strategy.factory;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.controller.strategy.impl.home.HomeControllerAction;
-import com.epam.jwd.controller.strategy.impl.lang.LanguageChangeControllerAction;
 import com.epam.jwd.controller.strategy.impl.login.LoginControllerAction;
 import com.epam.jwd.controller.strategy.impl.login.LoginPageControllerAction;
 import com.epam.jwd.controller.strategy.impl.login.LogoutControllerAction;
@@ -43,11 +42,6 @@ public class ActionFactoryMethod {
         //actions.put("POST/tv", new MovieEditControllerAction()); //todo tv_edit
 
         actions.put("POST/rate", new MovieRateSubmitControllerAction());
-
-        actions.put("POST/lang", new LanguageChangeControllerAction());
-
-
-
     }
 
     public static ControllerAction getAction(HttpServletRequest request) {

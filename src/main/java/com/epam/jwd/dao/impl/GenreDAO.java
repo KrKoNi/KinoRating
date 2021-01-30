@@ -27,8 +27,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
     private static final Logger logger = Logger.getLogger(GenreDAO.class);
 
     @Override
-    public List<Genre> readAll() {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+    public List<Genre> readAll(Connection connection) throws SQLException {
         List<Genre> genres = new ArrayList<>();
         try (PreparedStatement statement = connection
                 .prepareStatement("SELECT * FROM kinorating.genres")) {
@@ -41,21 +40,18 @@ public class GenreDAO implements DataAccessObject<Genre> {
             }
         } catch (SQLException exception) {
             logger.error("Genres init error", exception);
-        }
-        finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            throw new SQLException(exception);
         }
         return genres;
     }
 
     @Override
-    public List<Genre> readWithOffset(int offset, int num) {
-        return null;
+    public List<Genre> readWithOffset(Connection connection, int offset, int num) {
+        throw new RuntimeException("Unavailable operation");
     }
 
     @Override
-    public Genre findById(int id) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+    public Genre findById(Connection connection, int id) throws SQLException {
         Genre genre = null;
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.genres where genre_id = ?"
@@ -68,16 +64,13 @@ public class GenreDAO implements DataAccessObject<Genre> {
             genre = new Genre(id, name);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            throw new SQLException(throwables);
         }
         return genre;
     }
 
     @Override
-    public void insert(Genre genre) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+    public void insert(Connection connection, Genre genre) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO kinorating.genres (genre_name) VALUES (?)")) {
 
@@ -86,66 +79,14 @@ public class GenreDAO implements DataAccessObject<Genre> {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-        finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            throw new SQLException(throwables);
         }
     }
 
-    public void addGenresToShow(Show show) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        List<Genre> genres = show.getGenres();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO kinorating.kino_genres (kino_id, genre_id) VALUES (?, ?)"
-        )) {
-            connection.setAutoCommit(false);
 
-            for (Genre genre : genres) {
-                statement.setInt(1, show.getId());
-                statement.setInt(2, genre.getId());
-                statement.addBatch();
-            }
-
-            statement.executeBatch();
-
-            connection.commit();
-
-        } catch (SQLException exception) {
-            connection.rollback();
-            logger.error("Error adding genres to a show", exception);
-        }
-        finally {
-            connection.setAutoCommit(true);
-            BasicConnectionPool.getInstance().releaseConnection(connection);
-        }
-    }
-
-    public List<Genre> getGenresByShow(Show show) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        List<Genre> genres = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.kino_genres where kino_id = ?"
-        )) {
-            statement.setInt(1, show.getId());
-
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                genres.add(GenreService.findById(resultSet.getInt("genre_id")));
-            }
-
-        } catch (SQLException throwables) {
-            logger.error("Error finding genres of the show", throwables);
-        }
-        finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
-        }
-        return genres;
-    }
 
     @Override
-    public void update(Genre genre) {
-
+    public void update(Connection connection, Genre genre) {
+        throw new RuntimeException("Unavailable operation");
     }
 }

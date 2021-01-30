@@ -72,6 +72,7 @@ public class BasicConnectionPool implements ConnectionPool {
     private static Connection createConnection(String url, String user, String password) {
         Connection connection = null;
         try {
+
             connection = DriverManager.getConnection(url, user, password);
             logger.info("Connection added to the pool");
         } catch (SQLException exception) {

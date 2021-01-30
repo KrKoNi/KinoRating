@@ -3,18 +3,6 @@ package com.epam.jwd.controller.strategy.factory.admin;
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.controller.strategy.impl.admin.AdminMainPageControllerAction;
 import com.epam.jwd.controller.strategy.impl.admin.AdminMoviesPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.home.HomeControllerAction;
-import com.epam.jwd.controller.strategy.impl.lang.LanguageChangeControllerAction;
-import com.epam.jwd.controller.strategy.impl.login.LoginControllerAction;
-import com.epam.jwd.controller.strategy.impl.login.LoginPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.login.LogoutControllerAction;
-import com.epam.jwd.controller.strategy.impl.movie.MoviePageControllerAction;
-import com.epam.jwd.controller.strategy.impl.movie.MoviesPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.rate.MovieRateSubmitControllerAction;
-import com.epam.jwd.controller.strategy.impl.signup.SignupPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.signup.SignupSubmitControllerAction;
-import com.epam.jwd.controller.strategy.impl.tv.TVPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.tv.TVSeriesPageControllerAction;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;

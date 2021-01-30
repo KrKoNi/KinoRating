@@ -50,4 +50,5 @@ public class DatabaseProperties {
     public static String getUser() {
         return user;
     }
+
 }

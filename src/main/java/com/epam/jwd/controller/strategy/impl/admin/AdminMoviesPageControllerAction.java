@@ -3,6 +3,7 @@ package com.epam.jwd.controller.strategy.impl.admin;
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.service.MovieService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,8 @@ public class AdminMoviesPageControllerAction implements ControllerAction {
         } catch (NumberFormatException e) {
             page = 1;
         }
-        List<Movie> movies = MovieDAO.getInstance().readWithOffset((page-1) * 20, 20);
+
+        List<Movie> movies = MovieService.readWithOffset((page-1) * 20, 20);
 
         request.setAttribute("movies", movies);
         return "movies";
