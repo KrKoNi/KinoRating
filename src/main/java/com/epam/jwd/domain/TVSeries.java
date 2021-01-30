@@ -12,5 +12,8 @@ public class TVSeries extends Show implements Serializable {
     public TVSeries(int id, String title) {
         super(id, title);
     }
+    public TVSeries() {
+        super();
+    }
 
 }

@@ -10,8 +10,8 @@ import java.util.Map;
 public abstract class Show implements Serializable {
 
     private static final long serialVersionUID = 3657598425869928229L;
-    private final int id;
-    private final String title;
+    private int id;
+    private String title;
     private String imageLink;
     private String shortDescription;
     private String description;
@@ -24,6 +24,17 @@ public abstract class Show implements Serializable {
         this.id = id;
         this.title = title;
     }
+    public Show() {
+
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public void addGenre(Genre genre) {
         genres.add(genre);
@@ -31,6 +42,10 @@ public abstract class Show implements Serializable {
 
     public void addGenres(List<Genre> genres) {
         this.genres.addAll(genres);
+    }
+
+    public void addRate(int userId, Byte rate) {
+        rates.put(userId, rate);
     }
 
     public void addRate(User user, Byte rate) {

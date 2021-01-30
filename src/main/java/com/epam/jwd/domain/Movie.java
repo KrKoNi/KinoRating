@@ -15,6 +15,9 @@ public class Movie extends Show implements Serializable {
     public Movie(int id, String title) {
         super(id, title);
     }
+    public Movie() {
+        super();
+    }
 
     public LocalTime getDuration() {
         return duration;
