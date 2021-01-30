@@ -1,6 +1,5 @@
 package com.epam.jwd.dao.impl;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Movie;
 import org.apache.log4j.Logger;
@@ -11,23 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MovieDAO implements DataAccessObject<Movie> {
-
-    private int id;
-    private String title;
-    private LocalDate releaseDate;
-    private String imageLink;
-    private String shortDescription;
-    private String description;
-    private String directedBy;
-    private LocalTime duration;
-    private Movie movie;
-
 
     private static final Logger logger = Logger.getLogger(MovieDAO.class);
 
@@ -40,180 +26,114 @@ public class MovieDAO implements DataAccessObject<Movie> {
         return INSTANCE;
     }
 
+    private static final String SELECT_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies";
+    private static final String SELECT_WITH_OFFSET_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies order by id limit ?, ?";
+    private static final String SELECT_BY_ID = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where id = ?";
+    private static final String INSERT_SQL = "INSERT INTO kinorating.movies(id, directed_by, release_date) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?, ?)";
+    private static final String UPDATE_SQL = "UPDATE kinorating.movies SET directed_by = ? where id = ?";
+    private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?";
 
     @Override
-    public List<Movie> readAll() {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+    public List<Movie> readAll(Connection connection) {
         List<Movie> movies = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                setParams(resultSet);
-                initMovie();
+                Movie movie = setFieldsFromResultSet(resultSet);
                 movies.add(movie);
             }
         } catch (SQLException exception) {
             logger.error("Error reading movies", exception);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
         return movies;
     }
 
     @Override
-    public List<Movie> readWithOffset(int offset, int num) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+    public List<Movie> readWithOffset(Connection connection, int offset, int num) {
         List<Movie> movies = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * " +
-                        "FROM kinorating.abstract_kino natural join kinorating.movies " +
-                        "order by id " +
-                        "limit ?, ?"
-        )) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET_SQL)) {
             statement.setInt(1, offset);
             statement.setInt(2, num);
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-
-                setParams(resultSet);
-                initMovie();
+                Movie movie = setFieldsFromResultSet(resultSet);
                 movies.add(movie);
-
             }
         } catch (SQLException exception) {
             logger.error("Error reading movies with offset", exception);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
         return movies;
     }
 
     @Override
-    public Movie findById(int movieId) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-
-        try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where id = ?"
-        )) {
+    public Movie findById(Connection connection, int movieId) {
+        Movie movie = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
             statement.setInt(1, movieId);
             ResultSet resultSet = statement.executeQuery();
 
-            if(resultSet.next()) {
-                setParams(resultSet);
+            if (resultSet.next()) {
+                movie = setFieldsFromResultSet(resultSet);
             }
-
-            initMovie();
 
         } catch (SQLException exception) {
             logger.error("Error trying to find a movie by id", exception);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
         return movie;
     }
 
     @Override
-    public void insert(Movie movie) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO kinorating.movies(id, directed_by, release_date) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?, ?)"
-        )) {
-
-            statement.setString(1, /*movie.getDirectedBy()*/ "mmm");
+    public void insert(Connection connection, Movie movie) {
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
+            statement.setString(1, movie.getDirectedBy());
             statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
 
             statement.execute();
 
         } catch (SQLException exception) {
             logger.error("Error trying to insert a movie into database", exception);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
     @Override
-    public void update(Movie movie) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "UPDATE kinorating.abstract_kino SET " +
-                        "title = ?, " +
-                        "release_date = ?, " +
-                        "image_link = ? " +
-                        "where id = ?");
-             PreparedStatement statement1 = connection.prepareStatement(
-                "UPDATE kinorating.movies SET " +
-                        "directed_by = ? " +
-                        "where id = ?")
-        ) {
-            connection.setAutoCommit(false);
-
-            statement.setString(1, movie.getTitle());
-            statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
-            statement.setString(3, movie.getImageLink());
-            statement.setInt(4, movie.getId());
-
-            statement1.setString(1, movie.getDirectedBy());
-            statement1.setInt(2, movie.getId());
+    public void update(Connection connection, Movie movie) {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setString(1, movie.getDirectedBy());
+            statement.setInt(2, movie.getId());
 
             statement.execute();
-            statement1.execute();
-
-            connection.commit();
         } catch (SQLException exception) {
             logger.error("Error updating movie", exception);
-            connection.rollback();
-        } finally {
-            connection.setAutoCommit(true);
-            BasicConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
-    public List<Movie> findLike(String str) {
+    public List<Movie> findLike(Connection connection, String str) {
         List<Movie> movieList = new ArrayList<>();
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(
-                        "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?"
-                )
-        ) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
             statement.setString(1, "%" + str + "%");
             ResultSet resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
-                setParams(resultSet);
-                initMovie();
+                Movie movie = setFieldsFromResultSet(resultSet);
                 movieList.add(movie);
             }
-
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            logger.error("Error trying to find a movie by template", throwables);
         }
         return movieList;
     }
 
-    private void initMovie() {
-        movie = new Movie(id, title);
-        movie.setShortDescription(shortDescription);
-        movie.setDescription(description);
-        movie.setImageLink(imageLink);
-        movie.setDirectedBy(directedBy);
-        movie.setReleaseDate(releaseDate);
-        movie.setDuration(duration);
-    }
+    private Movie setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
+        Movie movie = new Movie();
+        movie.setId(resultSet.getInt("id"));
+        movie.setTitle(resultSet.getString("title"));
+        movie.setShortDescription(resultSet.getString("short_description"));
+        movie.setDescription(resultSet.getString("description"));
+        movie.setImageLink(resultSet.getString("image_link"));
+        movie.setDirectedBy(resultSet.getString("directed_by"));
+        movie.setReleaseDate(resultSet.getDate("release_date").toLocalDate());
+        movie.setDuration(resultSet.getTime("duration").toLocalTime());
 
-    private void setParams(ResultSet resultSet) throws SQLException {
-        id = resultSet.getInt("id");
-        title = resultSet.getString("title");
-        releaseDate = resultSet.getDate("release_date").toLocalDate();
-        imageLink = resultSet.getString("image_link");
-        shortDescription = resultSet.getString("short_description");
-        description = resultSet.getString("description");
-        directedBy = resultSet.getString("directed_by");
-        duration = resultSet.getTime("duration").toLocalTime();
+        return movie;
     }
 }

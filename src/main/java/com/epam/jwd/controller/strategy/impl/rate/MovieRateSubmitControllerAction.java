@@ -7,6 +7,8 @@ import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.dto.impl.UserDTO;
+import com.epam.jwd.service.MovieService;
+import com.epam.jwd.service.ShowService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,16 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 public class MovieRateSubmitControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        UserDTO userDTO = (UserDTO) request.getSession().getAttribute("user");
+        UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userDTO");
         int movieId = Integer.parseInt(request.getParameter("movie_id"));
-        Movie movie = MovieDAO.getInstance().findById(movieId);
+        Movie movie = MovieService.findById(movieId);
         byte rate = Byte.parseByte(request.getParameter("rate"));
 
-        User user = UserDAO.getInstance().findById(userDTO.getId());
-        user.getRates().put(movieId, rate);
-        movie.getRates().put(user.getId(), rate);
+        movie.getRates().put(userDTO.getId(), rate);
 
-        ShowDAO.getInstance().addRate(movie, user, rate);
+        ShowService.addRate(movie, userDTO.getId(), rate);
 
         request.setAttribute("movie", movie);
         return "movie";

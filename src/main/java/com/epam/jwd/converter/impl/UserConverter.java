@@ -3,6 +3,7 @@ package com.epam.jwd.converter.impl;
 import com.epam.jwd.converter.Converter;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.dto.impl.UserDTO;
+import com.epam.jwd.service.UserService;
 
 public class UserConverter implements Converter<User, UserDTO> {
     private static final UserConverter INSTANCE = new UserConverter();
@@ -15,7 +16,7 @@ public class UserConverter implements Converter<User, UserDTO> {
 
     @Override
     public User toObject(UserDTO dtoObject) {
-        return null;
+        return UserService.findById(dtoObject.getId());
     }
 
     @Override

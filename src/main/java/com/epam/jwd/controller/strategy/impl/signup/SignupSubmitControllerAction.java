@@ -4,6 +4,7 @@ import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
+import com.epam.jwd.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,21 +21,21 @@ public class SignupSubmitControllerAction implements ControllerAction {
         String birthDate = request.getParameter("birth_date");
         String email = request.getParameter("email");
 
-        User user = UserDAO.getInstance().findByLoginAndPassword(login, password);
+        User user = UserService.findByLoginAndPassword(login, password);
 
         if (user != null) {
             return "signup";
         }
 
         else {
-            user = User.builder()
-                    .setId(0).setLogin(login)
-                    .setPassword(password).setEmail(email)
-                    .setFirstName(firstName).setLastName(lastName)
-                    .setBirthDate(LocalDate.parse(birthDate)).setRole(Role.USER)
-                    .build();
+            user = new User(-1, login, password);
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setBirthDate(LocalDate.parse(birthDate));
+            user.setRole(Role.USER);
 
-            UserDAO.getInstance().insert(user);
+            UserService.insert(user);
 
             return "index";
         }
