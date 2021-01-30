@@ -1,14 +1,14 @@
-<%@ page import="com.epam.jwd.dto.impl.UserDTO" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:set var="language" value="${'ru'}" scope="session" />
+<c:set var="language" value="${not empty cookie['lang'] ? cookie['lang'].value : not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <fmt:setLocale value="${language}" />
 <fmt:setBundle basename="text" scope="session"/>
 
-<c:set var="user" value="${pageContext.session.getAttribute('user')}"/>
+<c:set var="userDTO" value="${pageContext.session.getAttribute('userDTO')}"/>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="${pageContext.request.contextPath}/app/">KinoRating</a>
@@ -18,41 +18,65 @@
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/app/movies"><fmt:message key="msg.movies"/></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/app/movies">
+                    <fmt:message key="msg.movies"/>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/app/tv-series"><fmt:message key="msg.tv-series"/></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/app/tv-series">
+                    <fmt:message key="msg.tv-series"/>
+                </a>
             </li>
         </ul>
 
         <form class="d-flex">
-            <input class="form-control me-2 btn-dark" type="search" placeholder="Search" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
-            <button class="btn btn-outline-success btn-dark" type="submit">Search</button>
+            <input class="form-control me-2 btn-dark" type="search" placeholder="<fmt:message key="msg.search"/>" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
+            <button class="btn btn-outline-success btn-dark" type="submit"><fmt:message key="msg.search"/></button>
         </form>
+
         <c:choose>
-            <c:when test="${user == null}">
-                <a class="nav-link d-flex" role="button" href="${pageContext.request.contextPath}/app/login">Log in</a>
-                <a class="nav-link btn btn-dark action-button" role="button" href="${pageContext.request.contextPath}/app/signup">Sign up</a>
+            <c:when test="${empty userDTO}">
+                <a class="nav-link d-flex" role="button" href="${pageContext.request.contextPath}/app/login">
+                    <fmt:message key="msg.login"/>
+                </a>
+                <a class="nav-link btn btn-dark action-button" role="button" href="${pageContext.request.contextPath}/app/signup">
+                    <fmt:message key="msg.signup"/>
+                </a>
             </c:when>
             <c:otherwise>
-                <a class="btn btn-dark action-button" role="button" href="${pageContext.request.contextPath}/app/logout">Log out</a>
+                <form method="post" action="${pageContext.request.contextPath}/app/logout">
+                    <button class="btn btn-dark action-button" type="submit">
+                        <fmt:message key="msg.logout"/>
+                    </button>
+                </form>
             </c:otherwise>
         </c:choose>
+        <span class="btn btn-dark" onclick="changeLang('en')" type="button">EN</span>
+        <span class="btn btn-dark" onclick="changeLang('ru')" type="button">RU</span>
     </div>
 </nav>
 
-<div hidden id="search_result" style="position: absolute; z-index: 100; width: 40%; margin: auto; border-radius: 4px; height: 300px; overflow-y: auto;">
+<div hidden id="search_result" style="position: absolute; z-index: 100; width: 30%; margin: auto; border-radius: 4px; height: 300px; overflow-y: auto;">
 
 </div>
 
 <script>
+    function changeLang(lang) {
+        try {
+            document.cookie = "lang="+lang;
+            location.reload();
+        } catch (e) {
+            alert("Unable to change lang");
+        }
+    }
+
     function searchShow(strParam) {
         if(strParam.length < 3) {
             document.getElementById("search_result").innerHTML = "";
             document.getElementById("search_result").hidden = true;
             return;
         }
-        let url = "http://localhost:8080/ajax?command=search&str=" + strParam;
+        let url = "http://localhost:8080/ajax/search?str=" + strParam;
 
         let req = new XMLHttpRequest();
 

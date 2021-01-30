@@ -11,13 +11,13 @@
 
     <c:set var="messages" value="${pageContext.request.getAttribute('messages')}"/>
     <c:forEach items="${messages}" var="message">
-        <div class="toast bg-dark" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; z-index: 100">
+        <div class="toast text-white bg-dark" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; z-index: 100">
             <div class="toast-header">
                 <strong class="me-auto">ERROR</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-                <c:out value="${message}"/>
+                <c:out value="${message.value}"/>
             </div>
         </div>
     </c:forEach>
