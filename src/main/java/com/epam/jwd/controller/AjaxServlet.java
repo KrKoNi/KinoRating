@@ -1,7 +1,7 @@
 package com.epam.jwd.controller;
 
-import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.controller.strategy.factory.ajax.AjaxControllerActionFactoryMethod;
+import com.epam.jwd.controller.command.ControllerAction;
+import com.epam.jwd.controller.command.factory.ajax.AjaxControllerActionFactoryMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
