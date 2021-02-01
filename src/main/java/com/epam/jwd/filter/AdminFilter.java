@@ -4,7 +4,7 @@ import com.epam.jwd.domain.Role;
 import com.epam.jwd.dto.impl.UserDTO;
 
 import javax.servlet.*;
-import javax.servlet.annotation.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

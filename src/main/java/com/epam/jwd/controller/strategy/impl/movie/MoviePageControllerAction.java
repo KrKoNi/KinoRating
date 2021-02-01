@@ -1,7 +1,6 @@
 package com.epam.jwd.controller.strategy.impl.movie;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.service.MovieService;
 

@@ -1,8 +1,6 @@
 package com.epam.jwd.controller.strategy.factory.ajax;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.controller.strategy.impl.admin.AdminMainPageControllerAction;
-import com.epam.jwd.controller.strategy.impl.admin.AdminMoviesPageControllerAction;
 import com.epam.jwd.controller.strategy.impl.ajax.AjaxRateControllerAction;
 import com.epam.jwd.controller.strategy.impl.ajax.AjaxSearchControllerAction;
 

@@ -2,27 +2,13 @@ package com.epam.jwd.controller;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.controller.strategy.factory.ajax.AjaxControllerActionFactoryMethod;
-import com.epam.jwd.dao.impl.MovieDAO;
-import com.epam.jwd.dao.impl.ShowDAO;
-import com.epam.jwd.dao.impl.TVSeriesDAO;
-import com.epam.jwd.dao.impl.UserDAO;
-import com.epam.jwd.domain.Movie;
-import com.epam.jwd.domain.Show;
-import com.epam.jwd.domain.TVSeries;
-import com.epam.jwd.dto.impl.UserDTO;
-import com.epam.jwd.service.MovieService;
-import com.epam.jwd.service.ShowService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Locale;
 
 @WebServlet(name = "AjaxServlet", urlPatterns = "/ajax/*")
 public class AjaxServlet extends HttpServlet {

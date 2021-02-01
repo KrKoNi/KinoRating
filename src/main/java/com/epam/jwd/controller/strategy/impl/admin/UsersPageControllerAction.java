@@ -1,9 +1,7 @@
 package com.epam.jwd.controller.strategy.impl.admin;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.User;
-import com.epam.jwd.service.MovieService;
 import com.epam.jwd.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;

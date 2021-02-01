@@ -1,15 +1,11 @@
 package com.epam.jwd.controller.strategy.impl.admin;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
-import com.epam.jwd.service.MovieService;
 import com.epam.jwd.service.TVSeriesService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class UpdateTVControllerAction implements ControllerAction {
     @Override

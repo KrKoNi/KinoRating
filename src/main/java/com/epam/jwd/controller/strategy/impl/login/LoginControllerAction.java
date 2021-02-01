@@ -2,7 +2,6 @@ package com.epam.jwd.controller.strategy.impl.login;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.converter.impl.UserConverter;
-import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.service.UserService;
 

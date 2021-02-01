@@ -1,7 +1,6 @@
 package com.epam.jwd.controller.strategy.impl.tv;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
-import com.epam.jwd.dao.impl.TVSeriesDAO;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.service.TVSeriesService;
 
