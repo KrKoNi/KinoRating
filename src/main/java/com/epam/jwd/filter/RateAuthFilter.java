@@ -1,7 +1,7 @@
 package com.epam.jwd.filter;
 
 import javax.servlet.*;
-import javax.servlet.annotation.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebFilter(filterName = "AuthFilter", urlPatterns = "/ajax/rate")
-public class AuthFilter implements Filter {
+public class RateAuthFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
 
     }
