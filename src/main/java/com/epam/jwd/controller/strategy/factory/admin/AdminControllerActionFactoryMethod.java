@@ -31,7 +31,12 @@ public class AdminControllerActionFactoryMethod {
         actions.put("POST/update_tv", new UpdateTVControllerAction());
 
         actions.put("POST/delete_show", new RemoveShowControllerAction());
-        //actions.put("POST/delete_tv", );
+
+        actions.put("GET/create_movie", new CreateMoviePageControllerAction());
+        actions.put("POST/create_movie", new CreateMovieSubmitControllerAction());
+
+        actions.put("GET/create_tv", new CreateTVPageControllerAction());
+        actions.put("POST/create_tv", new CreateTVSubmitController());
 
         //actions.put("POST/make_user", );
         //actions.put("POST/make_admin", );

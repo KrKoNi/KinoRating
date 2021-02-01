@@ -26,6 +26,11 @@
                         Users
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/app">
+                        Back to app
+                    </a>
+                </li>
             </ul>
 
             <form method="post" action="${pageContext.request.contextPath}/app/logout">

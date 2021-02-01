@@ -7,6 +7,9 @@
 <body>
 <jsp:directive.include file="navbar.jsp"/>
 <c:set var="movies" value="${pageContext.request.getAttribute('movies')}"/>
+
+<a class="btn btn-dark" href="${pageContext.request.contextPath}/admin/create_movie">Create movie</a>
+
 <table class="table table-dark table-striped table-hover">
     <thead>
     <tr>

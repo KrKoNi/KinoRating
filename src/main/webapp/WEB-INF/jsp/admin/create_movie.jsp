@@ -8,48 +8,45 @@
 </head>
 <body>
 <jsp:directive.include file="navbar.jsp"/>
-<c:set var="movie" value="${pageContext.request.getAttribute('movie')}"/>
 
-<form method="post" action="${pageContext.request.contextPath}/admin/update_movie">
-
-    <input hidden id="id" name="id" value="${movie.id}">
+<form method="post">
 
     <div class="mb-3">
         <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" name="title" value="${movie.title}">
+        <input type="text" class="form-control" id="title" name="title">
     </div>
 
     <div class="mb-3">
         <label for="image_link" class="form-label">Image Link</label>
-        <input type="url" class="form-control" id="image_link" name="image_link" value="${movie.imageLink}">
+        <input type="url" class="form-control" id="image_link" name="image_link">
     </div>
 
     <div class="mb-3">
         <label for="short_description" class="form-label">Short Description</label>
-        <input type="text" class="form-control" id="short_description" name="short_description" value="${movie.shortDescription}">
+        <input type="text" class="form-control" id="short_description" name="short_description">
     </div>
 
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <input type="text" class="form-control" id="description" name="description" value="${movie.description}">
+        <input type="text" class="form-control" id="description" name="description">
     </div>
 
     <div class="mb-3">
         <label for="release_date" class="form-label">Release Date</label>
-        <input type="date" class="form-control" id="release_date" name="release_date" value="${movie.releaseDate}">
+        <input type="date" class="form-control" id="release_date" name="release_date">
     </div>
 
     <div class="mb-3">
         <label for="directed_by" class="form-label">Director</label>
-        <input type="text" class="form-control" id="directed_by" name="directed_by" value="${movie.directedBy}">
+        <input type="text" class="form-control" id="directed_by" name="directed_by">
     </div>
 
     <div class="mb-3">
         <label for="duration" class="form-label">Duration</label>
-        <input type="time" class="form-control" id="duration" name="duration" value="${movie.duration}">
+        <input type="time" class="form-control" id="duration" name="duration">
     </div>
 
-    <button type="submit" class="btn btn-dark">Update</button>
+    <button type="submit" class="btn btn-dark">Create</button>
 
 </form>
 <jsp:directive.include file="../../static/footer.jsp"/>

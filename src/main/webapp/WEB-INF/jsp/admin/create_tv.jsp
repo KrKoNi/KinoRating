@@ -8,33 +8,30 @@
 </head>
 <body>
 <jsp:directive.include file="navbar.jsp"/>
-<c:set var="tv" value="${pageContext.request.getAttribute('tv')}"/>
 
-<form method="post" action="${pageContext.request.contextPath}/admin/update_tv">
-
-    <input hidden id="id" name="id" value="${tv.id}">
+<form method="post">
 
     <div class="mb-3">
         <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" name="title" value="${tv.title}">
+        <input type="text" class="form-control" id="title" name="title">
     </div>
 
     <div class="mb-3">
         <label for="image_link" class="form-label">Image Link</label>
-        <input type="url" class="form-control" id="image_link" name="image_link" value="${tv.imageLink}">
+        <input type="url" class="form-control" id="image_link" name="image_link">
     </div>
 
     <div class="mb-3">
         <label for="short_description" class="form-label">Short Description</label>
-        <input type="text" class="form-control" id="short_description" name="short_description" value="${tv.shortDescription}">
+        <input type="text" class="form-control" id="short_description" name="short_description">
     </div>
 
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <input type="text" class="form-control" id="description" name="description" value="${tv.description}">
+        <input type="text" class="form-control" id="description" name="description">
     </div>
 
-    <button type="submit" class="btn btn-dark">Update</button>
+    <button type="submit" class="btn btn-dark">Create</button>
 
 </form>
 <jsp:directive.include file="../../static/footer.jsp"/>
