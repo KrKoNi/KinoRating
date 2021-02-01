@@ -1,13 +1,14 @@
 package com.epam.jwd.service;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
+import com.epam.jwd.connect.BasicConnectionPool;
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
-import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
+import com.epam.jwd.exceptions.CustomException;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -22,9 +23,7 @@ public class ShowService {
 
     public static List<Show> findLike(String str) {
         List<Show> showList = new ArrayList<>();
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
-            connection.setAutoCommit(false);
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             List<Movie> movies = MovieDAO.getInstance().findLike(connection, str);
             List<TVSeries> tvSeriesList = TVSeriesDAO.getInstance().findLike(connection, str);
 
@@ -33,21 +32,8 @@ public class ShowService {
 
             connection.commit();
         } catch (SQLException exception) {
-            try {
-                connection.rollback();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            exception.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            exception.printStackTrace(); //logs
         }
-
         return showList;
     }
 
@@ -56,29 +42,26 @@ public class ShowService {
     }
 
     public static void addRate(int showId, int userId, int rate) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
+        try(ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().addRate(connection, showId, userId, rate);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
     }
 
     public static void removeRate(int showId, int userId) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().removeRate(connection, showId, userId);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
     }
 
     public static void removeShow(int showId) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().delete(connection, showId);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
     }
 

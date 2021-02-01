@@ -1,10 +1,13 @@
 package com.epam.jwd.dao.impl;
 
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Genre;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.User;
-import java.sql.Connection;
+import com.epam.jwd.service.GenreService;
+import org.apache.log4j.Logger;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,13 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.epam.jwd.service.GenreService;
-import org.apache.log4j.Logger;
-
 
 public final class ShowDAO implements DataAccessObject<Show> {
 
-    private static final String INSERT_SQL = "INSERT INTO kinorating.abstract_kino (title, image_link) VALUES (?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO kinorating.abstract_kino (title, image_link, short_description, description) VALUES (?, ?, ?, ?)";
     private static final String SELECT_RATES_BY_SHOW_SQL = "SELECT * FROM kinorating.kino_ratings where kino_id = ?";
     private static final String SELECT_GENRES_BY_SHOW_SQL = "SELECT * FROM kinorating.kino_genres where kino_id = ?";
     private static final String ADD_RATE_SQL = "INSERT INTO kinorating.kino_ratings(kino_id, user_id, kino_rating) values (?, ?, ?) on duplicate key update kino_rating = ?";
@@ -42,36 +42,40 @@ public final class ShowDAO implements DataAccessObject<Show> {
     }
 
     @Override
-    public List<Show> readAll(Connection connection) {
+    public List<Show> readAll(ProxyConnection connection) {
         throw new RuntimeException("Unsupported operation");
     }
 
     @Override
-    public List<Show> readWithOffset(Connection connection, int offset, int num) {
+    public List<Show> readWithOffset(ProxyConnection connection, int offset, int num) {
         throw new RuntimeException("Unsupported operation");
     }
 
     @Override
-    public Show findById(Connection connection, int id) {
+    public Show findById(ProxyConnection connection, int id) {
         throw new RuntimeException("Unsupported operation");
     }
 
     @Override
-    public void insert(Connection connection, Show show) {
+    public void insert(ProxyConnection connection, Show show) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
 
             statement.setString(1, show.getTitle());
             statement.setString(2, show.getImageLink());
+            statement.setString(3, show.getShortDescription());
+            statement.setString(4, show.getDescription());
 
             statement.execute();
 
         } catch (SQLException exception) {
-            LOGGER.error("Error trying to insert a movie into database", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
     @Override
-    public void update(Connection connection, Show show) {
+    public void update(ProxyConnection connection, Show show) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
 
             statement.setString(1, show.getTitle());
@@ -82,24 +86,28 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
             statement.execute();
         } catch (SQLException exception) {
-            LOGGER.error("Error updating movie", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public void delete(Connection connection, Show show) {
+    public void delete(ProxyConnection connection, Show show) throws SQLException {
         delete(connection, show.getId());
     }
 
-    public void delete(Connection connection, int showId) {
+    public void delete(ProxyConnection connection, int showId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
             statement.setInt(1, showId);
             statement.execute();
         } catch (SQLException exception) {
-            LOGGER.error("Error updating movie", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public Map<Integer, Byte> getShowRates(Connection connection, Show show) {
+    public Map<Integer, Byte> getShowRates(ProxyConnection connection, Show show) throws SQLException {
         Map<Integer, Byte> rates = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_RATES_BY_SHOW_SQL)) {
 
@@ -113,13 +121,15 @@ public final class ShowDAO implements DataAccessObject<Show> {
                 rates.put(userId, rate);
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return rates;
     }
 
-    public List<Genre> getShowGenres(Connection connection, Show show) {
+    public List<Genre> getShowGenres(ProxyConnection connection, Show show) throws SQLException {
         List<Genre> genres = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_GENRES_BY_SHOW_SQL)) {
@@ -131,22 +141,23 @@ public final class ShowDAO implements DataAccessObject<Show> {
                 genres.add(GenreService.findById(resultSet.getInt("genre_id")));
             }
 
-        } catch (SQLException throwables) {
-            //logger.error("Error finding genres of the show", throwables);
-
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return genres;
     }
 
-    public void addRate(Connection connection, Show show, User user, int rate) {
-        addRate(connection, show, user.getId(), rate);
+    public void addRate(ProxyConnection connection, Show show, User user, int rate) throws SQLException {
+        addRate(connection, show.getId(), user.getId(), rate);
     }
 
-    public void addRate(Connection connection, Show show, int userId, int rate) {
+    public void addRate(ProxyConnection connection, Show show, int userId, int rate) throws SQLException {
         addRate(connection, show.getId(), userId, rate);
     }
 
-    public void addRate(Connection connection, int showId, int userId, int rate) {
+    public void addRate(ProxyConnection connection, int showId, int userId, int rate) throws SQLException {
 
         try (PreparedStatement statement = connection.prepareStatement(ADD_RATE_SQL)) {
 
@@ -157,16 +168,16 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
             statement.execute();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public void addRates(Connection connection, Show show) {
+    public void addRates(ProxyConnection connection, Show show) throws SQLException {
         Map<Integer, Byte> rates = show.getRates();
         try (PreparedStatement statement = connection.prepareStatement(ADD_RATES_SQL)) {
-            connection.setAutoCommit(false);
-
             rates.forEach((userId, rate) -> {
                 try {
                     statement.setInt(1, show.getId());
@@ -174,17 +185,19 @@ public final class ShowDAO implements DataAccessObject<Show> {
                     statement.setInt(3, rate);
                     statement.addBatch();
                 } catch (SQLException exception) {
-                    exception.printStackTrace();
+                    connection.rollback();
                 }
             });
             statement.executeBatch();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public void removeRate(Connection connection, int showId, int userId) {
+    public void removeRate(ProxyConnection connection, int showId, int userId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_RATE_SQL)) {
 
             statement.setInt(1, showId);
@@ -193,13 +206,14 @@ public final class ShowDAO implements DataAccessObject<Show> {
             statement.execute();
 
         } catch (SQLException exception) {
+            connection.rollback();
             exception.printStackTrace();
-            //logger.error("Error adding genres to a show", exception);
+            throw new SQLException(exception);
         }
     }
 
 
-    public void addGenresToShow(Connection connection, Show show) {
+    public void addGenresToShow(ProxyConnection connection, Show show) throws SQLException {
         List<Genre> genres = show.getGenres();
         try (PreparedStatement statement = connection.prepareStatement(ADD_GENRES_SQL)) {
             connection.setAutoCommit(false);
@@ -212,18 +226,23 @@ public final class ShowDAO implements DataAccessObject<Show> {
             statement.executeBatch();
 
         } catch (SQLException exception) {
-            //logger.error("Error adding genres to a show", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public void deleteAllShowGenres(Connection connection, Show show) {
+    public void deleteAllShowGenres(ProxyConnection connection, Show show) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_GENRES_SQL)) {
+
             statement.setInt(1, show.getId());
 
             statement.execute();
 
         } catch (SQLException exception) {
-            //logger.error("Error adding genres to a show", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 

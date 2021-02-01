@@ -1,5 +1,6 @@
 package com.epam.jwd.dao.impl;
 
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.TVSeries;
 import org.apache.log4j.Logger;
@@ -30,7 +31,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     private static final String SELECT_WITH_OFFSET = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?";
 
     @Override
-    public List<TVSeries> readAll(Connection connection) {
+    public List<TVSeries> readAll(ProxyConnection connection) throws SQLException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_SQL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -38,14 +39,16 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
                 TVSeries tvSeries = setFieldsFromResultSet(resultSet);
                 tvSeriesList.add(tvSeries);
             }
-        } catch (SQLException throwables) {
-            logger.error("Error reading TV-Series from database", throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
 
         return tvSeriesList;
     }
 
-    public List<TVSeries> findLike(Connection connection, String str) {
+    public List<TVSeries> findLike(ProxyConnection connection, String str) throws SQLException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
             statement.setString(1, "%" + str + "%");
@@ -56,14 +59,16 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
                 tvSeriesList.add(tvSeries);
             }
 
-        } catch (SQLException throwables) {
-            logger.error("Error trying to find TV-Series by string template", throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return tvSeriesList;
     }
 
     @Override
-    public List<TVSeries> readWithOffset(Connection connection, int offset, int num) {
+    public List<TVSeries> readWithOffset(ProxyConnection connection, int offset, int num) throws SQLException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET)) {
             statement.setInt(1, offset);
@@ -73,14 +78,16 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
                 TVSeries tvSeries = setFieldsFromResultSet(resultSet);
                 tvSeriesList.add(tvSeries);
             }
-        } catch (SQLException throwables) {
-            logger.error("Error reading TV-Series from database", throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return tvSeriesList;
     }
 
     @Override
-    public TVSeries findById(Connection connection, int id) {
+    public TVSeries findById(ProxyConnection connection, int id) throws SQLException {
         TVSeries tvSeries = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, id);
@@ -89,29 +96,38 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             if(resultSet.next()) {
                 tvSeries = setFieldsFromResultSet(resultSet);
             }
-        } catch (SQLException throwables) {
-            logger.error("Error trying to find TV-Series by ID", throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
 
         return tvSeries;
     }
 
     @Override
-    public void insert(Connection connection, TVSeries tvSeries) {
+    public void insert(ProxyConnection connection, TVSeries tvSeries) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
             statement.setString(1, tvSeries.getTitle());
             statement.setString(2, tvSeries.getImageLink());
 
             statement.execute();
 
-        } catch (SQLException throwables) {
-            logger.error("Error inserting TV-Series into database", throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
     @Override
-    public void update(Connection connection, TVSeries tvSeries) {
+    public void update(ProxyConnection connection, TVSeries tvSeries) {
 
+    }
+
+    @Override
+    public void delete(ProxyConnection connection, TVSeries tvSeries) throws SQLException {
+        throw new RuntimeException("Unsupported");
     }
 
     private TVSeries setFieldsFromResultSet(ResultSet resultSet) throws SQLException {

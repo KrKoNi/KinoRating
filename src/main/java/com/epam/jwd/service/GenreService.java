@@ -1,6 +1,7 @@
 package com.epam.jwd.service;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
+import com.epam.jwd.connect.BasicConnectionPool;
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.GenreDAO;
 import com.epam.jwd.domain.Genre;
 
@@ -18,14 +19,12 @@ public class GenreService {
     }
 
     private static List<Genre> initGenres() {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
         List<Genre> genreList = new ArrayList<>();
-        try {
-             genreList = GenreDAO.getInstance().readAll(connection);
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+            genreList = GenreDAO.getInstance().readAll(connection);
+            connection.commit();
         } catch (SQLException exception) {
-            exception.printStackTrace();
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            exception.printStackTrace(); //logs
         }
         return genreList;
     }

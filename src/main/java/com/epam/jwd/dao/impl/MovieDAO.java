@@ -1,15 +1,11 @@
 package com.epam.jwd.dao.impl;
 
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Movie;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +30,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
     private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?";
 
     @Override
-    public List<Movie> readAll(Connection connection) {
+    public List<Movie> readAll(ProxyConnection connection) throws SQLException {
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -43,13 +39,15 @@ public class MovieDAO implements DataAccessObject<Movie> {
                 movies.add(movie);
             }
         } catch (SQLException exception) {
-            logger.error("Error reading movies", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return movies;
     }
 
     @Override
-    public List<Movie> readWithOffset(Connection connection, int offset, int num) {
+    public List<Movie> readWithOffset(ProxyConnection connection, int offset, int num) throws SQLException {
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET_SQL)) {
             statement.setInt(1, offset);
@@ -61,13 +59,15 @@ public class MovieDAO implements DataAccessObject<Movie> {
                 movies.add(movie);
             }
         } catch (SQLException exception) {
-            logger.error("Error reading movies with offset", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return movies;
     }
 
     @Override
-    public Movie findById(Connection connection, int movieId) {
+    public Movie findById(ProxyConnection connection, int movieId) throws SQLException {
         Movie movie = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
             statement.setInt(1, movieId);
@@ -78,13 +78,15 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
 
         } catch (SQLException exception) {
-            logger.error("Error trying to find a movie by id", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return movie;
     }
 
     @Override
-    public void insert(Connection connection, Movie movie) {
+    public void insert(ProxyConnection connection, Movie movie) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
             statement.setString(1, movie.getDirectedBy());
             statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
@@ -92,23 +94,32 @@ public class MovieDAO implements DataAccessObject<Movie> {
             statement.execute();
 
         } catch (SQLException exception) {
-            logger.error("Error trying to insert a movie into database", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
     @Override
-    public void update(Connection connection, Movie movie) {
+    public void update(ProxyConnection connection, Movie movie) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, movie.getDirectedBy());
             statement.setInt(2, movie.getId());
 
             statement.execute();
         } catch (SQLException exception) {
-            logger.error("Error updating movie", exception);
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public List<Movie> findLike(Connection connection, String str) {
+    @Override
+    public void delete(ProxyConnection connection, Movie movie) throws SQLException {
+        throw new RuntimeException("Unsupported");
+    }
+
+    public List<Movie> findLike(ProxyConnection connection, String str) throws SQLException {
         List<Movie> movieList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
             statement.setString(1, "%" + str + "%");
@@ -117,8 +128,10 @@ public class MovieDAO implements DataAccessObject<Movie> {
                 Movie movie = setFieldsFromResultSet(resultSet);
                 movieList.add(movie);
             }
-        } catch (SQLException throwables) {
-            logger.error("Error trying to find a movie by template", throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return movieList;
     }

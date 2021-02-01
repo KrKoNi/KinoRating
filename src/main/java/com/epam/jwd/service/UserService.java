@@ -1,6 +1,7 @@
 package com.epam.jwd.service;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
+import com.epam.jwd.connect.BasicConnectionPool;
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.User;
 
@@ -15,35 +16,30 @@ public class UserService {
     private UserService() {}
 
     public static void insert(User user) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().insert(connection, user);
-
-            //todo add user rates
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
     }
 
 
     public static List<User> findAll() {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
         List<User> users = new ArrayList<>();
-        try {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             users = UserDAO.getInstance().readAll(connection);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
         return users;
     }
 
     public static List<User> readWithOffset(int offset, int num) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        List<User> users;
-        try {
+        List<User> users = new ArrayList<>();
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             users = UserDAO.getInstance().readWithOffset(connection, offset, num);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
         return users;
     }
@@ -51,67 +47,37 @@ public class UserService {
 
     public static User findById(int id) {
         User user = null;
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
-            connection.setAutoCommit(false);
-
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             user = UserDAO.getInstance().findById(connection, id);
             Map<Integer, Byte> userRates = UserDAO.getInstance().getUserRates(connection, user);
             user.addRates(userRates);
 
             connection.commit();
-        } catch (Exception e) {
-            try {
-                connection.rollback();
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
         return user;
     }
 
     public static void removeUser(int userId) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().delete(connection, userId);
-        } finally {
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
     }
 
     public static User findByLoginAndPassword(String login, String password) {
         User user = null;
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
-            connection.setAutoCommit(false);
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
 
             user = UserDAO.getInstance().findByLoginAndPassword(connection, login, password);
             Map<Integer, Byte> userRates = UserDAO.getInstance().getUserRates(connection, user);
             user.addRates(userRates);
 
             connection.commit();
-        } catch (Exception e) {
-            try {
-                connection.rollback();
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
         }
         return user;
     }

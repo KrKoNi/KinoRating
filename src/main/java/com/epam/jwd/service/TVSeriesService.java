@@ -1,6 +1,7 @@
 package com.epam.jwd.service;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
+import com.epam.jwd.connect.BasicConnectionPool;
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
 import com.epam.jwd.domain.TVSeries;
@@ -11,32 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TVSeriesService {
-    public static TVSeries findById(int id) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        TVSeries tvSeries = null;
-        try {
-            connection.setAutoCommit(false);
 
+    public static TVSeries findById(int id) throws SQLException {
+        TVSeries tvSeries = null;
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             tvSeries = TVSeriesDAO.getInstance().findById(connection, id);
             tvSeries.addGenres(ShowDAO.getInstance().getShowGenres(connection, tvSeries));
             tvSeries.addRates(ShowDAO.getInstance().getShowRates(connection, tvSeries));
 
             connection.commit();
         } catch (SQLException exception) {
-            connection.rollback();
-            exception.printStackTrace();
-        } finally {
-            connection.setAutoCommit(true);
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            exception.printStackTrace(); //logs
         }
 
         return tvSeries;
     }
 
     public static List<TVSeries> readWithOffset(int offset, int num) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
+
         List<TVSeries> tvSeriesList = new ArrayList<>();
-        try {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
 
             tvSeriesList = TVSeriesDAO.getInstance().readWithOffset(connection, offset, num);
@@ -47,40 +42,27 @@ public class TVSeriesService {
 
             connection.commit();
         } catch (SQLException exception) {
-            connection.rollback();
-            exception.printStackTrace();
-        } finally {
-            connection.setAutoCommit(true);
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            exception.printStackTrace(); //logs
         }
 
         return tvSeriesList;
     }
 
-    public static void insert(TVSeries tvSeries) throws SQLException {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
-            connection.setAutoCommit(false);
-
-            TVSeriesDAO.getInstance().insert(connection, tvSeries);
+    public static void insert(TVSeries tvSeries) {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().insert(connection, tvSeries);
+            TVSeriesDAO.getInstance().insert(connection, tvSeries);
             ShowDAO.getInstance().addGenresToShow(connection, tvSeries);
             ShowDAO.getInstance().addRates(connection, tvSeries);
 
             connection.commit();
         } catch (SQLException exception) {
-            connection.rollback();
-            exception.printStackTrace();
-        } finally {
-            connection.setAutoCommit(true);
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            exception.printStackTrace(); //logs
         }
     }
 
     public static void update(TVSeries tvSeries) {
-        Connection connection = BasicConnectionPool.getInstance().getConnection();
-        try {
-            connection.setAutoCommit(false);
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
 
             TVSeriesDAO.getInstance().update(connection, tvSeries);
             ShowDAO.getInstance().update(connection, tvSeries);
@@ -89,19 +71,7 @@ public class TVSeriesService {
 
             connection.commit();
         } catch (SQLException exception) {
-            try {
-                connection.rollback();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            exception.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            BasicConnectionPool.getInstance().releaseConnection(connection);
+            exception.printStackTrace(); //logs
         }
     }
 

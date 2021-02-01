@@ -1,15 +1,11 @@
 package com.epam.jwd.dao.impl;
 
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +30,7 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String SELECT_USER_RATES_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ?";
 
     @Override
-    public List<User> readAll(Connection connection) {
+    public List<User> readAll(ProxyConnection connection) throws SQLException {
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -42,14 +38,16 @@ public class UserDAO implements DataAccessObject<User> {
                 User user = setFieldsFromResultSet(resultSet);
                 users.add(user);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return users;
     }
 
     @Override
-    public List<User> readWithOffset(Connection connection, int offset, int num) {
+    public List<User> readWithOffset(ProxyConnection connection, int offset, int num) throws SQLException {
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET_SQL)) {
             statement.setInt(1, offset);
@@ -60,15 +58,17 @@ public class UserDAO implements DataAccessObject<User> {
                 User user = setFieldsFromResultSet(resultSet);
                 users.add(user);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
 
         return users;
     }
 
     @Override
-    public User findById(Connection connection, int id) {
+    public User findById(ProxyConnection connection, int id) throws SQLException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, id);
@@ -76,17 +76,19 @@ public class UserDAO implements DataAccessObject<User> {
             if (resultSet.next()) {
                 user = setFieldsFromResultSet(resultSet);
             } else {
-                throw new RuntimeException("User not found");
+                throw new RuntimeException("User not found");//todo: fix
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return user;
     }
 
     @Override
-    public void insert(Connection connection, User user) {
+    public void insert(ProxyConnection connection, User user) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)
         ) {
             statement.setString(1, user.getFirstName());
@@ -100,30 +102,39 @@ public class UserDAO implements DataAccessObject<User> {
 
             statement.execute();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-    public void delete(Connection connection, int userId) {
+    public void delete(ProxyConnection connection, int userId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
 
             statement.setInt(1, userId);
 
             statement.execute();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
 
     @Override
-    public void update(Connection connection, User user) {
+    public void update(ProxyConnection connection, User user) {
 
     }
 
-    public User findByLoginAndPassword(Connection connection, String login, String password) {
+    @Override
+    public void delete(ProxyConnection connection, User user) throws SQLException {
+
+    }
+
+    public User findByLoginAndPassword(ProxyConnection connection, String login, String password) throws SQLException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_LOGIN_AND_PASSWORD_SQL)) {
 
@@ -136,13 +147,15 @@ public class UserDAO implements DataAccessObject<User> {
                 user = setFieldsFromResultSet(resultSet);
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return user;
     }
 
-    public Map<Integer, Byte> getUserRates(Connection connection, User user) {
+    public Map<Integer, Byte> getUserRates(ProxyConnection connection, User user) throws SQLException {
         Map<Integer, Byte> rates = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_RATES_SQL)) {
             statement.setInt(1, user.getId());
@@ -154,8 +167,10 @@ public class UserDAO implements DataAccessObject<User> {
                 rates.put(showId, rate);
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return rates;
     }

@@ -1,10 +1,8 @@
 package com.epam.jwd.dao.impl;
 
-import com.epam.jwd.connect.impl.BasicConnectionPool;
+import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Genre;
-import com.epam.jwd.domain.Show;
-import com.epam.jwd.service.GenreService;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -27,7 +25,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
     private static final Logger logger = Logger.getLogger(GenreDAO.class);
 
     @Override
-    public List<Genre> readAll(Connection connection) throws SQLException {
+    public List<Genre> readAll(ProxyConnection connection) throws SQLException {
         List<Genre> genres = new ArrayList<>();
         try (PreparedStatement statement = connection
                 .prepareStatement("SELECT * FROM kinorating.genres")) {
@@ -39,6 +37,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
                 genres.add(genre);
             }
         } catch (SQLException exception) {
+            connection.rollback();
             logger.error("Genres init error", exception);
             throw new SQLException(exception);
         }
@@ -46,12 +45,12 @@ public class GenreDAO implements DataAccessObject<Genre> {
     }
 
     @Override
-    public List<Genre> readWithOffset(Connection connection, int offset, int num) {
+    public List<Genre> readWithOffset(ProxyConnection connection, int offset, int num) {
         throw new RuntimeException("Unavailable operation");
     }
 
     @Override
-    public Genre findById(Connection connection, int id) throws SQLException {
+    public Genre findById(ProxyConnection connection, int id) throws SQLException {
         Genre genre = null;
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.genres where genre_id = ?"
@@ -62,31 +61,36 @@ public class GenreDAO implements DataAccessObject<Genre> {
             String name = resultSet.getString("genre_name");
 
             genre = new Genre(id, name);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new SQLException(throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
         return genre;
     }
 
     @Override
-    public void insert(Connection connection, Genre genre) throws SQLException {
+    public void insert(ProxyConnection connection, Genre genre) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO kinorating.genres (genre_name) VALUES (?)")) {
 
             statement.setString(1, genre.getName());
             statement.execute();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new SQLException(throwables);
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
         }
     }
 
-
+    @Override
+    public void update(ProxyConnection connection, Genre genre) {
+        throw new RuntimeException("Unavailable operation");
+    }
 
     @Override
-    public void update(Connection connection, Genre genre) {
+    public void delete(ProxyConnection connection, Genre genre) throws SQLException {
         throw new RuntimeException("Unavailable operation");
     }
 }
