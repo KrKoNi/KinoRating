@@ -4,6 +4,7 @@ import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
+import com.epam.jwd.exceptions.DaoException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String SELECT_USER_RATES_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ?";
 
     @Override
-    public List<User> readAll(ProxyConnection connection) throws SQLException {
+    public List<User> readAll(ProxyConnection connection) throws DaoException {
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -41,13 +42,13 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return users;
     }
 
     @Override
-    public List<User> readWithOffset(ProxyConnection connection, int offset, int num) throws SQLException {
+    public List<User> readWithOffset(ProxyConnection connection, int offset, int num) throws DaoException {
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET_SQL)) {
             statement.setInt(1, offset);
@@ -61,14 +62,14 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
 
         return users;
     }
 
     @Override
-    public User findById(ProxyConnection connection, int id) throws SQLException {
+    public User findById(ProxyConnection connection, int id) throws DaoException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, id);
@@ -82,13 +83,13 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return user;
     }
 
     @Override
-    public void insert(ProxyConnection connection, User user) throws SQLException {
+    public void insert(ProxyConnection connection, User user) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)
         ) {
             statement.setString(1, user.getFirstName());
@@ -105,11 +106,11 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
-    public void delete(ProxyConnection connection, int userId) throws SQLException {
+    public void delete(ProxyConnection connection, int userId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
 
             statement.setInt(1, userId);
@@ -119,7 +120,7 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
@@ -130,11 +131,11 @@ public class UserDAO implements DataAccessObject<User> {
     }
 
     @Override
-    public void delete(ProxyConnection connection, User user) throws SQLException {
+    public void delete(ProxyConnection connection, User user) throws DaoException {
 
     }
 
-    public User findByLoginAndPassword(ProxyConnection connection, String login, String password) throws SQLException {
+    public User findByLoginAndPassword(ProxyConnection connection, String login, String password) throws DaoException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_LOGIN_AND_PASSWORD_SQL)) {
 
@@ -150,12 +151,12 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return user;
     }
 
-    public Map<Integer, Byte> getUserRates(ProxyConnection connection, User user) throws SQLException {
+    public Map<Integer, Byte> getUserRates(ProxyConnection connection, User user) throws DaoException {
         Map<Integer, Byte> rates = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_RATES_SQL)) {
             statement.setInt(1, user.getId());
@@ -170,7 +171,7 @@ public class UserDAO implements DataAccessObject<User> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return rates;
     }

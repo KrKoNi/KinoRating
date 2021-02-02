@@ -5,6 +5,7 @@ import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Genre;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.User;
+import com.epam.jwd.exceptions.DaoException;
 import com.epam.jwd.service.GenreService;
 import org.apache.log4j.Logger;
 
@@ -58,7 +59,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
     }
 
     @Override
-    public void insert(ProxyConnection connection, Show show) throws SQLException {
+    public void insert(ProxyConnection connection, Show show) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
 
             statement.setString(1, show.getTitle());
@@ -71,12 +72,12 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
     @Override
-    public void update(ProxyConnection connection, Show show) throws SQLException {
+    public void update(ProxyConnection connection, Show show) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
 
             statement.setString(1, show.getTitle());
@@ -89,26 +90,26 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
-    public void delete(ProxyConnection connection, Show show) throws SQLException {
+    public void delete(ProxyConnection connection, Show show) throws DaoException {
         delete(connection, show.getId());
     }
 
-    public void delete(ProxyConnection connection, int showId) throws SQLException {
+    public void delete(ProxyConnection connection, int showId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
             statement.setInt(1, showId);
             statement.execute();
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
-    public Map<Integer, Byte> getShowRates(ProxyConnection connection, Show show) throws SQLException {
+    public Map<Integer, Byte> getShowRates(ProxyConnection connection, Show show) throws DaoException {
         Map<Integer, Byte> rates = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_RATES_BY_SHOW_SQL)) {
 
@@ -125,12 +126,12 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return rates;
     }
 
-    public List<Genre> getShowGenres(ProxyConnection connection, Show show) throws SQLException {
+    public List<Genre> getShowGenres(ProxyConnection connection, Show show) throws DaoException {
         List<Genre> genres = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_GENRES_BY_SHOW_SQL)) {
@@ -145,20 +146,20 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return genres;
     }
 
-    public void addRate(ProxyConnection connection, Show show, User user, int rate) throws SQLException {
+    public void addRate(ProxyConnection connection, Show show, User user, int rate) throws DaoException {
         addRate(connection, show.getId(), user.getId(), rate);
     }
 
-    public void addRate(ProxyConnection connection, Show show, int userId, int rate) throws SQLException {
+    public void addRate(ProxyConnection connection, Show show, int userId, int rate) throws DaoException {
         addRate(connection, show.getId(), userId, rate);
     }
 
-    public void addRate(ProxyConnection connection, int showId, int userId, int rate) throws SQLException {
+    public void addRate(ProxyConnection connection, int showId, int userId, int rate) throws DaoException {
 
         try (PreparedStatement statement = connection.prepareStatement(ADD_RATE_SQL)) {
 
@@ -172,11 +173,11 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
-    public void addRates(ProxyConnection connection, Show show) throws SQLException {
+    public void addRates(ProxyConnection connection, Show show) throws DaoException {
         Map<Integer, Byte> rates = show.getRates();
         try (PreparedStatement statement = connection.prepareStatement(ADD_RATES_SQL)) {
             rates.forEach((userId, rate) -> {
@@ -194,11 +195,11 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
-    public void removeRate(ProxyConnection connection, int showId, int userId) throws SQLException {
+    public void removeRate(ProxyConnection connection, int showId, int userId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_RATE_SQL)) {
 
             statement.setInt(1, showId);
@@ -209,12 +210,12 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
 
-    public void addGenresToShow(ProxyConnection connection, Show show) throws SQLException {
+    public void addGenresToShow(ProxyConnection connection, Show show) throws DaoException {
         List<Genre> genres = show.getGenres();
         try (PreparedStatement statement = connection.prepareStatement(ADD_GENRES_SQL)) {
 
@@ -228,7 +229,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
@@ -251,7 +252,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return averageRate;
     }
 
-    public void deleteAllShowGenres(ProxyConnection connection, Show show) throws SQLException {
+    public void deleteAllShowGenres(ProxyConnection connection, Show show) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_GENRES_SQL)) {
 
             statement.setInt(1, show.getId());
@@ -261,7 +262,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 

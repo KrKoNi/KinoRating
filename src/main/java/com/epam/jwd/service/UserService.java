@@ -4,6 +4,7 @@ import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.User;
+import com.epam.jwd.exceptions.DaoException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ public class UserService {
     public static void insert(User user) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().insert(connection, user);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }
@@ -28,7 +29,7 @@ public class UserService {
         List<User> users = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             users = UserDAO.getInstance().readAll(connection);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return users;
@@ -38,7 +39,7 @@ public class UserService {
         List<User> users = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             users = UserDAO.getInstance().readWithOffset(connection, offset, num);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return users;
@@ -49,11 +50,12 @@ public class UserService {
         User user = null;
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             user = UserDAO.getInstance().findById(connection, id);
+
             Map<Integer, Byte> userRates = UserDAO.getInstance().getUserRates(connection, user);
             user.addRates(userRates);
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return user;
@@ -62,7 +64,7 @@ public class UserService {
     public static void removeUser(int userId) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().delete(connection, userId);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }
@@ -72,11 +74,16 @@ public class UserService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
 
             user = UserDAO.getInstance().findByLoginAndPassword(connection, login, password);
+
+            if(user == null) {
+                return null;
+            }
+
             Map<Integer, Byte> userRates = UserDAO.getInstance().getUserRates(connection, user);
             user.addRates(userRates);
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return user;

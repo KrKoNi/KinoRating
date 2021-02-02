@@ -3,6 +3,7 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Genre;
+import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -25,7 +26,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
     private static final Logger logger = Logger.getLogger(GenreDAO.class);
 
     @Override
-    public List<Genre> readAll(ProxyConnection connection) throws SQLException {
+    public List<Genre> readAll(ProxyConnection connection) throws DaoException {
         List<Genre> genres = new ArrayList<>();
         try (PreparedStatement statement = connection
                 .prepareStatement("SELECT * FROM kinorating.genres")) {
@@ -39,7 +40,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
         } catch (SQLException exception) {
             connection.rollback();
             logger.error("Genres init error", exception);
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return genres;
     }
@@ -50,7 +51,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
     }
 
     @Override
-    public Genre findById(ProxyConnection connection, int id) throws SQLException {
+    public Genre findById(ProxyConnection connection, int id) throws DaoException {
         Genre genre = null;
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kinorating.genres where genre_id = ?"
@@ -64,13 +65,13 @@ public class GenreDAO implements DataAccessObject<Genre> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return genre;
     }
 
     @Override
-    public void insert(ProxyConnection connection, Genre genre) throws SQLException {
+    public void insert(ProxyConnection connection, Genre genre) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO kinorating.genres (genre_name) VALUES (?)")) {
 
@@ -80,7 +81,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
@@ -90,7 +91,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
     }
 
     @Override
-    public void delete(ProxyConnection connection, Genre genre) throws SQLException {
+    public void delete(ProxyConnection connection, Genre genre) {
         throw new RuntimeException("Unavailable operation");
     }
 }

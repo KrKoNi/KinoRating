@@ -6,6 +6,7 @@ import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
 import com.epam.jwd.domain.TVSeries;
+import com.epam.jwd.exceptions.DaoException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public class TVSeriesService {
             tvSeries.addRates(ShowDAO.getInstance().getShowRates(connection, tvSeries));
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
 
@@ -43,7 +44,7 @@ public class TVSeriesService {
             }
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
 
@@ -58,7 +59,7 @@ public class TVSeriesService {
             ShowDAO.getInstance().addRates(connection, tvSeries);
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }
@@ -72,7 +73,7 @@ public class TVSeriesService {
             ShowDAO.getInstance().addGenresToShow(connection, tvSeries);
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }
@@ -86,7 +87,7 @@ public class TVSeriesService {
 
             connection.commit();
 
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
 

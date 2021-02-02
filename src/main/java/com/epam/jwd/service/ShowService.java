@@ -9,6 +9,7 @@ import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.exceptions.CustomException;
+import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -31,7 +32,7 @@ public class ShowService {
             showList.addAll(tvSeriesList);
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return showList;
@@ -44,7 +45,7 @@ public class ShowService {
     public static void addRate(int showId, int userId, int rate) {
         try(ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().addRate(connection, showId, userId, rate);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }
@@ -52,7 +53,7 @@ public class ShowService {
     public static void removeRate(int showId, int userId) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().removeRate(connection, showId, userId);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }
@@ -60,7 +61,7 @@ public class ShowService {
     public static void removeShow(int showId) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().delete(connection, showId);
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
     }

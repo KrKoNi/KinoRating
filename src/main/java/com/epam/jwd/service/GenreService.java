@@ -4,6 +4,7 @@ import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.GenreDAO;
 import com.epam.jwd.domain.Genre;
+import com.epam.jwd.exceptions.DaoException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ public class GenreService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             genreList = GenreDAO.getInstance().readAll(connection);
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return genreList;

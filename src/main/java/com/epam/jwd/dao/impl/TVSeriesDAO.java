@@ -3,6 +3,7 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.TVSeries;
+import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -32,7 +33,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     private static final String SELECT_WITH_OFFSET = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?";
 
     @Override
-    public List<TVSeries> readAll(ProxyConnection connection) throws SQLException {
+    public List<TVSeries> readAll(ProxyConnection connection) throws DaoException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_SQL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -43,13 +44,13 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
 
         return tvSeriesList;
     }
 
-    public List<TVSeries> findLike(ProxyConnection connection, String str) throws SQLException {
+    public List<TVSeries> findLike(ProxyConnection connection, String str) throws DaoException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
             statement.setString(1, "%" + str + "%");
@@ -63,13 +64,13 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return tvSeriesList;
     }
 
     @Override
-    public List<TVSeries> readWithOffset(ProxyConnection connection, int offset, int num) throws SQLException {
+    public List<TVSeries> readWithOffset(ProxyConnection connection, int offset, int num) throws DaoException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_WITH_OFFSET)) {
             statement.setInt(1, offset);
@@ -82,13 +83,13 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return tvSeriesList;
     }
 
     @Override
-    public TVSeries findById(ProxyConnection connection, int id) throws SQLException {
+    public TVSeries findById(ProxyConnection connection, int id) throws DaoException {
         TVSeries tvSeries = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, id);
@@ -100,14 +101,14 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
 
         return tvSeries;
     }
 
     @Override
-    public void insert(ProxyConnection connection, TVSeries tvSeries) throws SQLException {
+    public void insert(ProxyConnection connection, TVSeries tvSeries) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
             statement.setString(1, tvSeries.getTitle());
             statement.setString(2, tvSeries.getImageLink());
@@ -117,7 +118,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
     }
 
@@ -127,11 +128,11 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     }
 
     @Override
-    public void delete(ProxyConnection connection, TVSeries tvSeries) throws SQLException {
+    public void delete(ProxyConnection connection, TVSeries tvSeries) throws DaoException {
         throw new RuntimeException("Unsupported");
     }
 
-    public int getRowCount(ProxyConnection connection) throws SQLException {
+    public int getRowCount(ProxyConnection connection) throws DaoException {
         int rowCount = 0;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -141,7 +142,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
-            throw new SQLException(exception);
+            throw new DaoException(exception);
         }
         return rowCount;
     }
