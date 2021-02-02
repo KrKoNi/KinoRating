@@ -23,19 +23,19 @@
     </c:forEach>
     <div class="login-dark">
         <form method="post">
-            <h2 class="sr-only">Login Form</h2>
-
             <div class="form-group">
                 <input
-                        class="form-control" type="text" name="login"
+                        id="login" class="form-control" type="text" name="login"
                         placeholder="Login" required minlength="4">
+                <label for="login" class="label"><fmt:message key="msg.login-name"/></label>
             </div>
             <div class="form-group">
-                <input class="form-control" type="password" name="password"
+                <input id="password" class="form-control" type="password" name="password"
                        placeholder="Password" required minlength="8">
+                <label for="password" class="label"><fmt:message key="msg.password"/></label>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                <button class="btn btn-primary btn-block" type="submit"><fmt:message key="msg.login"/></button>
             </div>
         </form>
     </div>

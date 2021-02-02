@@ -32,18 +32,19 @@
             <div class="card-body">
                 <h5 class="card-title"><c:out value="${movie.title}"/></h5>
                 <br/>
-                <p class="card-text"><c:out value="${movie.directedBy}"/></p>
-
-                <p class="card-text"><c:out value="${movie.releaseDate}"/></p>
+                <p class="card-title"><c:out value="${movie.shortDescription}"/></p>
+                <br/>
+                <p class="card-text"><fmt:message key="msg.director"/>: <c:out value="${movie.directedBy}"/></p>
+                <br/>
+                <p class="card-text"><fmt:message key="msg.release-date"/>: <c:out value="${movie.releaseDate}"/></p>
             </div>
         </div>
-
     </div>
 </div>
 
 <c:if test="${not empty movie.rates[userDTO.id]}">
-    <span>Your rating: <c:out value="${movie.rates[userDTO.id]}"/></span>
-    <button onclick="removeRate(${movie.id})" type="button" class="btn btn-dark">Remove rate</button>
+    <span><fmt:message key="msg.your-rate"/>: <c:out value="${movie.rates[userDTO.id]}"/></span>
+    <button onclick="removeRate(${movie.id})" type="button" class="btn btn-dark"><fmt:message key="msg.remove-rate"/></button>
 </c:if>
 
 <div class="star-rating" id="${movie.id}" style="direction: rtl">

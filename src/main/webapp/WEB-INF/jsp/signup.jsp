@@ -10,10 +10,8 @@
 <jsp:directive.include file="../static/navbar.jsp" />
 <div class="login-dark">
     <form method="post" action="${pageContext.request.contextPath}/app/signup">
-        <h2 class="sr-only">Registration Form</h2>
-
         <div class="form-group">
-            <label for="login">Login</label>
+            <label for="login"><fmt:message key="msg.login-name"/></label>
             <input
                     id="login" class="form-control" type="text" name="login"
                     placeholder="Login" required minlength="4">
@@ -25,13 +23,13 @@
                     placeholder="E-mail" required minlength="4">
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password"><fmt:message key="msg.password"/></label>
             <input id="password" class="form-control" type="password" name="password"
                    placeholder="Password" required minlength="8">
         </div>
 
         <div class="form-group">
-            <button class="btn btn-primary btn-block" type="submit">Sign up</button>
+            <button class="btn btn-primary btn-block" type="submit"><fmt:message key="msg.signup"/></button>
         </div>
     </form>
 </div>

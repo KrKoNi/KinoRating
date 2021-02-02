@@ -35,11 +35,6 @@
                     <h5 class="card-title"><c:out value="${movie.title}"/></h5>
                     <p class="card-text"><c:out value="${movie.shortDescription}"/></p>
 
-                    <c:if test="${not empty movie.rates[userDTO.id]}">
-                        <span>Your rating: <c:out value="${movie.rates[userDTO.id]}"/></span>
-                        <button onclick="removeRate(${movie.id})" type="button" class="btn btn-dark">Remove rate</button>
-                    </c:if>
-
                     <div class="star-rating" id="${movie.id}" style="direction: rtl">
                         <span class="10" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 10)" onclick="sendRate(${movie.id}, 10)"><i class="fa fa-star"></i></span>
                         <span class="9" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 9)" onclick="sendRate(${movie.id}, 9)"><i class="fa fa-star"></i></span>
@@ -52,8 +47,11 @@
                         <span class="2" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 2)" onclick="sendRate(${movie.id}, 2)"><i class="fa fa-star"></i></span>
                         <span class="1" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 1)" onclick="sendRate(${movie.id}, 1)"><i class="fa fa-star"></i></span>
                     </div>
-                    <span hidden class="answer" id="${movie.id}"></span>
 
+                    <c:if test="${not empty movie.rates[userDTO.id]}">
+                        <span><fmt:message key="msg.your-rate"/>: <c:out value="${movie.rates[userDTO.id]}"/></span>
+                        <button onclick="removeRate(${movie.id})" type="button" class="btn btn-dark"><fmt:message key="msg.remove-rate"/></button>
+                    </c:if>
                 </div>
             </div>
         </div>

@@ -1,7 +1,5 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="language" value="${not empty cookie['lang'] ? cookie['lang'].value : not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
@@ -28,6 +26,13 @@
                         <fmt:message key="msg.tv-series"/>
                     </a>
                 </li>
+                <c:if test="${not empty userDTO}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/app/user">
+                            <fmt:message key="msg.profile"/>
+                        </a>
+                    </li>
+                </c:if>
             </ul>
 
 
@@ -45,6 +50,7 @@
                     </a>
                 </c:when>
                 <c:otherwise>
+
                     <form method="post" action="${pageContext.request.contextPath}/app/logout">
                         <button class="btn btn-dark action-button" type="submit">
                             <fmt:message key="msg.logout"/>
