@@ -1,11 +1,15 @@
 package com.epam.jwd.connect;
 
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class ProxyConnection implements Connection {
+
+    private final Logger logger = Logger.getLogger(ProxyConnection.class);
 
     private final Connection connection;
 
@@ -38,7 +42,7 @@ public class ProxyConnection implements Connection {
         try {
             connection.setAutoCommit(autoCommit);
         } catch (SQLException exception) {
-            exception.printStackTrace(); //todo: logs
+            logger.error("ProxyConnection setAutoCommit to " + autoCommit + " error", exception);
         }
     }
 
@@ -51,8 +55,9 @@ public class ProxyConnection implements Connection {
     public void commit() {
         try {
             connection.commit();
+            logger.info("Changes was committed");
         } catch (SQLException exception) {
-            exception.printStackTrace(); //todo: logs
+            logger.error("ProxyConnection commit error", exception);
         }
     }
 
@@ -60,22 +65,25 @@ public class ProxyConnection implements Connection {
     public void rollback(){
         try {
             connection.rollback();
+            logger.info("Rollback changes");
         } catch (SQLException exception) {
-            exception.printStackTrace(); //todo: logs
+            logger.error("ProxyConnection rollback error", exception);
         }
     }
 
     @Override
     public void close() {
         this.setAutoCommit(true);
+        logger.info("Connection closed");
         BasicConnectionPool.INSTANCE.releaseConnection(this);
     }
 
     void realClose() {
         try {
             connection.close();
+            logger.info("Connection finally removed");
         } catch (SQLException exception) {
-            exception.printStackTrace(); //todo: logs
+            logger.error("Error trying to close connection", exception);
         }
     }
 

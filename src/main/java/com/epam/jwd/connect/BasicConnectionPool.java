@@ -2,7 +2,6 @@ package com.epam.jwd.connect;
 
 import com.epam.jwd.config.DatabaseProperties;
 import org.apache.log4j.Logger;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
@@ -17,8 +16,8 @@ public enum BasicConnectionPool {
     private String user;
     private String password;
 
-    private BlockingQueue<ProxyConnection> freeConnections;
-    private Queue<ProxyConnection> usingConnections;
+    private final BlockingQueue<ProxyConnection> freeConnections;
+    private final Queue<ProxyConnection> usingConnections;
     private final static int INITIAL_POOL_SIZE = 15;
 
     private final Logger logger = Logger.getLogger(BasicConnectionPool.class);
@@ -31,25 +30,30 @@ public enum BasicConnectionPool {
         freeConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
         usingConnections = new ArrayDeque<>();
 
+        logger.info("Connection pool initialization");
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
             try {
                 freeConnections.offer(new ProxyConnection(DriverManager.getConnection(url, user, password)));
+                logger.info("Connection added to pool");
             } catch (SQLException exception) {
                 logger.error("Error adding connection to the pool", exception);
                 exception.printStackTrace();
             }
         }
+        logger.info("Connection pool was initialized");
 
     }
 
     public ProxyConnection getConnection() {
         ProxyConnection connection = null;
         try {
+            logger.info("Asking for connection");
             connection = freeConnections.take();
             usingConnections.offer(connection);
+            logger.info("Connection received");
             connection.setAutoCommit(false);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("Error trying to get connection from pool, try again later", e);
         }
         return connection;
     }
@@ -57,6 +61,7 @@ public enum BasicConnectionPool {
     public void releaseConnection(ProxyConnection connection) {
         usingConnections.remove(connection);
         freeConnections.offer(connection);
+        logger.info("Connection returned to pool");
     }
 
     public void destroyPool() {
@@ -67,6 +72,8 @@ public enum BasicConnectionPool {
                 exception.printStackTrace();
             }
         }
+        deregisterDrivers();
+        logger.info("Pool was destroyed");
     }
     private void deregisterDrivers() {
         DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
