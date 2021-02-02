@@ -24,7 +24,8 @@ public class MovieDAO implements DataAccessObject<Movie> {
 
     private static final String SELECT_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies";
     private static final String SELECT_WITH_OFFSET_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies order by id limit ?, ?";
-    private static final String SELECT_BY_ID = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where id = ?";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where id = ?";
+    private static final String SELECT_ROW_COUNT_SQL = "SELECT COUNT(movies.id) FROM kinorating.movies";
     private static final String INSERT_SQL = "INSERT INTO kinorating.movies(id, directed_by, release_date) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?, ?)";
     private static final String UPDATE_SQL = "UPDATE kinorating.movies SET directed_by = ? where id = ?";
     private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?";
@@ -69,7 +70,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
     @Override
     public Movie findById(ProxyConnection connection, int movieId) throws SQLException {
         Movie movie = null;
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
             statement.setInt(1, movieId);
             ResultSet resultSet = statement.executeQuery();
 
@@ -134,6 +135,21 @@ public class MovieDAO implements DataAccessObject<Movie> {
             throw new SQLException(exception);
         }
         return movieList;
+    }
+
+    public int getRowCount(ProxyConnection connection) throws SQLException {
+        int rowCount = 0;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                rowCount = resultSet.getInt(1);
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
+        }
+        return rowCount;
     }
 
     private Movie setFieldsFromResultSet(ResultSet resultSet) throws SQLException {

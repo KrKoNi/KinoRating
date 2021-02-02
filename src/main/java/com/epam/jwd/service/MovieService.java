@@ -6,7 +6,6 @@ import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.domain.Movie;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,9 @@ public class MovieService {
 
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             movie = MovieDAO.getInstance().findById(connection, id);
+            if(movie == null) {
+                return null;
+            }
             movie.addGenres(ShowDAO.getInstance().getShowGenres(connection, movie));
             movie.addRates(ShowDAO.getInstance().getShowRates(connection, movie));
 
@@ -56,7 +58,6 @@ public class MovieService {
             ShowDAO.getInstance().insert(connection, movie);
             MovieDAO.getInstance().insert(connection, movie);
             ShowDAO.getInstance().addGenresToShow(connection, movie);
-            ShowDAO.getInstance().addRates(connection, movie);
 
             connection.commit();
         } catch (SQLException exception) {
@@ -75,6 +76,22 @@ public class MovieService {
         } catch (SQLException exception) {
             exception.printStackTrace(); //logs
         }
+    }
+
+    public static int getMoviesCount() {
+        int rowCount = 0;
+
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            rowCount = MovieDAO.getInstance().getRowCount(connection);
+
+            connection.commit();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
+        }
+
+        return rowCount;
     }
 
 

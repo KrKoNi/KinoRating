@@ -2,6 +2,7 @@ package com.epam.jwd.service;
 
 import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
+import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
 import com.epam.jwd.domain.TVSeries;
@@ -17,6 +18,9 @@ public class TVSeriesService {
         TVSeries tvSeries = null;
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             tvSeries = TVSeriesDAO.getInstance().findById(connection, id);
+            if (tvSeries == null) {
+                return null;
+            }
             tvSeries.addGenres(ShowDAO.getInstance().getShowGenres(connection, tvSeries));
             tvSeries.addRates(ShowDAO.getInstance().getShowRates(connection, tvSeries));
 
@@ -32,8 +36,6 @@ public class TVSeriesService {
 
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
-            connection.setAutoCommit(false);
-
             tvSeriesList = TVSeriesDAO.getInstance().readWithOffset(connection, offset, num);
             for (TVSeries tvSeries : tvSeriesList) {
                 tvSeries.addGenres(ShowDAO.getInstance().getShowGenres(connection, tvSeries));
@@ -73,6 +75,22 @@ public class TVSeriesService {
         } catch (SQLException exception) {
             exception.printStackTrace(); //logs
         }
+    }
+
+    public static int getTVCount() {
+        int rowCount = 0;
+
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            rowCount = TVSeriesDAO.getInstance().getRowCount(connection);
+
+            connection.commit();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace(); //logs
+        }
+
+        return rowCount;
     }
 
 

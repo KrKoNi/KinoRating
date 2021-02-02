@@ -27,6 +27,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     private static final String SELECT_ALL_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series";
     private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series where title like ?";
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series WHERE id = ?";
+    private static final String SELECT_ROW_COUNT_SQL = "SELECT COUNT(tv_series.id) FROM kinorating.tv_series";
     private static final String INSERT_SQL = "INSERT INTO kinorating.tv_series(id) VALUES ((SELECT LAST_INSERT_ID() from kinorating.abstract_kino LIMIT 1))";
     private static final String SELECT_WITH_OFFSET = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?";
 
@@ -128,6 +129,21 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     @Override
     public void delete(ProxyConnection connection, TVSeries tvSeries) throws SQLException {
         throw new RuntimeException("Unsupported");
+    }
+
+    public int getRowCount(ProxyConnection connection) throws SQLException {
+        int rowCount = 0;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                rowCount = resultSet.getInt(1);
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
+        }
+        return rowCount;
     }
 
     private TVSeries setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
