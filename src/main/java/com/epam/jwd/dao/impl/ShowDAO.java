@@ -22,6 +22,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
     private static final String INSERT_SQL = "INSERT INTO kinorating.abstract_kino (title, image_link, short_description, description) VALUES (?, ?, ?, ?)";
     private static final String SELECT_RATES_BY_SHOW_SQL = "SELECT * FROM kinorating.kino_ratings where kino_id = ?";
     private static final String SELECT_GENRES_BY_SHOW_SQL = "SELECT * FROM kinorating.kino_genres where kino_id = ?";
+    private static final String SELECT_AVERAGE_SHOW_RATE_SQL = "SELECT AVG(kino_ratings.kino_rating) FROM kinorating.kino_ratings where kino_id = ?";
     private static final String ADD_RATE_SQL = "INSERT INTO kinorating.kino_ratings(kino_id, user_id, kino_rating) values (?, ?, ?) on duplicate key update kino_rating = ?";
     private static final String DELETE_RATE_SQL = "DELETE FROM kinorating.kino_ratings where kino_id = ? and user_id = ?";
     private static final String ADD_RATES_SQL = "INSERT INTO kinorating.kino_ratings(kino_id, user_id, kino_rating) values (?, ?, ?) on duplicate key update kino_rating = ?";
@@ -216,7 +217,6 @@ public final class ShowDAO implements DataAccessObject<Show> {
     public void addGenresToShow(ProxyConnection connection, Show show) throws SQLException {
         List<Genre> genres = show.getGenres();
         try (PreparedStatement statement = connection.prepareStatement(ADD_GENRES_SQL)) {
-            connection.setAutoCommit(false);
 
             for (Genre genre : genres) {
                 statement.setInt(1, show.getId());
@@ -230,6 +230,25 @@ public final class ShowDAO implements DataAccessObject<Show> {
             exception.printStackTrace();
             throw new SQLException(exception);
         }
+    }
+
+    public double getAverageRate(ProxyConnection connection, int showId) throws SQLException {
+        double averageRate = 0;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_AVERAGE_SHOW_RATE_SQL)) {
+
+            statement.setInt(1, showId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                averageRate = resultSet.getDouble(1);
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new SQLException(exception);
+        }
+        return averageRate;
     }
 
     public void deleteAllShowGenres(ProxyConnection connection, Show show) throws SQLException {
