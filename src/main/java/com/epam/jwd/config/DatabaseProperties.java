@@ -33,6 +33,7 @@ public class DatabaseProperties {
             user = prop.getProperty("db.user");
             password = prop.getProperty("db.password");
 
+
         } catch (IOException ex) {
             ex.printStackTrace();
 
