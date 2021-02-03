@@ -30,6 +30,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
     private static final String INSERT_SQL = "INSERT INTO kinorating.movies(id, directed_by, release_date) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?, ?)";
     private static final String UPDATE_SQL = "UPDATE kinorating.movies SET directed_by = ? where id = ?";
     private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?";
+    private static final String CONTAINS_ID_SQL = "SELECT COUNT(movies.id) from kinorating.movies where movies.id = ?";
 
     @Override
     public List<Movie> readAll(ProxyConnection connection) throws DaoException {
@@ -151,6 +152,22 @@ public class MovieDAO implements DataAccessObject<Movie> {
             throw new DaoException(exception);
         }
         return rowCount;
+    }
+
+    public boolean isMovie(ProxyConnection connection, int id) throws DaoException {
+        boolean isMovie = false;
+        try (PreparedStatement statement = connection.prepareStatement(CONTAINS_ID_SQL)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                isMovie = resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return isMovie;
     }
 
     private Movie setFieldsFromResultSet(ResultSet resultSet) throws SQLException {

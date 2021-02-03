@@ -2,6 +2,7 @@ package com.epam.jwd.service;
 
 import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
+import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
@@ -64,6 +65,21 @@ public class ShowService {
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
+    }
+
+    public static Class<? extends Show> getShowType(int showID) throws ClassNotFoundException {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+            if(MovieDAO.getInstance().isMovie(connection, showID)) {
+                return Movie.class;
+            } else if (TVSeriesDAO.getInstance().isTV(connection, showID)) {
+                return TVSeries.class;
+            } else {
+                throw new ClassNotFoundException("Show neither Movie nor TV");
+            }
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return null;
     }
 
 }

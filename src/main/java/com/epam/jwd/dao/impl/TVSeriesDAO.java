@@ -31,6 +31,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     private static final String SELECT_ROW_COUNT_SQL = "SELECT COUNT(tv_series.id) FROM kinorating.tv_series";
     private static final String INSERT_SQL = "INSERT INTO kinorating.tv_series(id) VALUES ((SELECT LAST_INSERT_ID() from kinorating.abstract_kino LIMIT 1))";
     private static final String SELECT_WITH_OFFSET = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?";
+    private static final String CONTAINS_ID_SQL = "SELECT COUNT(tv_series.id) from kinorating.tv_series where tv_series.id = ?";
 
     @Override
     public List<TVSeries> readAll(ProxyConnection connection) throws DaoException {
@@ -146,6 +147,23 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         }
         return rowCount;
     }
+
+    public boolean isTV(ProxyConnection connection, int id) throws DaoException {
+        boolean isTV = false;
+        try (PreparedStatement statement = connection.prepareStatement(CONTAINS_ID_SQL)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                isTV = resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return isTV;
+    }
+
 
     private TVSeries setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
         TVSeries tvSeries = new TVSeries();
