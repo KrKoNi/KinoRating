@@ -32,24 +32,17 @@ public class UserPageControllerAction implements ControllerAction {
         List<Show> shows = new ArrayList<>();
 
         for (Integer showId : showIds) {
-            Movie movie;
-            try {
-                movie = MovieService.findById(showId);
-            } catch (NullPointerException exception) {
-                movie = null;
-            }
-            TVSeries tvSeries;
-            try {
-                tvSeries = TVSeriesService.findById(showId);
-            } catch (SQLException exception) {
-                tvSeries = null;
-            }
+            Show show;
+            Class<? extends Show> showClass = ShowService.getShowType(showId);
 
-            if (movie != null) {
-                shows.add(movie);
-            } else if (tvSeries != null) {
-                shows.add(tvSeries);
-            }
+            if (showClass == Movie.class) {
+                show = MovieService.findById(showId);
+            } else if (showClass == TVSeries.class) {
+                show = TVSeriesService.findById(showId);
+            } else show = null;
+
+            shows.add(show);
+
         }
 
         request.setAttribute("user", user);

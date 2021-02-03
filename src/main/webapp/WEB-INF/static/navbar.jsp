@@ -96,15 +96,18 @@
                 })
                 .then(function(jsonResponse) {
                     const arr = Object.values(jsonResponse);
-                    arr.forEach(show => {str = str +
-                        "<tr>" +
-                            "<th scope='row'><img height='150px' src=" + show.imageLink + " class='card-img-top' alt=" + show.title + "></th>"+
+                    arr.forEach(show => {
+                        link = '/app/show?id=' + show.id;
+                        str = str +
+                            "<tr>" +
+                            "<th scope='row'><a href=" + link + "><img height='150px' src=" + show.imageLink + " class='card-img-top' alt=" + show.title + "></th></a>"+
                             "<td>" +
                                 "<h2>" + show.title + "</h2>" +
                                 "<br/>" +
                                 "<p>" + show.shortDescription + "</p>" +
                             "</td>" +
-                        "</tr>"
+                        "</tr>"+
+                            "</a>"
                     });
                     str = str + "</tbody></table>"
                     document.getElementById("search_result").innerHTML = str;
