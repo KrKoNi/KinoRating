@@ -88,4 +88,40 @@ public class UserService {
         }
         return user;
     }
+
+    public static User findByLogin(String login) {
+        User user = null;
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            user = UserDAO.getInstance().findByLogin(connection, login);
+
+            if (user == null) return null;
+
+            Map<Integer, Byte> userRates = UserDAO.getInstance().getUserRates(connection, user);
+            user.addRates(userRates);
+
+            connection.commit();
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return user;
+    }
+
+    public static User findByEmail(String email) {
+        User user = null;
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            user = UserDAO.getInstance().findByEmail(connection, email);
+
+            if (user == null) return null;
+
+            Map<Integer, Byte> userRates = UserDAO.getInstance().getUserRates(connection, user);
+            user.addRates(userRates);
+
+            connection.commit();
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return user;
+    }
 }

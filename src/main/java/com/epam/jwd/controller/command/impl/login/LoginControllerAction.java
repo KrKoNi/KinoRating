@@ -4,6 +4,8 @@ import com.epam.jwd.controller.command.ControllerAction;
 import com.epam.jwd.converter.impl.UserConverter;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.service.UserService;
+import com.epam.jwd.validator.Validator;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,29 +18,30 @@ public class LoginControllerAction implements ControllerAction {
 
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        Map<String, String> messages = new HashMap<>();
 
-        if (login == null || login.isEmpty()) {
-            messages.put("login", "Please enter login");
+        if (login.isEmpty() || password.isEmpty()) {
+            request.setAttribute("Error", "Login or password is empty");
+            return "login";
         }
 
-        if (password == null || password.isEmpty()) {
-            messages.put("password", "Please enter password");
-        }
+        User user;
 
-        if (messages.isEmpty()) {
-            User user = UserService.findByLoginAndPassword(login, password);
-
-            if (user != null) {
-                request.getSession().setAttribute("userDTO", UserConverter.getInstance().toDto(user));
-                return "index";
-            } else {
-                messages.put("login", "Unknown login, please try again");
+        if (Validator.checkEmail(login)) {
+            user = UserService.findByEmail(login);
+            if (user == null) {
+                user = UserService.findByLogin(login);
             }
+        } else {
+            user = UserService.findByLogin(login);
         }
 
-        request.setAttribute("messages", messages);
-        return "login";
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            request.getSession(true).setAttribute("userDTO", UserConverter.getInstance().toDto(user));
+            return "index";
+        } else {
+            request.setAttribute("error", "User not found");
+            return "login";
+        }
     }
 
 

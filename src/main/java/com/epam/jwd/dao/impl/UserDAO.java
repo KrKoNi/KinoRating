@@ -29,6 +29,9 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String INSERT_SQL = "INSERT INTO kinorating.users (first_name, last_name, birth_date, email, login, password, registration_date, role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_SQL = "DELETE FROM kinorating.users where id = ?";
     private static final String SELECT_USER_RATES_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ?";
+    private static final String SELECT_BY_LOGIN_SQL = "SELECT * FROM kinorating.users where login = ? limit 1";
+    private static final String SELECT_BY_EMAIL_SQL = "SELECT * FROM kinorating.users where email = ? limit 1";
+    private static final String SELECT_BY_EMAIL_OR_LOGIN_SQL = "SELECT * FROM kinorating.users where email = ? or login = ? limit 1";
 
     @Override
     public List<User> readAll(ProxyConnection connection) throws DaoException {
@@ -141,6 +144,67 @@ public class UserDAO implements DataAccessObject<User> {
 
             statement.setString(1, login);
             statement.setString(2, password);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = setFieldsFromResultSet(resultSet);
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return user;
+    }
+
+    public User findByLogin(ProxyConnection connection, String login) throws DaoException {
+        User user = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_LOGIN_SQL)) {
+
+            statement.setString(1, login);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = setFieldsFromResultSet(resultSet);
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return user;
+    }
+
+    public User findByEmail(ProxyConnection connection, String email) throws DaoException {
+        User user = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_EMAIL_SQL)) {
+
+            statement.setString(1, email);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = setFieldsFromResultSet(resultSet);
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return user;
+    }
+
+    public User findByEmailOrLogin(ProxyConnection connection, String emailOrLogin) throws DaoException {
+        User user = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_EMAIL_OR_LOGIN_SQL)) {
+
+            statement.setString(1, emailOrLogin);
+            statement.setString(2, emailOrLogin);
 
             ResultSet resultSet = statement.executeQuery();
 
