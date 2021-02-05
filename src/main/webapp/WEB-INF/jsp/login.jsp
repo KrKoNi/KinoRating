@@ -9,18 +9,20 @@
 <body>
     <jsp:directive.include file="../static/navbar.jsp" />
 
-    <c:set var="messages" value="${pageContext.request.getAttribute('messages')}"/>
-    <c:forEach items="${messages}" var="message">
-        <div class="toast text-white bg-dark" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; z-index: 100">
-            <div class="toast-header">
-                <strong class="me-auto">ERROR</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                <c:out value="${message.value}"/>
-            </div>
+    <c:set var="error" value="${pageContext.request.getAttribute('error')}"/>
+
+    <c:if test="${not empty error}">
+    <div class="toast text-white bg-dark" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; z-index: 100">
+        <div class="toast-header">
+            <strong class="me-auto">ERROR</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-    </c:forEach>
+        <div class="toast-body">
+            <c:out value="${error}"/>
+        </div>
+    </div>
+    </c:if>
+
     <div class="login-dark">
         <form method="post">
             <div class="form-group">
