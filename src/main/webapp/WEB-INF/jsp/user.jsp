@@ -21,6 +21,8 @@
             Email: <span><c:out value="${user.email}"/></span>
             <br/>
             Registration date: <span><c:out value="${user.registrationDate}"/></span>
+            <br/>
+            <a role="button" href="${pageContext.request.contextPath}/app/edit_user">Edit</a>
         </div>
         <table class="table table-dark table-striped table-hover">
             <thead>

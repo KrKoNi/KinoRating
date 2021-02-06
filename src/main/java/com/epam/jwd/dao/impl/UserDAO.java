@@ -6,7 +6,10 @@ import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,8 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String SELECT_BY_LOGIN_SQL = "SELECT * FROM kinorating.users where login = ? limit 1";
     private static final String SELECT_BY_EMAIL_SQL = "SELECT * FROM kinorating.users where email = ? limit 1";
     private static final String SELECT_BY_EMAIL_OR_LOGIN_SQL = "SELECT * FROM kinorating.users where email = ? or login = ? limit 1";
+    private static final String UPDATE_SQL = "UPDATE kinorating.users SET login = ?, email = ?, first_name = ?, last_name = ?, birth_date = ? where id = ?";
+
 
     @Override
     public List<User> readAll(ProxyConnection connection) throws DaoException {
@@ -125,12 +130,6 @@ public class UserDAO implements DataAccessObject<User> {
             exception.printStackTrace();
             throw new DaoException(exception);
         }
-    }
-
-
-    @Override
-    public void update(ProxyConnection connection, User user) {
-
     }
 
     @Override
@@ -238,6 +237,25 @@ public class UserDAO implements DataAccessObject<User> {
             throw new DaoException(exception);
         }
         return rates;
+    }
+
+    public void update(ProxyConnection connection, User user) throws DaoException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setString(1, user.getLogin());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getFirstName());
+            statement.setString(4, user.getLastName());
+            statement.setDate(5, Date.valueOf(user.getBirthDate()));
+
+            statement.setInt(6, user.getId());
+
+            statement.execute();
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
     }
 
     private User setFieldsFromResultSet(ResultSet resultSet) throws SQLException {

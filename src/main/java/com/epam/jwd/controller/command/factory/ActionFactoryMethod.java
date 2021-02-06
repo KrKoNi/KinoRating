@@ -12,6 +12,8 @@ import com.epam.jwd.controller.command.impl.signup.SignupPageControllerAction;
 import com.epam.jwd.controller.command.impl.signup.SignupSubmitControllerAction;
 import com.epam.jwd.controller.command.impl.tv.TVPageControllerAction;
 import com.epam.jwd.controller.command.impl.tv.TVSeriesPageControllerAction;
+import com.epam.jwd.controller.command.impl.user.EditUserPageControllerAction;
+import com.epam.jwd.controller.command.impl.user.EditUserSubmitControllerAction;
 import com.epam.jwd.controller.command.impl.user.UserPageControllerAction;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,8 @@ public class ActionFactoryMethod {
         actions.put("GET/tv", new TVPageControllerAction());
 
         actions.put("GET/user", new UserPageControllerAction());
+        actions.put("GET/edit_user", new EditUserPageControllerAction());
+        actions.put("POST/update_user", new EditUserSubmitControllerAction());
 
         actions.put("POST/rate", new MovieRateSubmitControllerAction());
     }

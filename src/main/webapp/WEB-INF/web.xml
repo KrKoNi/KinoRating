@@ -9,6 +9,14 @@
          version="4.0">
     <display-name>KinoRating</display-name>
 
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>/*</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
+
+
     <taglib>
         <taglib-uri>local</taglib-uri>
         <taglib-location>WEB-INF/tag/tagl.tld</taglib-location>

@@ -6,8 +6,6 @@ import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,5 +121,12 @@ public class UserService {
             exception.printStackTrace(); //logs
         }
         return user;
+    }
+    public static void update(User user) {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+            UserDAO.getInstance().update(connection, user);
+        } catch (DaoException e) {
+            e.printStackTrace(); //logs
+        }
     }
 }
