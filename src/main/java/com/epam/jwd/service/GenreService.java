@@ -6,8 +6,6 @@ import com.epam.jwd.dao.impl.GenreDAO;
 import com.epam.jwd.domain.Genre;
 import com.epam.jwd.exceptions.DaoException;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

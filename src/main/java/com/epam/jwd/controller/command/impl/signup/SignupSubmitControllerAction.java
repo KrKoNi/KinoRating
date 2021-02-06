@@ -10,7 +10,6 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.time.LocalDate;
 
 public class SignupSubmitControllerAction implements ControllerAction {

@@ -7,7 +7,6 @@ import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.exceptions.DaoException;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

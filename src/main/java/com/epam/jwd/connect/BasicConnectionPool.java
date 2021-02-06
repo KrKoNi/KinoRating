@@ -2,6 +2,7 @@ package com.epam.jwd.connect;
 
 import com.epam.jwd.config.DatabaseProperties;
 import org.apache.log4j.Logger;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayDeque;

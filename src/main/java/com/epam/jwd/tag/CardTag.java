@@ -1,7 +1,6 @@
 package com.epam.jwd.tag;
 
 import com.epam.jwd.domain.Movie;
-import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.dto.impl.UserDTO;
@@ -10,7 +9,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.util.List;
 
 public class CardTag extends TagSupport {
 

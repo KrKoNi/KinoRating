@@ -1,9 +1,7 @@
 package com.epam.jwd.controller.command.impl.tv;
 
 import com.epam.jwd.controller.command.ControllerAction;
-import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
-import com.epam.jwd.service.MovieService;
 import com.epam.jwd.service.TVSeriesService;
 
 import javax.servlet.http.HttpServletRequest;

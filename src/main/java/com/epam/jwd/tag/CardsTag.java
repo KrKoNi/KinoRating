@@ -1,7 +1,6 @@
 package com.epam.jwd.tag;
 
 import com.epam.jwd.domain.Movie;
-import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.dto.impl.UserDTO;

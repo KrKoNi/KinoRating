@@ -6,7 +6,7 @@ import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.service.ShowService;
 
 import javax.servlet.*;
-import javax.servlet.annotation.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
