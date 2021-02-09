@@ -23,7 +23,11 @@
     <jsp:directive.include file="../static/navbar.jsp"/>
     <c:set var="movies" value="${pageContext.request.getAttribute('movies')}"/>
 
-    <jwd:cards showList="${movies}"/>
+    <div class="row row-cols-1 row-cols-md-4">
+        <c:forEach items="${movies}" var="movie">
+            <jwd:card show="${movie}"/>
+        </c:forEach>
+    </div>
 
     <jsp:directive.include file="../static/pagination.jsp"/>
 </body>
