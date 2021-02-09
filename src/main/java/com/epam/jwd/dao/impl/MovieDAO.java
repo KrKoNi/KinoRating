@@ -93,17 +93,36 @@ public class MovieDAO implements DataAccessObject<Movie> {
 
     @Override
     public void insert(ProxyConnection connection, Movie movie) throws DaoException {
+
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
             statement.setString(1, movie.getDirectedBy());
             statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
 
-            statement.execute();
+            statement.executeUpdate();
 
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
             throw new DaoException(exception);
         }
+    }
+
+    public int insertReturningId(ProxyConnection connection, Movie movie) throws DaoException {
+        int id;
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
+            statement.setString(1, movie.getDirectedBy());
+            statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
+
+            statement.execute();
+
+            id = statement.getGeneratedKeys().getInt("id");
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return id;
     }
 
     @Override

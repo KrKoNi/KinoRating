@@ -57,12 +57,15 @@ public class MovieService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().insert(connection, movie);
             MovieDAO.getInstance().insert(connection, movie);
+            int id = ShowDAO.getInstance().getLastInsertedId(connection);
+            movie.setId(id);
             ShowDAO.getInstance().addGenresToShow(connection, movie);
 
             connection.commit();
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
+
     }
 
     public static void update(Movie movie) {

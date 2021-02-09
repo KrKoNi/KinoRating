@@ -1,14 +1,20 @@
 package com.epam.jwd.tag;
 
+import com.epam.jwd.domain.Genre;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.dto.impl.UserDTO;
+import org.apache.taglibs.standard.tag.rt.fmt.MessageTag;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CardTag extends TagSupport {
 
@@ -20,6 +26,19 @@ public class CardTag extends TagSupport {
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
 
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        final Cookie[] cookies = request.getCookies();
+        String lang = "en";
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("lang".equals(cookie.getName())) {
+                    lang = cookie.getValue();
+                }
+            }
+        }
+
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("text_" + lang);
 
         UserDTO userDTO = (UserDTO) pageContext.getSession().getAttribute("userDTO");
 
@@ -44,15 +63,18 @@ public class CardTag extends TagSupport {
             out.print("</a>");
             out.print("<div class='card-body'>");
             out.print(String.format("<h5 class='card-title'>%s</h5>", show.getTitle()));
-            out.print(String.format("<p class='card-text'>%s</p>", show.getShortDescription()));
+            String genres = show.getGenres().stream()
+                    .map(Genre::getName)
+                    .collect(Collectors.joining(", "));
+            out.print(String.format("<p class='card-text'>%s</p>", genres));
             out.print(String.format("<div class='star-rating' id='%d' style='direction: rtl'>", show.getId()));
             for (int i = 10; i >= 1; i--) {
                 out.print(String.format("<span class='%d' onmouseout='setActive(%d, %d)' onmouseover='setActive(%d, %d)' onclick='sendRate(%d, %d)'><i class='fa fa-star'></i></span>", i, show.getId(), userRate, show.getId(), i, show.getId(), i));
             }
             out.print("</div>");
             if(userRate != 0) {
-                out.print(String.format("<span><fmt:message key='msg.your-rate'/>: %d </span>", userRate));
-                out.print(String.format("<button onclick='removeRate(%d)' type='button' class='btn btn-dark'><fmt:message key='msg.remove-rate'/></button>", show.getId()));
+                out.print(String.format("<span>%s: %d</span>", resourceBundle.getString("msg.your-rate"), userRate));
+                out.print(String.format("<button onclick='removeRate(%d)' type='button' class='btn btn-dark'>%s</button>", show.getId(), resourceBundle.getString("msg.remove-rate") ));
             }
             out.print("</div>");
             out.print("</div>");

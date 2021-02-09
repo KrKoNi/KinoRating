@@ -22,6 +22,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
     private static final String INSERT_SQL = "INSERT INTO kinorating.abstract_kino (title, image_link, short_description, description) VALUES (?, ?, ?, ?)";
     private static final String SELECT_RATES_BY_SHOW_SQL = "SELECT * FROM kinorating.kino_ratings where kino_id = ?";
+    private static final String SELECT_LAST_INSERTED_ID = "SELECT LAST_INSERT_ID() FROM kinorating.abstract_kino";
     private static final String SELECT_GENRES_BY_SHOW_SQL = "SELECT * FROM kinorating.kino_genres where kino_id = ?";
     private static final String SELECT_AVERAGE_SHOW_RATE_SQL = "SELECT AVG(kino_ratings.kino_rating) FROM kinorating.kino_ratings where kino_id = ?";
     private static final String ADD_RATE_SQL = "INSERT INTO kinorating.kino_ratings(kino_id, user_id, kino_rating) values (?, ?, ?) on duplicate key update kino_rating = ?";
@@ -265,5 +266,22 @@ public final class ShowDAO implements DataAccessObject<Show> {
             throw new DaoException(exception);
         }
     }
+
+    public int getLastInsertedId(ProxyConnection connection) throws DaoException {
+        int id = -1;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_LAST_INSERTED_ID)) {
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return id;
+    }
+
+
 
 }

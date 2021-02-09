@@ -1,6 +1,7 @@
-<%@ page import="com.epam.jwd.domain.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<c:set var="genres" value="${pageContext.request.getAttribute('genres')}"/>
 
 <html>
 <head>
@@ -45,6 +46,15 @@
         <label for="duration" class="form-label">Duration</label>
         <input type="time" class="form-control" id="duration" name="duration">
     </div>
+
+    <c:forEach items="${genres}" var="genre">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="genres" value="${genre.id}" id="check${genre.id}">
+            <label class="form-check-label" for="check${genre.id}">
+                <c:out value="${genre.name}"/>
+            </label>
+        </div>
+    </c:forEach>
 
     <button type="submit" class="btn btn-dark">Create</button>
 
