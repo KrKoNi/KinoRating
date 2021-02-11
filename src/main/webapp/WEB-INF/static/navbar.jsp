@@ -36,8 +36,8 @@
             </ul>
 
 
-            <form class="d-flex justify-content-end">
-                <input class="form-control ms-2" type="search" placeholder="<fmt:message key="msg.search"/>" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
+            <form class="d-flex justify-content-end" method="get" action="${pageContext.request.contextPath}/app/search_result">
+                <input name="search" class="form-control ms-2" type="search" placeholder="<fmt:message key="msg.search"/>" aria-label="Search" id="search" onkeyup="searchShow(document.getElementById('search').value)">
                 <button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button>
             </form>
             <c:choose>
