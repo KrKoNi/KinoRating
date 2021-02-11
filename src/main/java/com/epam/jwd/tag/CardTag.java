@@ -5,7 +5,7 @@ import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.dto.impl.UserDTO;
-import org.apache.taglibs.standard.tag.rt.fmt.MessageTag;
+import com.epam.jwd.service.ShowService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +17,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CardTag extends TagSupport {
-
-
 
     private Show show;
 
@@ -67,6 +65,7 @@ public class CardTag extends TagSupport {
                     .map(Genre::getName)
                     .collect(Collectors.joining(", "));
             out.print(String.format("<p class='card-text'>%s</p>", genres));
+            out.print(String.format("<p class='card-text'>%s: %.2f</p>", resourceBundle.getString("msg.average-rate"), ShowService.getAverageRate(show.getId())));
             out.print(String.format("<div class='star-rating' id='%d' style='direction: rtl'>", show.getId()));
             for (int i = 10; i >= 1; i--) {
                 out.print(String.format("<span class='%d' onmouseout='setActive(%d, %d)' onmouseover='setActive(%d, %d)' onclick='sendRate(%d, %d)'><i class='fa fa-star'></i></span>", i, show.getId(), userRate, show.getId(), i, show.getId(), i));
