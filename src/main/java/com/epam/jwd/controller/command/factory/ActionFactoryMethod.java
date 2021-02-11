@@ -8,6 +8,8 @@ import com.epam.jwd.controller.command.impl.login.LogoutControllerAction;
 import com.epam.jwd.controller.command.impl.movie.MoviePageControllerAction;
 import com.epam.jwd.controller.command.impl.movie.MoviesPageControllerAction;
 import com.epam.jwd.controller.command.impl.rate.MovieRateSubmitControllerAction;
+import com.epam.jwd.controller.command.impl.rate.SortByRateControllerAction;
+import com.epam.jwd.controller.command.impl.search.SearchShowsControllerAction;
 import com.epam.jwd.controller.command.impl.signup.SignupPageControllerAction;
 import com.epam.jwd.controller.command.impl.signup.SignupSubmitControllerAction;
 import com.epam.jwd.controller.command.impl.tv.TVPageControllerAction;
@@ -37,6 +39,10 @@ public class ActionFactoryMethod {
 
         actions.put("GET/movies", new MoviesPageControllerAction());
         actions.put("GET/tv-series", new TVSeriesPageControllerAction());
+
+        actions.put("GET/search_result", new SearchShowsControllerAction());
+
+        actions.put("GET/sort", new SortByRateControllerAction());//
 
         actions.put("GET/movie", new MoviePageControllerAction());
         actions.put("GET/tv", new TVPageControllerAction());

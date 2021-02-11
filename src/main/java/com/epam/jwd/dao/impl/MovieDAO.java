@@ -33,6 +33,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
     private static final String INSERT_SQL = "INSERT INTO kinorating.movies(id, directed_by, release_date) VALUES ((SELECT LAST_INSERT_ID() from abstract_kino LIMIT 1), ?, ?)";
     private static final String UPDATE_SQL = "UPDATE kinorating.movies SET directed_by = ? where id = ?";
     private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?";
+    private static final String SELECT_LIKE_WITH_OFFSET_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ? LIMIT ?, ?";
     private static final String CONTAINS_ID_SQL = "SELECT COUNT(movies.id) from kinorating.movies where movies.id = ?";
 
     @Override

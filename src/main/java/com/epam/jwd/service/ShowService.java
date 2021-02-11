@@ -35,6 +35,19 @@ public class ShowService {
         return showList;
     }
 
+    public static List<Show> sortByRate() {
+        List<Show> showList = new ArrayList<>();
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            showList.addAll(ShowDAO.getInstance().getShowsSortedByRates(connection));
+
+            connection.commit();
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return showList;
+    }
+
     public static void addRate(Show show, int userId, int rate) {
         addRate(show.getId(), userId, rate);
     }
@@ -53,6 +66,16 @@ public class ShowService {
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
+    }
+
+    public static double getAverageRate(int showId) {
+        double avgRate = 0;
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+            avgRate = ShowDAO.getInstance().getAverageRate(connection, showId);
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return avgRate;
     }
 
     public static void removeShow(int showId) {
