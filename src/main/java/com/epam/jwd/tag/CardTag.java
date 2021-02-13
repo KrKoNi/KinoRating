@@ -67,14 +67,16 @@ public class CardTag extends TagSupport {
                     .collect(Collectors.joining(", "));
             out.print(String.format("<p class='card-text'>%s</p>", genres));
             out.print(String.format("<p class='card-text'>%s: %.2f</p>", resourceBundle.getString("msg.average-rate"), show.getAverageRate()));
-            out.print(String.format("<div class='star-rating' id='%d' style='direction: rtl'>", show.getId()));
-            for (int i = 10; i >= 1; i--) {
-                out.print(String.format("<span class='%d' onmouseout='setActive(%d, %d)' onmouseover='setActive(%d, %d)' onclick='sendRate(%d, %d)'><i class='fa fa-star'></i></span>", i, show.getId(), userRate, show.getId(), i, show.getId(), i));
-            }
-            out.print("</div>");
-            if(userRate != 0) {
-                out.print(String.format("<span>%s: %d</span>", resourceBundle.getString("msg.your-rate"), userRate));
-                out.print(String.format("<button onclick='removeRate(%d)' type='button' class='btn btn-dark'>%s</button>", show.getId(), resourceBundle.getString("msg.remove-rate") ));
+            if(userDTO != null) {
+                out.print(String.format("<div class='star-rating' id='%d' style='direction: rtl'>", show.getId()));
+                for (int i = 10; i >= 1; i--) {
+                    out.print(String.format("<span class='%d' onmouseout='setActive(%d, %d)' onmouseover='setActive(%d, %d)' onclick='sendRate(%d, %d)'><i class='fa fa-star'></i></span>", i, show.getId(), userRate, show.getId(), i, show.getId(), i));
+                }
+                out.print("</div>");
+                if(userRate != 0) {
+                    out.print(String.format("<span>%s: %d</span>", resourceBundle.getString("msg.your-rate"), userRate));
+                    out.print(String.format("<button onclick='removeRate(%d)' type='button' class='btn btn-dark'>%s</button>", show.getId(), resourceBundle.getString("msg.remove-rate") ));
+                }
             }
             out.print("</div>");
             out.print("</div>");
