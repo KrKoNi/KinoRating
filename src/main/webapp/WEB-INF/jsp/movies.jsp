@@ -22,20 +22,21 @@
 <body>
     <jsp:directive.include file="../static/navbar.jsp"/>
     <c:set var="movies" value="${pageContext.request.getAttribute('movies')}"/>
-
+    <c:set var="sortBy" value="${pageContext.request.getParameter('sort')}"/>
+    <c:set var="orderBy" value="${pageContext.request.getParameter('order')}"/>
     <div>
         <form>
             <label for="sort">Sort by:</label>
-            <select name="sort" id="sort">
-                <option value="release_date">Release date</option>
-                <option value="title">Title</option>
-                <option value="rate">Rate</option>
+            <select class="form-select-sm" name="sort" id="sort">
+                <option value="release_date" ${sortBy.equals("release_date") ? "selected" : ""}>Release date</option>
+                <option value="title" ${sortBy.equals("title") ? "selected" : ""}>Title</option>
+                <option value="rate" ${sortBy.equals("rate") ? "selected" : ""}>Rate</option>
             </select>
-            <select name="order">
-                <option value="desc">Descending</option>
-                <option value="asc">Ascending</option>
+            <select class="form-select-sm" name="order">
+                <option value="desc" ${orderBy.equals("desc") ? "selected" : ""}>Descending</option>
+                <option value="asc" ${orderBy.equals("asc") ? "selected" : ""}>Ascending</option>
             </select>
-            <button type="submit">Sort</button>
+            <button class="btn btn-dark" type="submit">Sort</button>
         </form>
     </div>
     <div class="row row-cols-1 row-cols-md-4">

@@ -48,7 +48,7 @@
                     </td>
                     <td>
                         <p style="max-width: 20rem; white-space:nowrap; overflow: hidden; text-overflow: ellipsis">
-                            <c:out value="${show.rates[userDTO.id]}"/>
+                            <c:out value="${user.rates[show.id]}"/>
                         </p>
                     </td>
                     <td>
