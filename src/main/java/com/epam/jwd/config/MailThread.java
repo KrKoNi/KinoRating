@@ -1,5 +1,7 @@
 package com.epam.jwd.config;
 
+import org.apache.log4j.Logger;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -8,6 +10,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class MailThread extends Thread {
+    private static final Logger logger = Logger.getLogger(MailThread.class);
+
     private MimeMessage message;
     private final String sendToEmail;
     private final String mailSubject;
@@ -28,7 +32,7 @@ public class MailThread extends Thread {
             message.setContent(mailText, "text/html");
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmail));
         } catch (MessagingException e) {
-            e.printStackTrace();
+            logger.error("Cannot create e-mail message", e);
         }
     }
     public void run() {
@@ -36,7 +40,7 @@ public class MailThread extends Thread {
         try {
             Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            logger.error("Error occurred delivering e-mail message", e);
         }
     }
 }

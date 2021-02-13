@@ -2,16 +2,22 @@ package com.epam.jwd.controller.strategy.impl.user;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.User;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 
 public class EditUserSubmitControllerAction implements ControllerAction {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request.setCharacterEncoding("UTF-8");
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
+        try {
+            request.setCharacterEncoding("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         int id = Integer.parseInt(request.getParameter("id"));
 

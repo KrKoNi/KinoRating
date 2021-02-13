@@ -1,10 +1,14 @@
 package com.epam.jwd.config;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class DatabaseProperties {
+
+    private static final Logger logger = Logger.getLogger(DatabaseProperties.class);
 
     private DatabaseProperties() {
 
@@ -18,7 +22,7 @@ public class DatabaseProperties {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Error registering JDBC driver", e);
         }
     }
 
@@ -35,8 +39,7 @@ public class DatabaseProperties {
 
 
         } catch (IOException ex) {
-            ex.printStackTrace();
-
+            logger.error("Error reading properties from file", ex);
         }
     }
 

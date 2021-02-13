@@ -2,6 +2,7 @@ package com.epam.jwd.controller.strategy.impl.admin;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.User;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class UsersPageControllerAction implements ControllerAction {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         int page;
         try {
             page = Integer.parseInt(request.getParameter("page"));

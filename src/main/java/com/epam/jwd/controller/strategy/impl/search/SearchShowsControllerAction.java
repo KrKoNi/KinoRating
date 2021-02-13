@@ -2,6 +2,7 @@ package com.epam.jwd.controller.strategy.impl.search;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.Show;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.ShowService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,7 @@ public class SearchShowsControllerAction implements ControllerAction {
     private static final int SHOWS_ON_PAGE = 20;
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
 
         String str = request.getParameter("search");

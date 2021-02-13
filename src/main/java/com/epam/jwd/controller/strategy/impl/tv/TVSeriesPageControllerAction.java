@@ -2,6 +2,7 @@ package com.epam.jwd.controller.strategy.impl.tv;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.TVSeries;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.TVSeriesService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,7 @@ public class TVSeriesPageControllerAction implements ControllerAction {
     private final static int TV_ON_PAGE = 20;
     
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
         int tvCount = TVSeriesService.getTVCount();
 

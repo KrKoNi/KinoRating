@@ -7,19 +7,21 @@ import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.dto.impl.UserDTO;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.MovieService;
 import com.epam.jwd.service.ShowService;
 import com.epam.jwd.service.TVSeriesService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class UserPageControllerAction implements ControllerAction {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException, SQLException {
 
         UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userDTO");
 
@@ -31,7 +33,12 @@ public class UserPageControllerAction implements ControllerAction {
 
         for (Integer showId : showIds) {
             Show show;
-            Class<? extends Show> showClass = ShowService.getShowType(showId);
+            Class<? extends Show> showClass = null;
+            try {
+                showClass = ShowService.getShowType(showId);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
             if (showClass == Movie.class) {
                 show = MovieService.findById(showId);

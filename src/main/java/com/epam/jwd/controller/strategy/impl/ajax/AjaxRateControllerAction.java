@@ -2,6 +2,7 @@ package com.epam.jwd.controller.strategy.impl.ajax;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.dto.impl.UserDTO;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.ShowService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AjaxRateControllerAction implements ControllerAction {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         UserDTO userDTO = (UserDTO) request.getSession(false).getAttribute("userDTO");
         int showId = Integer.parseInt(request.getParameter("id"));
 

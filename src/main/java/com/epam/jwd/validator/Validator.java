@@ -4,7 +4,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 public class Validator {
-    private static final String LOGIN_REGEX = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{0,19}$";
+    private static final String LOGIN_REGEX = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{4,19}$";
 
     private Validator() {
 

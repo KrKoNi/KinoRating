@@ -1,10 +1,14 @@
 package com.epam.jwd.config;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class MailProperties {
+
+    private static final Logger logger = Logger.getLogger(MailProperties.class);
 
     private MailProperties() {
 
@@ -28,8 +32,7 @@ public class MailProperties {
             mailUserPassword = prop.getProperty("mail.user.password");
 
         } catch (IOException ex) {
-            ex.printStackTrace();
-
+            logger.error("Error reading mail props from file", ex);
         }
     }
 

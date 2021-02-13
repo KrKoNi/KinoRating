@@ -3,6 +3,7 @@ package com.epam.jwd.controller.strategy.impl.admin;
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.Genre;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.GenreService;
 import com.epam.jwd.service.MovieService;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class CreateMovieSubmitControllerAction implements ControllerAction {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
         String title = request.getParameter("title");
         String shortDescription = request.getParameter("short_description");

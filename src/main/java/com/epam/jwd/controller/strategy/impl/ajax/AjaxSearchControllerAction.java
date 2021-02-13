@@ -2,23 +2,35 @@ package com.epam.jwd.controller.strategy.impl.ajax;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.Show;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.ShowService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
 public class AjaxSearchControllerAction implements ControllerAction {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
-        PrintWriter out = response.getWriter();
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String str = request.getParameter("str");
         List<Show> showList = ShowService.findLike(str);
-        out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(showList));
+        try {
+            out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(showList));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         out.flush();
 
         return "ajax";

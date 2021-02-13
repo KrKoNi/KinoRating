@@ -2,6 +2,7 @@ package com.epam.jwd.controller.strategy.impl.movie;
 
 import com.epam.jwd.controller.strategy.ControllerAction;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.exceptions.ActionException;
 import com.epam.jwd.service.MovieService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ public class MoviesPageControllerAction implements ControllerAction {
     private final static int MOVIES_ON_PAGE = 20;
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         int movieCount = MovieService.getMoviesCount();
 
         int maxPage = (int) Math.ceil((double) movieCount / MOVIES_ON_PAGE);

@@ -70,7 +70,7 @@ public enum BasicConnectionPool {
             try {
                 freeConnections.take().realClose();
             } catch (InterruptedException exception) {
-                exception.printStackTrace();
+                logger.error("Cannot close connection", exception);
             }
         }
         deregisterDrivers();
@@ -81,7 +81,7 @@ public enum BasicConnectionPool {
             try {
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException exception) {
-                exception.printStackTrace();
+                logger.error("Error occurred when deregister drivers", exception);
             }
         });
     }
