@@ -35,7 +35,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
     private static final String SET_AVERAGE_RATE_SQL = "UPDATE kinorating.abstract_kino SET rate = ? where id = ?";
     private static final String DELETE_SQL = "DELETE FROM kinorating.abstract_kino where id = ?";
     private static final String SELECT_LIKE_WITH_OFFSET_SQL = "SELECT abstract_kino.id FROM kinorating.abstract_kino natural join kinorating.movies, kinorating.tv_series where title like ? limit ?, ?";
-    private static final String SELECT_LIKE_SQL = "SELECT abstract_kino.id FROM kinorating.abstract_kino natural join kinorating.movies, kinorating.tv_series where title like ? LIMIT 120";
+    private static final String SELECT_LIKE_SQL = "SELECT abstract_kino.id FROM kinorating.abstract_kino where title like ? LIMIT 120";
     private static final String SELECT_ROW_COUNT_SQL = "SELECT COUNT(abstract_kino.id) FROM kinorating.abstract_kino";
     private static final String SELECT_SHOW_RATE_BY_USER_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ? and kino_id = ?";
 
