@@ -2,10 +2,8 @@ package com.epam.jwd.service;
 
 import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
-import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
-import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.exceptions.DaoException;
 

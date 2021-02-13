@@ -5,7 +5,6 @@ import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.domain.Movie;
-import com.epam.jwd.domain.Show;
 import com.epam.jwd.exceptions.DaoException;
 
 import java.util.ArrayList;

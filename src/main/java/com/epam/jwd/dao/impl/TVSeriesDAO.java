@@ -2,7 +2,6 @@ package com.epam.jwd.dao.impl;
 
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
-import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;

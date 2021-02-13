@@ -3,12 +3,10 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Genre;
-import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
 import com.epam.jwd.service.GenreService;
-import com.epam.jwd.service.MovieService;
 import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;

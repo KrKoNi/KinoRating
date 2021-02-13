@@ -1,9 +1,11 @@
 package com.epam.jwd.tag;
 
 import com.epam.jwd.converter.impl.UserConverter;
-import com.epam.jwd.domain.*;
+import com.epam.jwd.domain.Genre;
+import com.epam.jwd.domain.Movie;
+import com.epam.jwd.domain.Show;
+import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.dto.impl.UserDTO;
-import com.epam.jwd.service.ShowService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +13,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class CardTag extends TagSupport {

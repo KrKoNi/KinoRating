@@ -2,9 +2,7 @@ package com.epam.jwd.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class Show implements Serializable {
 
