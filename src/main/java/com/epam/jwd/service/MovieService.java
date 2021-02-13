@@ -6,11 +6,14 @@ import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.exceptions.DaoException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MovieService {
+
+    private static final Logger logger = Logger.getLogger(MovieService.class);
 
     public static Movie findById(int id) {
         Movie movie = null;
@@ -24,7 +27,7 @@ public class MovieService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
         return movie;
@@ -44,7 +47,7 @@ public class MovieService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
         return movies;
@@ -61,7 +64,7 @@ public class MovieService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
     }
@@ -75,7 +78,7 @@ public class MovieService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -87,7 +90,7 @@ public class MovieService {
             rowCount = MovieDAO.getInstance().getRowCount(connection);
 
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
         return rowCount;
@@ -100,7 +103,7 @@ public class MovieService {
             movies.addAll(MovieDAO.getInstance().getShowsSortedBy(connection, sortBy, order, offset, number));
 
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return movies;
     }

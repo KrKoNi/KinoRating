@@ -42,7 +42,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
     private ShowDAO() {
     }
 
-    private static final Logger LOGGER = Logger.getLogger(ShowDAO.class);
+    private static final Logger logger = Logger.getLogger(ShowDAO.class);
 
     public static ShowDAO getInstance() {
         return INSTANCE;
@@ -76,7 +76,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -94,7 +94,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
             statement.execute();
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -109,7 +109,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
             statement.execute();
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -130,7 +130,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return rates;
@@ -153,7 +153,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return showRate;
@@ -168,7 +168,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return rowCount;
@@ -199,7 +199,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return showList;
@@ -223,7 +223,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return showList;
@@ -243,7 +243,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return genres;
@@ -270,7 +270,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -285,7 +285,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -303,7 +303,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -321,7 +321,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return averageRate;
@@ -340,7 +340,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return averageRate;
@@ -355,7 +355,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -369,7 +369,7 @@ public final class ShowDAO implements DataAccessObject<Show> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return id;

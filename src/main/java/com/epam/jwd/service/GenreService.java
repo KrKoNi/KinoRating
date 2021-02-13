@@ -5,11 +5,14 @@ import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.GenreDAO;
 import com.epam.jwd.domain.Genre;
 import com.epam.jwd.exceptions.DaoException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GenreService {
+
+    private static final Logger logger = Logger.getLogger(GenreService.class);
 
     private static final List<Genre> genres = initGenres();
 
@@ -23,7 +26,7 @@ public class GenreService {
             genreList = GenreDAO.getInstance().readAll(connection);
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return genreList;
     }

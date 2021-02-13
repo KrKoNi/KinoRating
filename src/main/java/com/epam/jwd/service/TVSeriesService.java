@@ -6,12 +6,15 @@ import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.exceptions.DaoException;
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TVSeriesService {
+
+    private static final Logger logger = Logger.getLogger(TVSeriesService.class);
 
     public static TVSeries findById(int id) throws SQLException {
         TVSeries tvSeries = null;
@@ -24,7 +27,7 @@ public class TVSeriesService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
         return tvSeries;
@@ -42,7 +45,7 @@ public class TVSeriesService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
         return tvSeriesList;
@@ -56,7 +59,7 @@ public class TVSeriesService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -70,7 +73,7 @@ public class TVSeriesService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -84,7 +87,7 @@ public class TVSeriesService {
             connection.commit();
 
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
 
         return rowCount;
@@ -97,7 +100,7 @@ public class TVSeriesService {
             tvSeries.addAll(TVSeriesDAO.getInstance().getShowsSortedBy(connection, sortBy, order, offset, number));
 
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return tvSeries;
     }

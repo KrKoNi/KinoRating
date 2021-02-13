@@ -5,6 +5,7 @@ import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
+import org.apache.log4j.Logger;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -37,6 +38,7 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String SELECT_BY_EMAIL_OR_LOGIN_SQL = "SELECT * FROM kinorating.users where email = ? or login = ? limit 1";
     private static final String UPDATE_SQL = "UPDATE kinorating.users SET login = ?, email = ?, first_name = ?, last_name = ?, birth_date = ? where id = ?";
 
+    private static final Logger logger = Logger.getLogger(UserDAO.class);
 
     @Override
     public List<User> readAll(ProxyConnection connection) throws DaoException {
@@ -49,7 +51,7 @@ public class UserDAO implements DataAccessObject<User> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return users;
@@ -69,7 +71,7 @@ public class UserDAO implements DataAccessObject<User> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
 
@@ -90,7 +92,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return user;
@@ -113,7 +115,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -127,7 +129,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -152,7 +154,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return user;
@@ -172,7 +174,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return user;
@@ -192,7 +194,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return user;
@@ -213,7 +215,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return user;
@@ -233,7 +235,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return rates;
@@ -253,7 +255,7 @@ public class UserDAO implements DataAccessObject<User> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }

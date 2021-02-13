@@ -56,7 +56,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return movies;
@@ -76,7 +76,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return movies;
@@ -95,7 +95,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return movie;
@@ -112,7 +112,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -126,7 +126,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             statement.execute();
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -147,7 +147,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return movieList;
@@ -162,7 +162,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return rowCount;
@@ -178,7 +178,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return isMovie;
@@ -235,7 +235,7 @@ public class MovieDAO implements DataAccessObject<Movie> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return movies;

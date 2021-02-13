@@ -63,7 +63,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
             genre = new Genre(id, name);
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return genre;
@@ -79,7 +79,7 @@ public class GenreDAO implements DataAccessObject<Genre> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }

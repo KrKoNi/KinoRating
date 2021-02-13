@@ -50,7 +50,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
 
@@ -70,7 +70,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return tvSeriesList;
@@ -89,7 +89,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return tvSeriesList;
@@ -107,7 +107,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
 
@@ -124,7 +124,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
     }
@@ -148,7 +148,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return rowCount;
@@ -164,7 +164,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
             }
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return isTV;
@@ -215,7 +215,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
 
         } catch (SQLException exception) {
             connection.rollback();
-            exception.printStackTrace();
+            logger.error(exception);
             throw new DaoException(exception);
         }
         return tvSeries;

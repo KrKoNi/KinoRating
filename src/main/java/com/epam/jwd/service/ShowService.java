@@ -26,7 +26,7 @@ public class ShowService {
             showList.addAll(ShowDAO.getInstance().findLike(connection, str));
 
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return showList;
     }
@@ -38,7 +38,7 @@ public class ShowService {
             showList.addAll(ShowDAO.getInstance().findLikeWithOffset(connection, str, offset, number));
 
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return showList;
     }
@@ -48,7 +48,7 @@ public class ShowService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             rowCount = ShowDAO.getInstance().getRowCount(connection);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return rowCount;
     }
@@ -64,7 +64,7 @@ public class ShowService {
             ShowDAO.getInstance().addRate(connection, showId, userId, rate);
             ShowDAO.getInstance().setAverageRate(connection, showId, ShowDAO.getInstance().getAverageRate(connection, showId));
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -73,7 +73,7 @@ public class ShowService {
             ShowDAO.getInstance().removeRate(connection, showId, userId);
             ShowDAO.getInstance().setAverageRate(connection, showId, ShowDAO.getInstance().getAverageRate(connection, showId));
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -82,7 +82,7 @@ public class ShowService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             avgRate = ShowDAO.getInstance().getAverageRate(connection, showId);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return avgRate;
     }
@@ -91,7 +91,7 @@ public class ShowService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().delete(connection, showId);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -105,7 +105,7 @@ public class ShowService {
                 throw new ClassNotFoundException("Show neither Movie nor TV");
             }
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return null;
     }

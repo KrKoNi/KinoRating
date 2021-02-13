@@ -5,6 +5,7 @@ import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.UserDAO;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +13,15 @@ import java.util.Map;
 
 public class UserService {
 
+    private static final Logger logger = Logger.getLogger(UserService.class);
+
     private UserService() {}
 
     public static void insert(User user) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().insert(connection, user);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -27,7 +30,7 @@ public class UserService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             users = UserDAO.getInstance().readAll(connection);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return users;
     }
@@ -37,7 +40,7 @@ public class UserService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             users = UserDAO.getInstance().readWithOffset(connection, offset, num);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return users;
     }
@@ -52,7 +55,7 @@ public class UserService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return user;
     }
@@ -61,7 +64,7 @@ public class UserService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().delete(connection, userId);
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 
@@ -80,7 +83,7 @@ public class UserService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return user;
     }
@@ -98,7 +101,7 @@ public class UserService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return user;
     }
@@ -116,7 +119,7 @@ public class UserService {
 
             connection.commit();
         } catch (DaoException exception) {
-            exception.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
         return user;
     }
