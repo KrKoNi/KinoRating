@@ -9,15 +9,6 @@
     <uri>local</uri>
 
     <tag>
-        <name>cards</name>
-        <tag-class>com.epam.jwd.tag.CardsTag</tag-class>
-
-        <attribute>
-            <name>showList</name>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <name>card</name>
         <tag-class>com.epam.jwd.tag.CardTag</tag-class>
 

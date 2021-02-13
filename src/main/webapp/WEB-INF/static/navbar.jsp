@@ -50,6 +50,11 @@
                     </a>
                 </c:when>
                 <c:otherwise>
+                    <c:if test="${userDTO.role.id == 2}">
+                        <a class="nav-link btn btn-dark" role="button" href="${pageContext.request.contextPath}/admin">
+                            <fmt:message key="msg.admin"/>
+                        </a>
+                    </c:if>
 
                     <form method="post" action="${pageContext.request.contextPath}/app/logout">
                         <button class="btn btn-dark action-button" type="submit">

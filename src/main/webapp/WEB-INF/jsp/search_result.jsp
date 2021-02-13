@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="local" prefix="jwd"%>
+<c:set var="shows" value="${pageContext.request.getAttribute('shows')}"/>
+
 <html>
 <head>
     <jsp:directive.include file="../static/header.jsp"/>
@@ -21,15 +23,13 @@
 
 <body>
 <jsp:directive.include file="../static/navbar.jsp"/>
-<c:set var="shows" value="${pageContext.request.getAttribute('shows')}"/>
 
-<div class="row row-cols-1 row-cols-md-4">
-    <c:forEach items="${shows}" var="show">
-        <jwd:card show="${show}"/>
-    </c:forEach>
-</div>
 
-<jsp:directive.include file="../static/pagination.jsp"/>
+    <div class="row row-cols-1 row-cols-md-4">
+        <c:forEach items="${shows}" var="show">
+            <jwd:card show="${show}"/>
+        </c:forEach>
+    </div>
 </body>
 <jsp:directive.include file="../static/footer.jsp"/>
 </html>
