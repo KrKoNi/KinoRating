@@ -3,6 +3,7 @@ package com.epam.jwd.dao.impl;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.domain.Show;
 import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;
 
@@ -35,6 +36,15 @@ public class MovieDAO implements DataAccessObject<Movie> {
     private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ?";
     private static final String SELECT_LIKE_WITH_OFFSET_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies where title like ? LIMIT ?, ?";
     private static final String CONTAINS_ID_SQL = "SELECT COUNT(movies.id) from kinorating.movies where movies.id = ?";
+    private static final String SELECT_SORT_BY_ID_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY id DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_ID_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY id ASC limit ?, ?";
+    private static final String SELECT_SORT_BY_RATE_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY rate DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_RATE_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY rate ASC limit ?, ?";
+    private static final String SELECT_SORT_BY_TITLE_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY title DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_TITLE_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY title ASC limit ?, ?";
+    private static final String SELECT_SORT_BY_DATE_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY release_date DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_DATE_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.movies ORDER BY release_date ASC limit ?, ?";
+
 
     @Override
     public List<Movie> readAll(ProxyConnection connection) throws DaoException {
@@ -108,24 +118,6 @@ public class MovieDAO implements DataAccessObject<Movie> {
         }
     }
 
-    public int insertReturningId(ProxyConnection connection, Movie movie) throws DaoException {
-        int id;
-        try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
-            statement.setString(1, movie.getDirectedBy());
-            statement.setDate(2, Date.valueOf(movie.getReleaseDate()));
-
-            statement.execute();
-
-            id = statement.getGeneratedKeys().getInt("id");
-
-        } catch (SQLException exception) {
-            connection.rollback();
-            exception.printStackTrace();
-            throw new DaoException(exception);
-        }
-        return id;
-    }
-
     @Override
     public void update(ProxyConnection connection, Movie movie) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
@@ -193,6 +185,63 @@ public class MovieDAO implements DataAccessObject<Movie> {
         return isMovie;
     }
 
+    public List<Movie> getShowsSortedBy(ProxyConnection connection, String sortBy, String order, int offset, int number) throws DaoException {
+
+        List<Movie> movies = new ArrayList<>();
+
+        String query;
+
+        if (order.equals("asc")) {
+            switch (sortBy) {
+                case "title":
+                    query = SELECT_SORT_BY_TITLE_ASC_SQL;
+                    break;
+                case "rate":
+                    query = SELECT_SORT_BY_RATE_ASC_SQL;
+                    break;
+                case "release_date":
+                    query = SELECT_SORT_BY_DATE_ASC_SQL;
+                    break;
+                default:
+                    query = SELECT_SORT_BY_ID_ASC_SQL;
+                    break;
+            }
+        } else {
+            switch (sortBy) {
+                case "title":
+                    query = SELECT_SORT_BY_TITLE_DESC_SQL;
+                    break;
+                case "rate":
+                    query = SELECT_SORT_BY_RATE_DESC_SQL;
+                    break;
+                case "release_date":
+                    query = SELECT_SORT_BY_DATE_DESC_SQL;
+                    break;
+                default:
+                    query = SELECT_SORT_BY_ID_DESC_SQL;
+                    break;
+            }
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, offset);
+            statement.setInt(2, number);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                movies.add(setFieldsFromResultSet(resultSet));
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return movies;
+    }
+
     private Movie setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
         Movie movie = new Movie();
         movie.setId(resultSet.getInt("id"));
@@ -203,7 +252,9 @@ public class MovieDAO implements DataAccessObject<Movie> {
         movie.setDirectedBy(resultSet.getString("directed_by"));
         movie.setReleaseDate(resultSet.getDate("release_date").toLocalDate());
         movie.setDuration(resultSet.getTime("duration").toLocalTime());
+        movie.setAverageRate(resultSet.getDouble("rate"));
 
         return movie;
     }
+
 }

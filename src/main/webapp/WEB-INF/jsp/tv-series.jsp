@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="local" prefix="jwd"%>
+<c:set var="tv_series" value="${pageContext.request.getAttribute('tv_series')}"/>
 
 <html>
-
 <head>
     <jsp:directive.include file="../static/header.jsp"/>
     <script>
@@ -24,7 +24,21 @@
 <body>
 <jsp:directive.include file="../static/navbar.jsp"/>
 
-<c:set var="tv_series" value="${pageContext.request.getAttribute('tv_series')}"/>
+
+<div>
+    <form>
+        <label for="sort">Sort by:</label>
+        <select name="sort" id="sort">
+            <option value="title">Title</option>
+            <option value="rate">Rate</option>
+        </select>
+        <select name="order">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
+        <button type="submit">Sort</button>
+    </form>
+</div>
 <div class="row row-cols-1 row-cols-md-4">
     <c:forEach items="${tv_series}" var="tv">
         <jwd:card show="${tv}"/>

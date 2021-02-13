@@ -2,6 +2,7 @@ package com.epam.jwd.dao.impl;
 
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.DataAccessObject;
+import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;
@@ -31,6 +32,13 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     private static final String INSERT_SQL = "INSERT INTO kinorating.tv_series(id) VALUES ((SELECT LAST_INSERT_ID() from kinorating.abstract_kino LIMIT 1))";
     private static final String SELECT_WITH_OFFSET = "SELECT * FROM kinorating.abstract_kino natural join kinorating.tv_series limit ?, ?";
     private static final String CONTAINS_ID_SQL = "SELECT COUNT(tv_series.id) from kinorating.tv_series where tv_series.id = ?";
+    private static final String SELECT_SORT_BY_ID_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.tv_series ORDER BY id DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_ID_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.tv_series ORDER BY id ASC limit ?, ?";
+    private static final String SELECT_SORT_BY_RATE_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.tv_series ORDER BY rate DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_RATE_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.tv_series ORDER BY rate ASC limit ?, ?";
+    private static final String SELECT_SORT_BY_TITLE_DESC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.tv_series ORDER BY title DESC limit ?, ?";
+    private static final String SELECT_SORT_BY_TITLE_ASC_SQL = "SELECT * from kinorating.abstract_kino natural join kinorating.tv_series ORDER BY title ASC limit ?, ?";
+
 
     @Override
     public List<TVSeries> readAll(ProxyConnection connection) throws DaoException {
@@ -163,6 +171,56 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         return isTV;
     }
 
+    public List<TVSeries> getShowsSortedBy(ProxyConnection connection, String sortBy, String order, int offset, int number) throws DaoException {
+
+        List<TVSeries> tvSeries = new ArrayList<>();
+
+        String query;
+
+        if (order.equals("asc")) {
+            switch (sortBy) {
+                case "title":
+                    query = SELECT_SORT_BY_TITLE_ASC_SQL;
+                    break;
+                case "rate":
+                    query = SELECT_SORT_BY_RATE_ASC_SQL;
+                    break;
+                default:
+                    query = SELECT_SORT_BY_ID_ASC_SQL;
+                    break;
+            }
+        } else {
+            switch (sortBy) {
+                case "title":
+                    query = SELECT_SORT_BY_TITLE_DESC_SQL;
+                    break;
+                case "rate":
+                    query = SELECT_SORT_BY_RATE_DESC_SQL;
+                    break;
+                default:
+                    query = SELECT_SORT_BY_ID_DESC_SQL;
+                    break;
+            }
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, offset);
+            statement.setInt(2, number);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                tvSeries.add(setFieldsFromResultSet(resultSet));
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return tvSeries;
+    }
 
     private TVSeries setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
         TVSeries tvSeries = new TVSeries();
@@ -171,6 +229,7 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         tvSeries.setDescription(resultSet.getString("description"));
         tvSeries.setShortDescription(resultSet.getString("short_description"));
         tvSeries.setImageLink(resultSet.getString("image_link"));
+        tvSeries.setAverageRate(resultSet.getDouble("rate"));
 
         return tvSeries;
     }

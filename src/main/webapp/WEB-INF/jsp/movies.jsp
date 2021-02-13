@@ -23,6 +23,21 @@
     <jsp:directive.include file="../static/navbar.jsp"/>
     <c:set var="movies" value="${pageContext.request.getAttribute('movies')}"/>
 
+    <div>
+        <form>
+            <label for="sort">Sort by:</label>
+            <select name="sort" id="sort">
+                <option value="release_date">Release date</option>
+                <option value="title">Title</option>
+                <option value="rate">Rate</option>
+            </select>
+            <select name="order">
+                <option value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+            </select>
+            <button type="submit">Sort</button>
+        </form>
+    </div>
     <div class="row row-cols-1 row-cols-md-4">
         <c:forEach items="${movies}" var="movie">
             <jwd:card show="${movie}"/>

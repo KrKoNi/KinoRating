@@ -2,10 +2,13 @@ package com.epam.jwd.controller.command.impl.movie;
 
 import com.epam.jwd.controller.command.ControllerAction;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.domain.Show;
 import com.epam.jwd.service.MovieService;
+import com.epam.jwd.service.ShowService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesPageControllerAction implements ControllerAction {
@@ -30,7 +33,16 @@ public class MoviesPageControllerAction implements ControllerAction {
             page = maxPage;
         }
 
-        List<Movie> movies = MovieService.readWithOffset((page-1) * MOVIES_ON_PAGE, MOVIES_ON_PAGE);
+        String sortBy = request.getParameter("sort");
+        if (sortBy == null) {
+            sortBy = "id";
+        }
+        String order = request.getParameter("order");
+        if (order == null) {
+            order = "asc";
+        }
+
+        List<Movie> movies = new ArrayList<>(MovieService.sortByWithOffset(sortBy, order, (page - 1) * MOVIES_ON_PAGE, MOVIES_ON_PAGE));
 
         request.setAttribute("movies", movies);
         request.setAttribute("max_page", maxPage);

@@ -8,6 +8,7 @@ import com.epam.jwd.domain.Show;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
 import com.epam.jwd.service.GenreService;
+import com.epam.jwd.service.MovieService;
 import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
@@ -28,13 +29,15 @@ public final class ShowDAO implements DataAccessObject<Show> {
     private static final String SELECT_AVERAGE_SHOW_RATE_SQL = "SELECT AVG(kino_ratings.kino_rating) FROM kinorating.kino_ratings where kino_id = ?";
     private static final String ADD_RATE_SQL = "INSERT INTO kinorating.kino_ratings(kino_id, user_id, kino_rating) values (?, ?, ?) on duplicate key update kino_rating = ?";
     private static final String DELETE_RATE_SQL = "DELETE FROM kinorating.kino_ratings where kino_id = ? and user_id = ?";
-    private static final String ADD_RATES_SQL = "INSERT INTO kinorating.kino_ratings(kino_id, user_id, kino_rating) values (?, ?, ?) on duplicate key update kino_rating = ?";
     private static final String ADD_GENRES_SQL = "INSERT INTO kinorating.kino_genres (kino_id, genre_id) VALUES (?, ?) on duplicate key update genre_id=genre_id";
     private static final String DELETE_GENRES_SQL = "DELETE FROM kinorating.kino_genres where kino_id = ?";
     private static final String UPDATE_SQL = "UPDATE kinorating.abstract_kino SET title = ?, short_description = ?, description = ?, image_link = ? where id = ?";
+    private static final String SET_AVERAGE_RATE_SQL = "UPDATE kinorating.abstract_kino SET rate = ? where id = ?";
     private static final String DELETE_SQL = "DELETE FROM kinorating.abstract_kino where id = ?";
-    private static final String SELECT_LIKE_SQL = "SELECT * FROM kinorating.abstract_kino natural join kinorating.movies, kinorating.tv_series where title like ?";
-    private static final String SELECT_SORT_BY_AVG_RATE = "SELECT id, AVG(COALESCE(kino_rating,0)) AS rates from kinorating.abstract_kino kino join kinorating.kino_ratings rate on kino.id = rate.kino_id GROUP BY kino.id ORDER BY rates DESC";
+    private static final String SELECT_LIKE_WITH_OFFSET_SQL = "SELECT abstract_kino.id FROM kinorating.abstract_kino natural join kinorating.movies, kinorating.tv_series where title like ? limit ?, ?";
+    private static final String SELECT_LIKE_SQL = "SELECT abstract_kino.id FROM kinorating.abstract_kino natural join kinorating.movies, kinorating.tv_series where title like ? LIMIT 120";
+    private static final String SELECT_ROW_COUNT_SQL = "SELECT COUNT(abstract_kino.id) FROM kinorating.abstract_kino";
+    private static final String SELECT_SHOW_RATE_BY_USER_SQL = "SELECT * FROM kinorating.kino_ratings where user_id = ? and kino_id = ?";
 
     private static final ShowDAO INSTANCE = new ShowDAO();
 
@@ -135,17 +138,84 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return rates;
     }
 
-    public List<Show> getShowsSortedByRates(ProxyConnection connection) throws DaoException {
+    public int getShowRateByUserId(ProxyConnection connection, int showId, int userId) throws DaoException {
 
+        int showRate = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_SHOW_RATE_BY_USER_SQL)) {
+
+            statement.setInt(1, userId);
+            statement.setInt(2, showId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                showRate = resultSet.getInt("kino_rating");
+            }
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return showRate;
+    }
+
+    public int getRowCount(ProxyConnection connection) throws DaoException {
+        int rowCount = 0;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                rowCount = resultSet.getInt(1);
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return rowCount;
+    }
+
+    public List<Show> findLikeWithOffset(ProxyConnection connection, String str, int offset, int number) throws DaoException {
         List<Show> showList = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_SORT_BY_AVG_RATE)) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_WITH_OFFSET_SQL)) {
+            statement.setString(1, "%" + str + "%");
+            statement.setInt(2, offset);
+            statement.setInt(3, number);
 
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
                 Show show = null;
+
+                int id = resultSet.getInt("id");
+
+                if (MovieDAO.getInstance().isMovie(connection, id)) {
+                    show = MovieDAO.getInstance().findById(connection, id);
+                } else if (TVSeriesDAO.getInstance().isTV(connection, id)) {
+                    show = TVSeriesDAO.getInstance().findById(connection, id);
+                }
+
+                showList.add(show);
+
+            }
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return showList;
+    }
+
+    public List<Show> findLike(ProxyConnection connection, String str) throws DaoException {
+        List<Show> showList = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
+
+            statement.setString(1, "%" + str + "%");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Show show = null;
+                int id = resultSet.getInt("id");
                 if (MovieDAO.getInstance().isMovie(connection, id)) {
                     show = MovieDAO.getInstance().findById(connection, id);
                 } else if (TVSeriesDAO.getInstance().isTV(connection, id)) {
@@ -153,7 +223,6 @@ public final class ShowDAO implements DataAccessObject<Show> {
                 }
                 showList.add(show);
             }
-
         } catch (SQLException exception) {
             connection.rollback();
             exception.printStackTrace();
@@ -208,28 +277,6 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
     }
 
-    public void addRates(ProxyConnection connection, Show show) throws DaoException {
-        Map<Integer, Byte> rates = show.getRates();
-        try (PreparedStatement statement = connection.prepareStatement(ADD_RATES_SQL)) {
-            rates.forEach((userId, rate) -> {
-                try {
-                    statement.setInt(1, show.getId());
-                    statement.setInt(2, userId);
-                    statement.setInt(3, rate);
-                    statement.addBatch();
-                } catch (SQLException exception) {
-                    connection.rollback();
-                }
-            });
-            statement.executeBatch();
-
-        } catch (SQLException exception) {
-            connection.rollback();
-            exception.printStackTrace();
-            throw new DaoException(exception);
-        }
-    }
-
     public void removeRate(ProxyConnection connection, int showId, int userId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_RATE_SQL)) {
 
@@ -244,7 +291,6 @@ public final class ShowDAO implements DataAccessObject<Show> {
             throw new DaoException(exception);
         }
     }
-
 
     public void addGenresToShow(ProxyConnection connection, Show show) throws DaoException {
         List<Genre> genres = show.getGenres();
@@ -283,6 +329,25 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return averageRate;
     }
 
+    public double setAverageRate(ProxyConnection connection, int showId, double rate) throws DaoException {
+        double averageRate = 0;
+        try (PreparedStatement statement = connection.prepareStatement(SET_AVERAGE_RATE_SQL)) {
+
+            statement.setDouble(1, rate);
+            statement.setInt(2, showId);
+
+            statement.executeUpdate();
+
+            connection.commit();
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            exception.printStackTrace();
+            throw new DaoException(exception);
+        }
+        return averageRate;
+    }
+
     public void deleteAllShowGenres(ProxyConnection connection, Show show) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_GENRES_SQL)) {
 
@@ -311,7 +376,5 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
         return id;
     }
-
-
 
 }
