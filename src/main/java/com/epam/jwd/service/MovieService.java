@@ -5,6 +5,7 @@ import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.domain.Movie;
+import com.epam.jwd.domain.Show;
 import com.epam.jwd.exceptions.DaoException;
 
 import java.util.ArrayList;
@@ -17,11 +18,10 @@ public class MovieService {
 
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             movie = MovieDAO.getInstance().findById(connection, id);
-            if(movie == null) {
+            if (movie == null) {
                 return null;
             }
             movie.addGenres(ShowDAO.getInstance().getShowGenres(connection, movie));
-            movie.addRates(ShowDAO.getInstance().getShowRates(connection, movie));
 
             connection.commit();
         } catch (DaoException exception) {
@@ -41,7 +41,6 @@ public class MovieService {
 
             for (Movie movie : movies) {
                 movie.addGenres(ShowDAO.getInstance().getShowGenres(connection, movie));
-                movie.addRates(ShowDAO.getInstance().getShowRates(connection, movie));
             }
 
             connection.commit();
@@ -88,8 +87,6 @@ public class MovieService {
 
             rowCount = MovieDAO.getInstance().getRowCount(connection);
 
-            connection.commit();
-
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
@@ -97,5 +94,16 @@ public class MovieService {
         return rowCount;
     }
 
+    public static List<Movie> sortByWithOffset(String sortBy, String order, int offset, int number) {
+        List<Movie> movies = new ArrayList<>();
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            movies.addAll(MovieDAO.getInstance().getShowsSortedBy(connection, sortBy, order, offset, number));
+
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return movies;
+    }
 
 }

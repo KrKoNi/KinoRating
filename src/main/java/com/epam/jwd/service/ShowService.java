@@ -22,31 +22,38 @@ public class ShowService {
     public static List<Show> findLike(String str) {
         List<Show> showList = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
-            List<Movie> movies = MovieDAO.getInstance().findLike(connection, str);
-            List<TVSeries> tvSeriesList = TVSeriesDAO.getInstance().findLike(connection, str);
 
-            showList.addAll(movies);
-            showList.addAll(tvSeriesList);
+            showList.addAll(ShowDAO.getInstance().findLike(connection, str));
 
-            connection.commit();
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return showList;
     }
 
-    public static List<Show> sortByRate() {
+    public static List<Show> findLikeWithOffset(String str, int offset, int number) {
         List<Show> showList = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
 
-            showList.addAll(ShowDAO.getInstance().getShowsSortedByRates(connection));
+            showList.addAll(ShowDAO.getInstance().findLikeWithOffset(connection, str, offset, number));
 
-            connection.commit();
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
         return showList;
     }
+
+    public static int getShowsCount() {
+        int rowCount = 0;
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+            rowCount = ShowDAO.getInstance().getRowCount(connection);
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return rowCount;
+    }
+
+
 
     public static void addRate(Show show, int userId, int rate) {
         addRate(show.getId(), userId, rate);
@@ -55,6 +62,7 @@ public class ShowService {
     public static void addRate(int showId, int userId, int rate) {
         try(ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().addRate(connection, showId, userId, rate);
+            ShowDAO.getInstance().setAverageRate(connection, showId, ShowDAO.getInstance().getAverageRate(connection, showId));
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }
@@ -63,6 +71,7 @@ public class ShowService {
     public static void removeRate(int showId, int userId) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().removeRate(connection, showId, userId);
+            ShowDAO.getInstance().setAverageRate(connection, showId, ShowDAO.getInstance().getAverageRate(connection, showId));
         } catch (DaoException exception) {
             exception.printStackTrace(); //logs
         }

@@ -15,7 +15,9 @@ public abstract class Show implements Serializable {
     private String shortDescription;
     private String description;
     private String directedBy;
-    private final Map<Integer, Byte> rates = new HashMap<>();
+    //private final Map<Integer, Byte> rates = new HashMap<>();
+    private int currentUserRate;
+    private double averageRate;
     private final List<Genre> genres = new ArrayList<>();
 
 
@@ -43,7 +45,7 @@ public abstract class Show implements Serializable {
         this.genres.addAll(genres);
     }
 
-    public void addRate(int userId, Byte rate) {
+    /*public void addRate(int userId, Byte rate) {
         rates.put(userId, rate);
     }
 
@@ -53,7 +55,7 @@ public abstract class Show implements Serializable {
 
     public void addRates(Map<Integer, Byte> rates) {
         this.rates.putAll(rates);
-    }
+    }*/
 
     public int getId() {
         return id;
@@ -79,10 +81,10 @@ public abstract class Show implements Serializable {
         return shortDescription;
     }
 
-    public Map<Integer, Byte> getRates() {
+    /*public Map<Integer, Byte> getRates() {
         return rates;
     }
-
+    */
     public void setImageLink(String imageLink) {
         this.imageLink = imageLink;
     }
@@ -101,5 +103,21 @@ public abstract class Show implements Serializable {
 
     public void setDirectedBy(String directedBy) {
         this.directedBy = directedBy;
+    }
+
+    public double getAverageRate() {
+        return averageRate;
+    }
+
+    public void setAverageRate(double averageRate) {
+        this.averageRate = averageRate;
+    }
+
+    public int getCurrentUserRate() {
+        return currentUserRate;
+    }
+
+    public void setCurrentUserRate(int currentUserRate) {
+        this.currentUserRate = currentUserRate;
     }
 }

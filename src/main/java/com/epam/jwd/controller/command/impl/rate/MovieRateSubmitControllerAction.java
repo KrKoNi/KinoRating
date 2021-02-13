@@ -17,8 +17,6 @@ public class MovieRateSubmitControllerAction implements ControllerAction {
         Movie movie = MovieService.findById(movieId);
         byte rate = Byte.parseByte(request.getParameter("rate"));
 
-        movie.getRates().put(userDTO.getId(), rate);
-
         ShowService.addRate(movie, userDTO.getId(), rate);
 
         request.setAttribute("movie", movie);

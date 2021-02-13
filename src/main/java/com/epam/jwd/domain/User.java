@@ -108,8 +108,6 @@ public class User implements Serializable {
         return rates;
     }
 
-
-
     public void addRate(Show show, Byte rate) {
         rates.put(show.getId(), rate);
     }

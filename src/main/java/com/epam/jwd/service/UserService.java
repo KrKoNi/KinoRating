@@ -22,7 +22,6 @@ public class UserService {
         }
     }
 
-
     public static List<User> findAll() {
         List<User> users = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -42,7 +41,6 @@ public class UserService {
         }
         return users;
     }
-
 
     public static User findById(int id) {
         User user = null;
@@ -122,6 +120,7 @@ public class UserService {
         }
         return user;
     }
+
     public static void update(User user) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().update(connection, user);

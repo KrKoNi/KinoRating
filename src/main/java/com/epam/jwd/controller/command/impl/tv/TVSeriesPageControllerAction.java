@@ -31,7 +31,16 @@ public class TVSeriesPageControllerAction implements ControllerAction {
             page = maxPage;
         }
 
-        List<TVSeries> tvSeries = TVSeriesService.readWithOffset((page-1) * TV_ON_PAGE, TV_ON_PAGE);
+        String sortBy = request.getParameter("sort");
+        if (sortBy == null) {
+            sortBy = "id";
+        }
+        String order = request.getParameter("order");
+        if (order == null) {
+            order = "asc";
+        }
+
+        List<TVSeries> tvSeries = TVSeriesService.sortByWithOffset(sortBy, order, (page-1) * TV_ON_PAGE, TV_ON_PAGE);
 
         request.setAttribute("tv_series", tvSeries);
         request.setAttribute("max_page", maxPage);

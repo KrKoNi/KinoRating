@@ -2,8 +2,10 @@ package com.epam.jwd.service;
 
 import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
+import com.epam.jwd.dao.impl.MovieDAO;
 import com.epam.jwd.dao.impl.ShowDAO;
 import com.epam.jwd.dao.impl.TVSeriesDAO;
+import com.epam.jwd.domain.Movie;
 import com.epam.jwd.domain.TVSeries;
 import com.epam.jwd.exceptions.DaoException;
 
@@ -21,7 +23,6 @@ public class TVSeriesService {
                 return null;
             }
             tvSeries.addGenres(ShowDAO.getInstance().getShowGenres(connection, tvSeries));
-            tvSeries.addRates(ShowDAO.getInstance().getShowRates(connection, tvSeries));
 
             connection.commit();
         } catch (DaoException exception) {
@@ -38,7 +39,7 @@ public class TVSeriesService {
             tvSeriesList = TVSeriesDAO.getInstance().readWithOffset(connection, offset, num);
             for (TVSeries tvSeries : tvSeriesList) {
                 tvSeries.addGenres(ShowDAO.getInstance().getShowGenres(connection, tvSeries));
-                tvSeries.addRates(ShowDAO.getInstance().getShowRates(connection, tvSeries));
+
             }
 
             connection.commit();
@@ -54,7 +55,6 @@ public class TVSeriesService {
             ShowDAO.getInstance().insert(connection, tvSeries);
             TVSeriesDAO.getInstance().insert(connection, tvSeries);
             ShowDAO.getInstance().addGenresToShow(connection, tvSeries);
-            ShowDAO.getInstance().addRates(connection, tvSeries);
 
             connection.commit();
         } catch (DaoException exception) {
@@ -92,5 +92,16 @@ public class TVSeriesService {
         return rowCount;
     }
 
+    public static List<TVSeries> sortByWithOffset(String sortBy, String order, int offset, int number) {
+        List<TVSeries> tvSeries = new ArrayList<>();
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+
+            tvSeries.addAll(TVSeriesDAO.getInstance().getShowsSortedBy(connection, sortBy, order, offset, number));
+
+        } catch (DaoException exception) {
+            exception.printStackTrace(); //logs
+        }
+        return tvSeries;
+    }
 
 }
