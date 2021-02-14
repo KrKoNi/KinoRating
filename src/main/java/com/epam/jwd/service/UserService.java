@@ -11,12 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type User service.
+ */
 public class UserService {
 
     private static final Logger logger = Logger.getLogger(UserService.class);
 
     private UserService() {}
 
+    /**
+     * Insert.
+     *
+     * @param user the user
+     */
     public static void insert(User user) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().insert(connection, user);
@@ -25,6 +33,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Find all list.
+     *
+     * @return the list
+     */
     public static List<User> findAll() {
         List<User> users = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -35,6 +48,13 @@ public class UserService {
         return users;
     }
 
+    /**
+     * Read with offset list.
+     *
+     * @param offset the offset
+     * @param num    the num
+     * @return the list
+     */
     public static List<User> readWithOffset(int offset, int num) {
         List<User> users = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -45,6 +65,12 @@ public class UserService {
         return users;
     }
 
+    /**
+     * Find by id user.
+     *
+     * @param id the id
+     * @return the user
+     */
     public static User findById(int id) {
         User user = null;
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -60,6 +86,11 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Remove user.
+     *
+     * @param userId the user id
+     */
     public static void removeUser(int userId) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().delete(connection, userId);
@@ -68,6 +99,13 @@ public class UserService {
         }
     }
 
+    /**
+     * Find by login and password user.
+     *
+     * @param login    the login
+     * @param password the password
+     * @return the user
+     */
     public static User findByLoginAndPassword(String login, String password) {
         User user = null;
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -88,6 +126,12 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Find by login user.
+     *
+     * @param login the login
+     * @return the user
+     */
     public static User findByLogin(String login) {
         User user = null;
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -106,6 +150,12 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Find by email user.
+     *
+     * @param email the email
+     * @return the user
+     */
     public static User findByEmail(String email) {
         User user = null;
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -124,6 +174,11 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Update.
+     *
+     * @param user the user
+     */
     public static void update(User user) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().update(connection, user);

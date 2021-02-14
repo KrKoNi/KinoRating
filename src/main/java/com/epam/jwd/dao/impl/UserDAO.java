@@ -16,12 +16,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * User DAO.
+ */
 public class UserDAO implements DataAccessObject<User> {
 
     private static final UserDAO INSTANCE = new UserDAO();
 
     private UserDAO() {}
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static UserDAO getInstance() {
         return INSTANCE;
     }
@@ -120,6 +128,13 @@ public class UserDAO implements DataAccessObject<User> {
         }
     }
 
+    /**
+     * Delete user from database.
+     *
+     * @param connection sql ProxyConnection
+     * @param userId     id of user to be deleted
+     * @throws DaoException dao exception
+     */
     public void delete(ProxyConnection connection, int userId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
 
@@ -136,9 +151,18 @@ public class UserDAO implements DataAccessObject<User> {
 
     @Override
     public void delete(ProxyConnection connection, User user) throws DaoException {
-
+        delete(connection, user.getId());
     }
 
+    /**
+     * Find user by login and password.
+     *
+     * @param connection sql ProxyConnection
+     * @param login      login
+     * @param password   password
+     * @return user user
+     * @throws DaoException dao exception
+     */
     public User findByLoginAndPassword(ProxyConnection connection, String login, String password) throws DaoException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_LOGIN_AND_PASSWORD_SQL)) {
@@ -160,6 +184,14 @@ public class UserDAO implements DataAccessObject<User> {
         return user;
     }
 
+    /**
+     * Find user by login.
+     *
+     * @param connection sql ProxyConnection
+     * @param login      login
+     * @return user user
+     * @throws DaoException dao exception
+     */
     public User findByLogin(ProxyConnection connection, String login) throws DaoException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_LOGIN_SQL)) {
@@ -180,6 +212,14 @@ public class UserDAO implements DataAccessObject<User> {
         return user;
     }
 
+    /**
+     * Find user by email.
+     *
+     * @param connection sql ProxyConnection
+     * @param email      email
+     * @return user user
+     * @throws DaoException dao exception
+     */
     public User findByEmail(ProxyConnection connection, String email) throws DaoException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_EMAIL_SQL)) {
@@ -200,6 +240,14 @@ public class UserDAO implements DataAccessObject<User> {
         return user;
     }
 
+    /**
+     * Find by email or login user.
+     *
+     * @param connection   connection
+     * @param emailOrLogin email or login
+     * @return user user
+     * @throws DaoException dao exception
+     */
     public User findByEmailOrLogin(ProxyConnection connection, String emailOrLogin) throws DaoException {
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_EMAIL_OR_LOGIN_SQL)) {
@@ -221,6 +269,14 @@ public class UserDAO implements DataAccessObject<User> {
         return user;
     }
 
+    /**
+     * Gets user rates.
+     *
+     * @param connection connection
+     * @param user       user
+     * @return user rates
+     * @throws DaoException dao exception
+     */
     public Map<Integer, Byte> getUserRates(ProxyConnection connection, User user) throws DaoException {
         Map<Integer, Byte> rates = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_RATES_SQL)) {
@@ -274,6 +330,5 @@ public class UserDAO implements DataAccessObject<User> {
 
         return user;
     }
-
 
 }

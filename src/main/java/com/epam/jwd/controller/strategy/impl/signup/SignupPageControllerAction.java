@@ -6,6 +6,9 @@ import com.epam.jwd.exceptions.ActionException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Controller action for signup page
+ */
 public class SignupPageControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {

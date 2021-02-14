@@ -8,6 +8,9 @@ import com.epam.jwd.service.TVSeriesService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Controller action for create tv submit request
+ */
 public class CreateTVSubmitController implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {

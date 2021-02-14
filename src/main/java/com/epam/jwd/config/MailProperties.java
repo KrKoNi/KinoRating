@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Util class for reading and storing mail parameters
+ */
 public class MailProperties {
 
     private static final Logger logger = Logger.getLogger(MailProperties.class);
@@ -36,18 +39,38 @@ public class MailProperties {
         }
     }
 
+    /**
+     * Gets mail smtp host.
+     *
+     * @return the mail smtp host
+     */
     public static String getMailSmtpHost() {
         return mailSmtpHost;
     }
 
+    /**
+     * Gets mail smtp port.
+     *
+     * @return the mail smtp port
+     */
     public static String getMailSmtpPort() {
         return mailSmtpPort;
     }
 
+    /**
+     * Gets mail linked to application.
+     *
+     * @return the mail user name
+     */
     public static String getMailUserName() {
         return mailUserName;
     }
 
+    /**
+     * Gets password of mail linked to application.
+     *
+     * @return the mail user password
+     */
     public static String getMailUserPassword() {
         return mailUserPassword;
     }

@@ -4,6 +4,9 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
+/**
+ * Encode filter, sets all requests encoding to utf-8.
+ */
 @WebFilter(filterName = "EncodeFilter", urlPatterns = "/*")
 public class EncodeFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {

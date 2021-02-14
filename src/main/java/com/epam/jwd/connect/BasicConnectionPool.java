@@ -10,7 +10,11 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Connection pool based on enum.
+ */
 public enum BasicConnectionPool {
+
     INSTANCE;
 
     private String url;
@@ -45,6 +49,11 @@ public enum BasicConnectionPool {
 
     }
 
+    /**
+     * Gets connection from pool.
+     *
+     * @return the connection
+     */
     public ProxyConnection getConnection() {
         ProxyConnection connection = null;
         try {
@@ -59,12 +68,20 @@ public enum BasicConnectionPool {
         return connection;
     }
 
+    /**
+     * Release connection to pool.
+     *
+     * @param connection the connection
+     */
     public void releaseConnection(ProxyConnection connection) {
         usingConnections.remove(connection);
         freeConnections.offer(connection);
         logger.info("Connection returned to pool");
     }
 
+    /**
+     * Destroy pool.
+     */
     public void destroyPool() {
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
             try {

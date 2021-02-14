@@ -11,10 +11,19 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Movie service.
+ */
 public class MovieService {
 
     private static final Logger logger = Logger.getLogger(MovieService.class);
 
+    /**
+     * Find by id movie.
+     *
+     * @param id the id
+     * @return the movie
+     */
     public static Movie findById(int id) {
         Movie movie = null;
 
@@ -33,6 +42,13 @@ public class MovieService {
         return movie;
     }
 
+    /**
+     * Read with offset list.
+     *
+     * @param offset the offset
+     * @param num    the num
+     * @return the list
+     */
     public static List<Movie> readWithOffset(int offset, int num) {
 
         List<Movie> movies = new ArrayList<>();
@@ -53,6 +69,11 @@ public class MovieService {
         return movies;
     }
 
+    /**
+     * Insert.
+     *
+     * @param movie the movie
+     */
     public static void insert(Movie movie) {
 
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
@@ -69,6 +90,11 @@ public class MovieService {
 
     }
 
+    /**
+     * Update.
+     *
+     * @param movie the movie
+     */
     public static void update(Movie movie) {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             MovieDAO.getInstance().update(connection, movie);
@@ -82,6 +108,11 @@ public class MovieService {
         }
     }
 
+    /**
+     * Gets movies count.
+     *
+     * @return the movies count
+     */
     public static int getMoviesCount() {
         int rowCount = 0;
 
@@ -96,11 +127,20 @@ public class MovieService {
         return rowCount;
     }
 
+    /**
+     * Sort by with offset list.
+     *
+     * @param sortBy the sort by
+     * @param order  the order
+     * @param offset the offset
+     * @param number the number
+     * @return the list
+     */
     public static List<Movie> sortByWithOffset(String sortBy, String order, int offset, int number) {
         List<Movie> movies = new ArrayList<>();
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
 
-            movies.addAll(MovieDAO.getInstance().getShowsSortedBy(connection, sortBy, order, offset, number));
+            movies.addAll(MovieDAO.getInstance().getMoviesSortedBy(connection, sortBy, order, offset, number));
 
         } catch (DaoException exception) {
             logger.error("Error occurred in DAO, connection rollbacked");

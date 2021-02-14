@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Controller action for update movie info
+ */
 public class UpdateMovieControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {

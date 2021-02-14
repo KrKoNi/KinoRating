@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Main servlet
+ */
 @WebServlet(name = "ApplicationServlet", urlPatterns = {"/app/*", "/app"})
 public class ApplicationServlet extends HttpServlet {
     String view;

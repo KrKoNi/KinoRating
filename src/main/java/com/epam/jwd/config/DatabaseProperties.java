@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Util class for reading and storing database parameters
+ */
 public class DatabaseProperties {
 
     private static final Logger logger = Logger.getLogger(DatabaseProperties.class);
@@ -43,14 +46,29 @@ public class DatabaseProperties {
         }
     }
 
+    /**
+     * Gets url.
+     *
+     * @return the url
+     */
     public static String getUrl() {
         return url;
     }
 
+    /**
+     * Gets password.
+     *
+     * @return the password
+     */
     public static String getPassword() {
         return password;
     }
 
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
     public static String getUser() {
         return user;
     }

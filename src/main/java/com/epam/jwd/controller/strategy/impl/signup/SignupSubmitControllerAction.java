@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
+/**
+ * Controller action for signup request.
+ */
 public class SignupSubmitControllerAction implements ControllerAction {
 
     @Override

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * Controller action for tvs page
+ */
 public class TVSeriesPageControllerAction implements ControllerAction {
 
     private final static int TV_ON_PAGE = 20;

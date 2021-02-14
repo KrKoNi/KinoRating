@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Show filter, redirects to corresponding page based on type of show in request attribute.
+ */
 @WebFilter(filterName = "ShowFilter", urlPatterns = "/app/show")
 public class ShowFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {

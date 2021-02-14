@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Redirects localhost:8080 to main page
+ */
 @WebServlet(name = "RedirectServlet", urlPatterns = {""})
 public class RedirectServlet extends HttpServlet {
     @Override

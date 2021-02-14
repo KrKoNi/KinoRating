@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * Controller action for search request
+ */
 public class SearchShowsControllerAction implements ControllerAction {
     private static final int SHOWS_ON_PAGE = 20;
 

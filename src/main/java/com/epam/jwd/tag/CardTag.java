@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Card tag.
+ */
 public class CardTag extends TagSupport {
 
     private Show show;
@@ -100,10 +103,20 @@ public class CardTag extends TagSupport {
         return SKIP_BODY;
     }
 
+    /**
+     * Gets show.
+     *
+     * @return the show
+     */
     public Show getShow() {
         return show;
     }
 
+    /**
+     * Sets show.
+     *
+     * @param show the show
+     */
     public void setShow(Show show) {
         this.show = show;
     }

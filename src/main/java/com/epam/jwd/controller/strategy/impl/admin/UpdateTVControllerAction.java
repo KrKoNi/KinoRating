@@ -8,6 +8,9 @@ import com.epam.jwd.service.TVSeriesService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Controller action for update tv info
+ */
 public class UpdateTVControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {

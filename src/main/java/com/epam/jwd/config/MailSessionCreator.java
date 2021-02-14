@@ -11,6 +11,7 @@ public class MailSessionCreator {
     private final String username;
     private final String password;
     private final Properties mailSessionProperties;
+
     public MailSessionCreator() {
         smtpHost = MailProperties.getMailSmtpHost();
         smtpPort = MailProperties.getMailSmtpPort();
@@ -25,6 +26,11 @@ public class MailSessionCreator {
         mailSessionProperties.put("mail.smtp.port", smtpPort);
     }
 
+    /**
+     * Create session session.
+     *
+     * @return the session
+     */
     public Session createSession() {
         return Session.getInstance(mailSessionProperties,
                 new Authenticator() {

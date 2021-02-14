@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller action for movies page
+ */
 public class MoviesPageControllerAction implements ControllerAction {
 
     private final static int MOVIES_ON_PAGE = 20;

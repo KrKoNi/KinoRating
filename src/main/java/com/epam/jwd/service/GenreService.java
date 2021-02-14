@@ -10,12 +10,20 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Genre service.
+ */
 public class GenreService {
 
     private static final Logger logger = Logger.getLogger(GenreService.class);
 
     private static final List<Genre> genres = initGenres();
 
+    /**
+     * Gets genres.
+     *
+     * @return the genres
+     */
     public static List<Genre> getGenres() {
         return genres;
     }
@@ -30,7 +38,13 @@ public class GenreService {
         }
         return genreList;
     }
-    
+
+    /**
+     * Find genre by id.
+     *
+     * @param id the id
+     * @return the genre
+     */
     public static Genre findById(int id) {
         for (Genre genre : genres) {
             if (genre.getId() == id) {

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Admin filter for all admin requests, allows only for users who have admin role.
+ */
 @WebFilter(filterName = "AdminFilter", urlPatterns = {"/admin", "/admin/*"})
 public class AdminFilter implements Filter {
 

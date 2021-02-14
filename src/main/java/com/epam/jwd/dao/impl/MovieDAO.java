@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Movie DAO
+ */
 public class MovieDAO implements DataAccessObject<Movie> {
 
     private static final Logger logger = Logger.getLogger(MovieDAO.class);
@@ -136,6 +139,14 @@ public class MovieDAO implements DataAccessObject<Movie> {
         throw new RuntimeException("Unsupported");
     }
 
+    /**
+     * Find all movies which titles contain @param str.
+     *
+     * @param connection connection
+     * @param str        str
+     * @return movies list
+     * @throws DaoException dao exception
+     */
     public List<Movie> findLike(ProxyConnection connection, String str) throws DaoException {
         List<Movie> movieList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
@@ -153,6 +164,13 @@ public class MovieDAO implements DataAccessObject<Movie> {
         return movieList;
     }
 
+    /**
+     * Returns number of movies in database
+     *
+     * @param connection  proxy connection
+     * @return number of movies
+     * @throws DaoException the dao exception
+     */
     public int getRowCount(ProxyConnection connection) throws DaoException {
         int rowCount = 0;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
@@ -168,6 +186,14 @@ public class MovieDAO implements DataAccessObject<Movie> {
         return rowCount;
     }
 
+    /**
+     * Returns true if corresponding id is present in movies table
+     *
+     * @param connection proxy connection
+     * @param id         id
+     * @return boolean
+     * @throws DaoException the dao exception
+     */
     public boolean isMovie(ProxyConnection connection, int id) throws DaoException {
         boolean isMovie = false;
         try (PreparedStatement statement = connection.prepareStatement(CONTAINS_ID_SQL)) {
@@ -184,7 +210,18 @@ public class MovieDAO implements DataAccessObject<Movie> {
         return isMovie;
     }
 
-    public List<Movie> getShowsSortedBy(ProxyConnection connection, String sortBy, String order, int offset, int number) throws DaoException {
+    /**
+     * Find movies with offset sorted by @param sortBy with @param orderBy order.
+     *
+     * @param connection the connection
+     * @param sortBy     the sort by
+     * @param order      the order
+     * @param offset     the offset
+     * @param number     the number
+     * @return the shows sorted by
+     * @throws DaoException the dao exception
+     */
+    public List<Movie> getMoviesSortedBy(ProxyConnection connection, String sortBy, String order, int offset, int number) throws DaoException {
 
         List<Movie> movies = new ArrayList<>();
 

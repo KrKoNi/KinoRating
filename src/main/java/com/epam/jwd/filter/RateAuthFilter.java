@@ -8,6 +8,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Rate auth filter, checks if user, who is trying to rate show, is logged in.
+ */
 @WebFilter(filterName = "AuthFilter", urlPatterns = "/ajax/rate")
 public class RateAuthFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {

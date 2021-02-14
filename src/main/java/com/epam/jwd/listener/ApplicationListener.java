@@ -10,9 +10,15 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+/**
+ * Application listener.
+ */
 @WebListener
 public class ApplicationListener implements ServletContextListener, HttpSessionListener, HttpSessionAttributeListener {
 
+    /**
+     * Instantiates a new Application listener.
+     */
     public ApplicationListener() {
     }
 

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * Controller action for admin movies page.
+ */
 public class AdminMoviesPageControllerAction implements ControllerAction {
 
     private final static int MOVIES_ON_PAGE = 20;

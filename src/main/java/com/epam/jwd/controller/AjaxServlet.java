@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet for ajax requests
+ */
 @WebServlet(name = "AjaxServlet", urlPatterns = "/ajax/*")
 public class AjaxServlet extends HttpServlet {
     @Override

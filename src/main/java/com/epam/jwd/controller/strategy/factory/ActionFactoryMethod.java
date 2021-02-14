@@ -21,8 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Action factory method.
+ */
 public class ActionFactoryMethod {
 
+    /**
+     * The Actions.
+     */
     static Map<String, ControllerAction> actions = new HashMap<>();
 
     static {
@@ -51,6 +57,12 @@ public class ActionFactoryMethod {
         actions.put("POST/rate", new MovieRateSubmitControllerAction());
     }
 
+    /**
+     * Gets action.
+     *
+     * @param request the request
+     * @return the action
+     */
     public static ControllerAction getAction(HttpServletRequest request) {
         return actions.get(request.getMethod() + request.getPathInfo());
     }

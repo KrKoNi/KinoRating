@@ -1,34 +1,34 @@
 package com.epam.jwd.exceptions;
 
 /**
- * Dao exception.
+ * Action exception.
  */
-public class DaoException extends Exception {
+public class ActionException extends Exception {
     /**
-     * Instantiates a new Dao exception.
+     * Instantiates a new Action exception.
      *
      * @param message the message
      */
-    public DaoException(String message) {
+    public ActionException(String message) {
         super(message);
     }
 
     /**
-     * Instantiates a new Dao exception.
+     * Instantiates a new Action exception.
      *
      * @param message   the message
      * @param exception the exception
      */
-    public DaoException(String message, Throwable exception) {
+    public ActionException(String message, Throwable exception) {
         super(message, exception);
     }
 
     /**
-     * Instantiates a new Dao exception.
+     * Instantiates a new Action exception.
      *
      * @param exception the exception
      */
-    public DaoException(Throwable exception) {
+    public ActionException(Throwable exception) {
         super(exception);
     }
 }

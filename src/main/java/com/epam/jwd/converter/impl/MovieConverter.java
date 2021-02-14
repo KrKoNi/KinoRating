@@ -4,6 +4,9 @@ import com.epam.jwd.converter.Converter;
 import com.epam.jwd.domain.Movie;
 import com.epam.jwd.dto.impl.MovieDTO;
 
+/**
+ * Movie converter from MovieDTO to Movie and vice versa
+ */
 public class MovieConverter implements Converter<Movie, MovieDTO> {
 
     @Override

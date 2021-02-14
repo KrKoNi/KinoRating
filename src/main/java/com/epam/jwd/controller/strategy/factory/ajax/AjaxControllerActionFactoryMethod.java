@@ -8,7 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Ajax controller action factory method.
+ */
 public class AjaxControllerActionFactoryMethod {
+    /**
+     * The Actions.
+     */
     static Map<String, ControllerAction> actions = new HashMap<>();
 
     static {
@@ -18,6 +24,12 @@ public class AjaxControllerActionFactoryMethod {
         actions.put("GET/search", new AjaxSearchControllerAction());
     }
 
+    /**
+     * Gets action.
+     *
+     * @param request the request
+     * @return the action
+     */
     public static ControllerAction getAction(HttpServletRequest request) {
         return actions.get(request.getMethod() + request.getPathInfo());
     }

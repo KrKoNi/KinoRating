@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TV series DAO.
+ */
 public class TVSeriesDAO implements DataAccessObject<TVSeries> {
 
     private static final Logger logger = Logger.getLogger(TVSeriesDAO.class);
@@ -57,6 +60,14 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         return tvSeriesList;
     }
 
+    /**
+     * Find all tvs where title contain @param str
+     *
+     * @param connection the connection
+     * @param str        the str
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     public List<TVSeries> findLike(ProxyConnection connection, String str) throws DaoException {
         List<TVSeries> tvSeriesList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
@@ -139,6 +150,13 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         throw new RuntimeException("Unsupported");
     }
 
+    /**
+     * Gets number of tvs in tv_series table.
+     *
+     * @param connection the connection
+     * @return the row count
+     * @throws DaoException the dao exception
+     */
     public int getRowCount(ProxyConnection connection) throws DaoException {
         int rowCount = 0;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
@@ -154,6 +172,14 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         return rowCount;
     }
 
+    /**
+     * Returns true if corresponding id is present in tv_series table
+     *
+     * @param connection the connection
+     * @param id         the id
+     * @return the boolean
+     * @throws DaoException the dao exception
+     */
     public boolean isTV(ProxyConnection connection, int id) throws DaoException {
         boolean isTV = false;
         try (PreparedStatement statement = connection.prepareStatement(CONTAINS_ID_SQL)) {
@@ -170,6 +196,17 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
         return isTV;
     }
 
+    /**
+     * Gets shows with offset sorted by @param sortBy with order @param orderBy.
+     *
+     * @param connection the connection
+     * @param sortBy     the sort by
+     * @param order      the order
+     * @param offset     the offset
+     * @param number     the number
+     * @return the shows sorted by
+     * @throws DaoException the dao exception
+     */
     public List<TVSeries> getShowsSortedBy(ProxyConnection connection, String sortBy, String order, int offset, int number) throws DaoException {
 
         List<TVSeries> tvSeries = new ArrayList<>();

@@ -9,6 +9,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * The type Mail thread.
+ */
 public class MailThread extends Thread {
     private static final Logger logger = Logger.getLogger(MailThread.class);
 
@@ -17,6 +20,13 @@ public class MailThread extends Thread {
     private final String mailSubject;
     private final String mailText;
 
+    /**
+     * Instantiates a new Mail thread.
+     *
+     * @param sendToEmail mail of destination
+     * @param mailSubject subject of mail
+     * @param mailText    mail text
+     */
     public MailThread(String sendToEmail,String mailSubject, String mailText) {
         this.sendToEmail = sendToEmail;
         this.mailSubject = mailSubject;

@@ -7,6 +7,9 @@ import com.epam.jwd.service.GenreService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Controller action for create movie page.
+ */
 public class CreateMoviePageControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {

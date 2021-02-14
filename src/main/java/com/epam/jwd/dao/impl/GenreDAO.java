@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GenreDAO
+ */
 public class GenreDAO implements DataAccessObject<Genre> {
 
     private static final GenreDAO INSTANCE = new GenreDAO();

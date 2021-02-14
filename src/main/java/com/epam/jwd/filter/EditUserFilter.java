@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Edit user filter. Checks if user id, who is trying to make changes, is equal to edited user id.
+ */
 @WebFilter(filterName = "EditUserFilter", urlPatterns = "/app/update_user")
 public class EditUserFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {

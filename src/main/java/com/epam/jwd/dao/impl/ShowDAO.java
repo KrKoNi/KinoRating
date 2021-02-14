@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Show DAO
+ */
 public final class ShowDAO implements DataAccessObject<Show> {
 
     private static final String INSERT_SQL = "INSERT INTO kinorating.abstract_kino (title, image_link, short_description, description) VALUES (?, ?, ?, ?)";
@@ -103,6 +106,13 @@ public final class ShowDAO implements DataAccessObject<Show> {
         delete(connection, show.getId());
     }
 
+    /**
+     * Delete show from database.
+     *
+     * @param connection proxy connection
+     * @param showId     show id
+     * @throws DaoException the dao exception
+     */
     public void delete(ProxyConnection connection, int showId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
             statement.setInt(1, showId);
@@ -114,6 +124,14 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
     }
 
+    /**
+     * Gets all show rates.
+     *
+     * @param connection the connection
+     * @param show       the show
+     * @return show rates
+     * @throws DaoException the dao exception
+     */
     public Map<Integer, Byte> getShowRates(ProxyConnection connection, Show show) throws DaoException {
         Map<Integer, Byte> rates = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_RATES_BY_SHOW_SQL)) {
@@ -136,6 +154,15 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return rates;
     }
 
+    /**
+     * Gets the show rate by user id.
+     *
+     * @param connection proxy connection
+     * @param showId     the show id
+     * @param userId     the user id
+     * @return user rate
+     * @throws DaoException the dao exception
+     */
     public int getShowRateByUserId(ProxyConnection connection, int showId, int userId) throws DaoException {
 
         int showRate = 0;
@@ -159,6 +186,13 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return showRate;
     }
 
+    /**
+     * Returns number of all shows in abstract_kino table
+     *
+     * @param connection proxy connection
+     * @return number of shows
+     * @throws DaoException the dao exception
+     */
     public int getRowCount(ProxyConnection connection) throws DaoException {
         int rowCount = 0;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ROW_COUNT_SQL)) {
@@ -174,6 +208,16 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return rowCount;
     }
 
+    /**
+     * Find shows with offset where title contains @param str
+     *
+     * @param connection the connection
+     * @param str        the str
+     * @param offset     the offset
+     * @param number     the number
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     public List<Show> findLikeWithOffset(ProxyConnection connection, String str, int offset, int number) throws DaoException {
         List<Show> showList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_WITH_OFFSET_SQL)) {
@@ -205,6 +249,14 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return showList;
     }
 
+    /**
+     * Find all shows where title contains @param str
+     *
+     * @param connection proxy connection
+     * @param str        str
+     * @return show list
+     * @throws DaoException the dao exception
+     */
     public List<Show> findLike(ProxyConnection connection, String str) throws DaoException {
         List<Show> showList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LIKE_SQL)) {
@@ -229,6 +281,14 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return showList;
     }
 
+    /**
+     * Gets show genres.
+     *
+     * @param connection ptoxy connection
+     * @param show       show
+     * @return show genres
+     * @throws DaoException the dao exception
+     */
     public List<Genre> getShowGenres(ProxyConnection connection, Show show) throws DaoException {
         List<Genre> genres = new ArrayList<>();
 
@@ -249,14 +309,41 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return genres;
     }
 
+    /**
+     * Add rate.
+     *
+     * @param connection the connection
+     * @param show       the show
+     * @param user       the user
+     * @param rate       the rate
+     * @throws DaoException the dao exception
+     */
     public void addRate(ProxyConnection connection, Show show, User user, int rate) throws DaoException {
         addRate(connection, show.getId(), user.getId(), rate);
     }
 
+    /**
+     * Add rate.
+     *
+     * @param connection the connection
+     * @param show       the show
+     * @param userId     the user id
+     * @param rate       the rate
+     * @throws DaoException the dao exception
+     */
     public void addRate(ProxyConnection connection, Show show, int userId, int rate) throws DaoException {
         addRate(connection, show.getId(), userId, rate);
     }
 
+    /**
+     * Add rate.
+     *
+     * @param connection the connection
+     * @param showId     the show id
+     * @param userId     the user id
+     * @param rate       the rate
+     * @throws DaoException the dao exception
+     */
     public void addRate(ProxyConnection connection, int showId, int userId, int rate) throws DaoException {
 
         try (PreparedStatement statement = connection.prepareStatement(ADD_RATE_SQL)) {
@@ -275,6 +362,14 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
     }
 
+    /**
+     * Remove corresponding rate from database.
+     *
+     * @param connection proxy connection
+     * @param showId     show id
+     * @param userId     user id
+     * @throws DaoException the dao exception
+     */
     public void removeRate(ProxyConnection connection, int showId, int userId) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_RATE_SQL)) {
 
@@ -290,6 +385,13 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
     }
 
+    /**
+     * Add genres to show.
+     *
+     * @param connection connection
+     * @param show       show
+     * @throws DaoException the dao exception
+     */
     public void addGenresToShow(ProxyConnection connection, Show show) throws DaoException {
         List<Genre> genres = show.getGenres();
         try (PreparedStatement statement = connection.prepareStatement(ADD_GENRES_SQL)) {
@@ -308,6 +410,14 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
     }
 
+    /**
+     * Gets average rate of the show.
+     *
+     * @param connection the connection
+     * @param showId     the show id
+     * @return the average rate
+     * @throws DaoException the dao exception
+     */
     public double getAverageRate(ProxyConnection connection, int showId) throws DaoException {
         double averageRate = 0;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_AVERAGE_SHOW_RATE_SQL)) {
@@ -327,6 +437,15 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return averageRate;
     }
 
+    /**
+     * Sets average rate.
+     *
+     * @param connection the connection
+     * @param showId     the show id
+     * @param rate       the rate
+     * @return the average rate
+     * @throws DaoException the dao exception
+     */
     public double setAverageRate(ProxyConnection connection, int showId, double rate) throws DaoException {
         double averageRate = 0;
         try (PreparedStatement statement = connection.prepareStatement(SET_AVERAGE_RATE_SQL)) {
@@ -346,6 +465,13 @@ public final class ShowDAO implements DataAccessObject<Show> {
         return averageRate;
     }
 
+    /**
+     * Delete all show genres.
+     *
+     * @param connection the connection
+     * @param show       the show
+     * @throws DaoException the dao exception
+     */
     public void deleteAllShowGenres(ProxyConnection connection, Show show) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_GENRES_SQL)) {
 
@@ -360,6 +486,13 @@ public final class ShowDAO implements DataAccessObject<Show> {
         }
     }
 
+    /**
+     * Gets last inserted id.
+     *
+     * @param connection the connection
+     * @return the last inserted id
+     * @throws DaoException the dao exception
+     */
     public int getLastInsertedId(ProxyConnection connection) throws DaoException {
         int id = -1;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_LAST_INSERTED_ID)) {

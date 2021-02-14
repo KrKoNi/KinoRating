@@ -7,6 +7,9 @@ import com.epam.jwd.service.ShowService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Controller action for remove show
+ */
 public class RemoveShowControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
