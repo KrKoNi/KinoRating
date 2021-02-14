@@ -45,6 +45,7 @@ public class UserDAO implements DataAccessObject<User> {
     private static final String SELECT_BY_EMAIL_SQL = "SELECT * FROM kinorating.users where email = ? limit 1";
     private static final String SELECT_BY_EMAIL_OR_LOGIN_SQL = "SELECT * FROM kinorating.users where email = ? or login = ? limit 1";
     private static final String UPDATE_SQL = "UPDATE kinorating.users SET login = ?, email = ?, first_name = ?, last_name = ?, birth_date = ? where id = ?";
+    private static final String CHANGE_ROLE_SQL = "UPDATE kinorating.users SET role_id = ? where id = ?";
 
     private static final Logger logger = Logger.getLogger(UserDAO.class);
 
@@ -314,6 +315,20 @@ public class UserDAO implements DataAccessObject<User> {
             logger.error(exception);
             throw new DaoException(exception);
         }
+    }
+
+    public void changeRole(ProxyConnection connection, int userId, int roleId) throws DaoException {
+        try (PreparedStatement statement = connection.prepareStatement(CHANGE_ROLE_SQL)) {
+            statement.setInt(1, roleId);
+            statement.setInt(2, userId);
+            statement.execute();
+
+        } catch (SQLException exception) {
+            connection.rollback();
+            logger.error(exception);
+            throw new DaoException(exception);
+        }
+
     }
 
     private User setFieldsFromResultSet(ResultSet resultSet) throws SQLException {
