@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "AdminServlet", urlPatterns = {"/admin", "/admin/*"})
 public class AdminServlet extends HttpServlet {
-    String view;
+    private static String view;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

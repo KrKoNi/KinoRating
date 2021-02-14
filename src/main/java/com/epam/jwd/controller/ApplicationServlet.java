@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "ApplicationServlet", urlPatterns = {"/app/*", "/app"})
 public class ApplicationServlet extends HttpServlet {
-    String view;
+    private static String view;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
