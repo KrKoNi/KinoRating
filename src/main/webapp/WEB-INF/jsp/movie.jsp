@@ -1,4 +1,3 @@
-<%@ page import="com.epam.jwd.domain.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -26,7 +25,7 @@
 <div class="card mb-3 bg-dark">
     <div class="row g-0">
         <div class="col-md-4">
-            <img onloadstart="setActive(${movie.id}, ${movie.rates[userDTO.id]})" height="300px" src="${movie.imageLink}" alt="${movie.title}">
+            <img onloadstart="setActive(${movie.id}, ${movie.currentUserRate})" height="300px" src="${movie.imageLink}" alt="${movie.title}">
         </div>
         <div class="col-md-8">
             <div class="card-body">
@@ -42,23 +41,24 @@
     </div>
 </div>
 
-<c:if test="${not empty movie.rates[userDTO.id]}">
-    <span><fmt:message key="msg.your-rate"/>: <c:out value="${movie.rates[userDTO.id]}"/></span>
+<c:if test="${movie.currentUserRate > 0}">
+    <span><fmt:message key="msg.your-rate"/>: <c:out value="${movie.currentUserRate}"/></span>
     <button onclick="removeRate(${movie.id})" type="button" class="btn btn-dark"><fmt:message key="msg.remove-rate"/></button>
 </c:if>
-
-<div class="star-rating" id="${movie.id}" style="direction: rtl">
-    <span class="10" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 10)" onclick="sendRate(${movie.id}, 10)"><i class="fa fa-star"></i></span>
-    <span class="9" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 9)" onclick="sendRate(${movie.id}, 9)"><i class="fa fa-star"></i></span>
-    <span class="8" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 8)" onclick="sendRate(${movie.id}, 8)"><i class="fa fa-star"></i></span>
-    <span class="7" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 7)" onclick="sendRate(${movie.id}, 7)"><i class="fa fa-star"></i></span>
-    <span class="6" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 6)" onclick="sendRate(${movie.id}, 6)"><i class="fa fa-star"></i></span>
-    <span class="5" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 5)" onclick="sendRate(${movie.id}, 5)"><i class="fa fa-star"></i></span>
-    <span class="4" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 4)" onclick="sendRate(${movie.id}, 4)"><i class="fa fa-star"></i></span>
-    <span class="3" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 3)" onclick="sendRate(${movie.id}, 3)"><i class="fa fa-star"></i></span>
-    <span class="2" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 2)" onclick="sendRate(${movie.id}, 2)"><i class="fa fa-star"></i></span>
-    <span class="1" onmouseout="setActive(${movie.id}, ${movie.rates[userDTO.id]})" onmouseover="setActive(${movie.id}, 1)" onclick="sendRate(${movie.id}, 1)"><i class="fa fa-star"></i></span>
-</div>
+<c:if test="${not empty userDTO}">
+    <div class="star-rating" id="${movie.id}" style="direction: rtl">
+        <span class="10" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 10)" onclick="sendRate(${movie.id}, 10)"><i class="fa fa-star"></i></span>
+        <span class="9" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 9)" onclick="sendRate(${movie.id}, 9)"><i class="fa fa-star"></i></span>
+        <span class="8" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 8)" onclick="sendRate(${movie.id}, 8)"><i class="fa fa-star"></i></span>
+        <span class="7" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 7)" onclick="sendRate(${movie.id}, 7)"><i class="fa fa-star"></i></span>
+        <span class="6" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 6)" onclick="sendRate(${movie.id}, 6)"><i class="fa fa-star"></i></span>
+        <span class="5" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 5)" onclick="sendRate(${movie.id}, 5)"><i class="fa fa-star"></i></span>
+        <span class="4" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 4)" onclick="sendRate(${movie.id}, 4)"><i class="fa fa-star"></i></span>
+        <span class="3" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 3)" onclick="sendRate(${movie.id}, 3)"><i class="fa fa-star"></i></span>
+        <span class="2" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 2)" onclick="sendRate(${movie.id}, 2)"><i class="fa fa-star"></i></span>
+        <span class="1" onmouseout="setActive(${movie.id}, ${movie.currentUserRate})" onmouseover="setActive(${movie.id}, 1)" onclick="sendRate(${movie.id}, 1)"><i class="fa fa-star"></i></span>
+    </div>
+</c:if>
 <div>
     <p><c:out value="${movie.description}"/></p>
 </div>
