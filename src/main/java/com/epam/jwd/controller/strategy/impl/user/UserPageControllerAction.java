@@ -40,7 +40,7 @@ public class UserPageControllerAction implements ControllerAction {
             try {
                 showClass = ShowService.getShowType(showId);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new ActionException("Object neither movie nor tv", e);
             }
 
             if (showClass == Movie.class) {
