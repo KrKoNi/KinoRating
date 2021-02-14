@@ -32,6 +32,7 @@ public class EditUserFilter implements Filter {
 
         if(editedUserId != -1 && editedUserId != userDTO.getId()) {
             httpServletResponse.sendRedirect("/app/profile");
+            return;
         }
 
         chain.doFilter(request, response);

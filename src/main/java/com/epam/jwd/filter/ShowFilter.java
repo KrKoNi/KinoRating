@@ -40,5 +40,6 @@ public class ShowFilter implements Filter {
         } else if (showClass == TVSeries.class) {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/app/tv?id=" + id);
         }
+        chain.doFilter(request, response);
     }
 }
