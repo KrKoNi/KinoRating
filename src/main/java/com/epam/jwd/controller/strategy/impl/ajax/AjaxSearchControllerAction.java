@@ -20,21 +20,20 @@ import java.util.List;
 public class AjaxSearchControllerAction implements ControllerAction {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-
-        PrintWriter out = null;
+        PrintWriter out;
         try {
             out = response.getWriter();
+            String str = request.getParameter("str");
+            List<Show> showList = ShowService.findLike(str);
+            try {
+                out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(showList));
+            } catch (JsonProcessingException e) {
+                throw new ActionException(e);
+            }
+            out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ActionException(e);
         }
-        String str = request.getParameter("str");
-        List<Show> showList = ShowService.findLike(str);
-        try {
-            out.print(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(showList));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        out.flush();
 
         return "ajax";
     }
