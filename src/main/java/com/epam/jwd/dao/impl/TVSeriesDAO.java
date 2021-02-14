@@ -128,8 +128,6 @@ public class TVSeriesDAO implements DataAccessObject<TVSeries> {
     @Override
     public void insert(ProxyConnection connection, TVSeries tvSeries) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
-            statement.setString(1, tvSeries.getTitle());
-            statement.setString(2, tvSeries.getImageLink());
 
             statement.execute();
 

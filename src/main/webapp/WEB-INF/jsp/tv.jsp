@@ -1,4 +1,3 @@
-<%@ page import="com.epam.jwd.domain.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -37,6 +36,8 @@
         </div>
     </div>
 </div>
+
+<c:if test="${not empty userDTO}">
 <div class="star-rating" id="${tv.id}" style="direction: rtl">
     <span class="10" onmouseout="setActive(${tv.id}, ${tv.currentUserRate})" onmouseover="setActive(${tv.id}, 10)" onclick="sendRate(${tv.id}, 10)"><i class="fa fa-star"></i></span>
     <span class="9" onmouseout="setActive(${tv.id}, ${tv.currentUserRate})" onmouseover="setActive(${tv.id}, 9)" onclick="sendRate(${tv.id}, 9)"><i class="fa fa-star"></i></span>
@@ -49,6 +50,7 @@
     <span class="2" onmouseout="setActive(${tv.id}, ${tv.currentUserRate})" onmouseover="setActive(${tv.id}, 2)" onclick="sendRate(${tv.id}, 2)"><i class="fa fa-star"></i></span>
     <span class="1" onmouseout="setActive(${tv.id}, ${tv.currentUserRate})" onmouseover="setActive(${tv.id}, 1)" onclick="sendRate(${tv.id}, 1)"><i class="fa fa-star"></i></span>
 </div>
+</c:if>
 
 <c:if test="${not empty tv.currentUserRate}">
     <span><fmt:message key="msg.your-rate"/>: <c:out value="${tv.currentUserRate}"/></span>

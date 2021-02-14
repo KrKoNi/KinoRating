@@ -23,7 +23,7 @@ public class TVPageControllerAction implements ControllerAction {
         try {
             tvSeries = TVSeriesService.findById(id);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            throw new ActionException("TV not found", throwables);
         }
         UserDTO userDTO = (UserDTO) request.getSession(false).getAttribute("userDTO");
 

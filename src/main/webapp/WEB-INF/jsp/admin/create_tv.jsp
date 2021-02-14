@@ -31,6 +31,15 @@
         <input type="text" class="form-control" id="description" name="description">
     </div>
 
+    <c:forEach items="${genres}" var="genre">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="genres" value="${genre.id}" id="check${genre.id}">
+            <label class="form-check-label" for="check${genre.id}">
+                <c:out value="${genre.name}"/>
+            </label>
+        </div>
+    </c:forEach>
+
     <button type="submit" class="btn btn-dark">Create</button>
 
 </form>

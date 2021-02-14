@@ -19,7 +19,7 @@ public class EditUserSubmitControllerAction implements ControllerAction {
         try {
             request.setCharacterEncoding("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new ActionException("Encoding unsupported", e);
         }
 
         int id = Integer.parseInt(request.getParameter("id"));

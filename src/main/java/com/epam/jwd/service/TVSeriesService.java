@@ -78,6 +78,8 @@ public class TVSeriesService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             ShowDAO.getInstance().insert(connection, tvSeries);
             TVSeriesDAO.getInstance().insert(connection, tvSeries);
+            int id = ShowDAO.getInstance().getLastInsertedId(connection);
+            tvSeries.setId(id);
             ShowDAO.getInstance().addGenresToShow(connection, tvSeries);
 
             connection.commit();

@@ -32,7 +32,7 @@ public class ShowFilter implements Filter {
         try {
             showClass = ShowService.getShowType(id);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new ServletException("Show neither movie nor tv", e);
         }
 
         if (showClass == Movie.class) {
