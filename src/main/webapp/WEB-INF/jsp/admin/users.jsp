@@ -37,26 +37,19 @@
                     <c:out value="${user.birthDate}"/>
                 </p>
             </td>
-            <c:choose>
-                <c:when test="${user.role.id == 1}">
-                    <td>
-                        <form method="post" action="${pageContext.request.contextPath}/admin/make_admin">
-                            <input hidden name="id" value="${user.id}">
+            <td>
+                <form method="post" action="${pageContext.request.contextPath}/admin/change_role">
+                    <input hidden name="id" value="${user.id}">
+                    <c:choose>
+                        <c:when test="${user.role.id == 1}">
                             <button class="btn btn-dark"><i class="fa fa-arrow-circle-up"></i></button>
-                        </form>
-                    </td>
-                </c:when>
-                <c:when test="${user.role.id == 2}">
-                    <td>
-                        <form method="post" action="${pageContext.request.contextPath}/admin/make_user">
-                            <input hidden name="id" value="${user.id}">
+                        </c:when>
+                        <c:when test="${user.role.id == 2}">
                             <button class="btn btn-dark"><i class="fa fa-arrow-circle-down"></i></button>
-                        </form>
-                    </td>
-                </c:when>
-            </c:choose>
-
-
+                        </c:when>
+                    </c:choose>
+                </form>
+            </td>
             <td>
                 <form method="post" action="${pageContext.request.contextPath}/admin/remove_user">
                     <input hidden name="id" value="${user.id}">

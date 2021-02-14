@@ -16,9 +16,6 @@ import java.util.Map;
  * The type Admin controller action factory method.
  */
 public class AdminControllerActionFactoryMethod {
-    /**
-     * The Actions.
-     */
     static Map<String, ControllerAction> actions = new HashMap<>();
 
     static {
@@ -44,9 +41,8 @@ public class AdminControllerActionFactoryMethod {
         actions.put("GET/create_tv", new CreateTVPageControllerAction());
         actions.put("POST/create_tv", new CreateTVSubmitController());
 
-        //actions.put("POST/make_user", );
-        //actions.put("POST/make_admin", );
-        actions.put("POST/delete_user", new RemoveUserControllerAction());
+        actions.put("POST/change_role", new ChangeUserRoleControllerAction());
+        actions.put("POST/remove_user", new RemoveUserControllerAction());
     }
 
     /**

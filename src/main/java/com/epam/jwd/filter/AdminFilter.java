@@ -30,9 +30,8 @@ public class AdminFilter implements Filter {
 
         if (userDTO == null || userDTO.getRole() != Role.ADMIN) {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/app/index");
-        } else {
-            chain.doFilter(request, response);
         }
+        chain.doFilter(request, response);
 
     }
 }

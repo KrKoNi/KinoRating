@@ -3,6 +3,7 @@ package com.epam.jwd.service;
 import com.epam.jwd.connect.BasicConnectionPool;
 import com.epam.jwd.connect.ProxyConnection;
 import com.epam.jwd.dao.impl.UserDAO;
+import com.epam.jwd.domain.Role;
 import com.epam.jwd.domain.User;
 import com.epam.jwd.exceptions.DaoException;
 import org.apache.log4j.Logger;
@@ -183,7 +184,21 @@ public class UserService {
         try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
             UserDAO.getInstance().update(connection, user);
         } catch (DaoException e) {
-            e.printStackTrace(); //logs
+            logger.error("Error occurred in DAO, connection rollbacked");
+        }
+    }
+
+    public static void changeRole(int userId) {
+        try (ProxyConnection connection = BasicConnectionPool.INSTANCE.getConnection()) {
+            int roleIdToSet;
+            User user = UserDAO.getInstance().findById(connection, userId);
+            if (user.getRole() == Role.ADMIN) {
+                roleIdToSet = 1;
+            } else roleIdToSet = 2;
+
+            UserDAO.getInstance().changeRole(connection, userId, roleIdToSet);
+        } catch (DaoException e) {
+            logger.error("Error occurred in DAO, connection rollbacked");
         }
     }
 }
