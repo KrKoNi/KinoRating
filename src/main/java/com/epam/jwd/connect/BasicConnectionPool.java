@@ -64,6 +64,7 @@ public enum BasicConnectionPool {
             connection.setAutoCommit(false);
         } catch (InterruptedException e) {
             logger.error("Error trying to get connection from pool, try again later", e);
+            Thread.currentThread().interrupt();
         }
         return connection;
     }
@@ -88,6 +89,7 @@ public enum BasicConnectionPool {
                 freeConnections.take().realClose();
             } catch (InterruptedException exception) {
                 logger.error("Cannot close connection", exception);
+                Thread.currentThread().interrupt();
             }
         }
         deregisterDrivers();
