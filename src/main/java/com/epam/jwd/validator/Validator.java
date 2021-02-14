@@ -7,7 +7,7 @@ import javax.mail.internet.InternetAddress;
  * Validator, checks if some parameters matches requirements.
  */
 public class Validator {
-    private static final String LOGIN_REGEX = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{4,19}$";
+    private static final String LOGIN_REGEX = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{3,19}$";
 
     private Validator() {
 
