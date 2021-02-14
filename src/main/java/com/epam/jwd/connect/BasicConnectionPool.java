@@ -42,7 +42,6 @@ public enum BasicConnectionPool {
                 logger.info("Connection added to pool");
             } catch (SQLException exception) {
                 logger.error("Error adding connection to the pool", exception);
-                exception.printStackTrace();
             }
         }
         logger.info("Connection pool was initialized");
